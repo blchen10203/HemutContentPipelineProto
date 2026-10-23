@@ -1,0 +1,1 @@
+Placeholder: turns a short free-text brief into a structured Brief.

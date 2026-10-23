@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hemut-content"
+version = "0.0.1"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2",
+    "pyyaml",
+    "httpx",
+    "python-dotenv",
+    "anthropic",
+    "pytest",
+]
+
+[tool.setuptools]
+py-modules = ["schemas", "validate", "generate"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
