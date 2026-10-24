@@ -2,7 +2,7 @@
 
 run_brief(brief) never posts anything. on_event(name, payload) reports progress for the CLI and Streamlit:
 "brief", "angles", "draft" (one per attempt), "done". If the API fails mid-run, the run folder is still written, then the
-error is re-raised.
+error is re-raised. The same goes for a BaseException (Ctrl+C, or Streamlit's rerun when a widget is clicked mid-run).
 """
 import datetime
 import hashlib
@@ -59,7 +59,7 @@ def run_brief(
     else:
         try:
             _generate(brief, result, claims, voice, client or anthropic.Anthropic(), on_event)
-        except Exception as e:
+        except BaseException as e:  # incl. Streamlit's rerun exception, so an aborted run keeps its folder
             _write_error(run_dir, result, claims, now, e)
             raise
 
@@ -68,14 +68,14 @@ def run_brief(
     return result
 
 
-def write_failed_request(error: Exception, claims: dict[str, Claim], out_root: Path = OUT) -> None:
+def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT) -> None:
     """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
     _write_error(run_dir, RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="failed_validation"), claims, now, error)
 
 
-def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: Exception) -> None:
+def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: BaseException) -> None:
     result.status = "failed_validation"  # RunResult has no error status; meta.json carries the error
     _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
     e.add_note(f"run folder: {run_dir}")

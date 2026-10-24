@@ -39,7 +39,7 @@ def run_request(
     client = client or anthropic.Anthropic()
     try:
         brief = request_to_brief(request, claims, voice=voice, client=client)
-    except Exception as e:
+    except BaseException as e:  # same as run_brief: an aborted run still leaves its folder
         write_failed_request(e, claims, run_kwargs.get("out_root", OUT))
         raise
     return run_brief(brief, claims=claims, voice=voice, client=client, **run_kwargs)

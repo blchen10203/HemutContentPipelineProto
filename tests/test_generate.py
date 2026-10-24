@@ -29,7 +29,7 @@ class FakeClient:
     def _create(self, **kwargs):
         self.calls.append(kwargs)
         reply = self.replies.pop(0) if len(self.replies) > 1 else self.replies[0]
-        if isinstance(reply, Exception):
+        if isinstance(reply, BaseException):
             raise reply
         return SimpleNamespace(stop_reason=self.stop_reason, content=[SimpleNamespace(type="text", text=reply)])
 
@@ -116,3 +116,13 @@ def test_refused_angles_call_writes_run_folder_and_raises(tmp_path):
     (run_dir,) = run_dirs(tmp_path)
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     assert meta["status"] == "error" and "refusal" in meta["error"] and meta["validator"] == []
+
+
+def test_interrupt_mid_run_still_writes_meta(tmp_path):
+    # Streamlit's rerun exception is a BaseException like KeyboardInterrupt, not an Exception
+    with pytest.raises(KeyboardInterrupt):
+        run(FakeClient(ANGLES, GOOD, KeyboardInterrupt()), tmp_path)
+    (run_dir,) = run_dirs(tmp_path)
+    meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
+    assert meta["status"] == "error" and "KeyboardInterrupt" in meta["error"]
+    assert [len(d) for d in meta["validator"]] == [1, 0]
