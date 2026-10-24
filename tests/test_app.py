@@ -6,12 +6,14 @@ import modes.request
 import modes.scheduled
 from streamlit.testing.v1 import AppTest
 
-from schemas import Angle, Brief, DraftAttempt, RunResult
+from schemas import Angle, Brief, DraftAttempt, RunResult, Violation
 
+AD = ("CANNED DRAFT\n\nCommand starts at $99 a month.\n\n"
+      "Start free https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=short_ad&utm_campaign=x")
 BRIEF = Brief(origin="request", audience="a", pain="p", hemut_feature="f", format="short_ad", claim_ids=[])
 RESULT = RunResult(run_id="x", run_dir="out/runs/x", status="ok", brief=BRIEF,
                    angles=[Angle(hook="hook", pain="p", feature="f", claim_ids=[])],
-                   drafts=[[DraftAttempt(attempt=0, rendered_text="CANNED DRAFT", violations=[])]])
+                   drafts=[[DraftAttempt(attempt=0, rendered_text=AD, violations=[])]])
 
 
 def click(at, label):
@@ -19,7 +21,7 @@ def click(at, label):
 
 
 def drafts_shown(at):
-    return sum("CANNED DRAFT" in t.value for t in at.text)
+    return sum("CANNED DRAFT" in m.value for m in at.markdown)
 
 
 def test_app_runs_both_modes_and_keeps_results(monkeypatch):
@@ -34,7 +36,7 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     assert drafts_shown(click(at, "Run")) == 1
     assert drafts_shown(click(at, "Draft all")) == 2
     click(at, "Plan")  # a rerun must not wipe either tab's results
-    assert drafts_shown(at) == 2 and any(m.value.startswith("**1. ifta-q3**") for m in at.markdown)
+    assert drafts_shown(at) == 2 and any(m.value.startswith("**1. The office rebuilds the IFTA return") for m in at.markdown)
 
 
 def test_app_shows_error_status(monkeypatch):
@@ -44,7 +46,8 @@ def test_app_shows_error_status(monkeypatch):
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
     at.text_area[0].input("Social post about detention").run()
     click(at, "Run")
-    assert not at.exception and any("Status: error" in e.value and "authentication_error" in e.value for e in at.error)
+    assert not at.exception and any("Status: error" in e.value for e in at.error)
+    assert any("authentication_error" in t.value for t in at.text)  # folded into Details
 
 
 def test_new_week_date_drops_old_drafts(monkeypatch):
@@ -62,3 +65,16 @@ def test_dollar_signs_are_not_latex(monkeypatch):
     at.text_area[0].input("Post about $50 off fuel and $20 off Command").run()
     click(at, "Run")
     assert any(r"\$50 off fuel" in w.value for w in at.warning)
+
+
+def test_only_passing_ads_are_shown(monkeypatch):
+    bad = [DraftAttempt(attempt=n, rendered_text=None, violations=[Violation(code="BANNED_WORD", message="banned: 'guaranteed'")])
+           for n in range(3)]
+    mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]]})
+    monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: mixed)
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.text_area[0].input("Social post about detention").run()
+    click(at, "Run")
+    shown = " ".join(m.value for m in at.markdown) + " ".join(t.value for t in at.text)
+    assert drafts_shown(at) == 1 and "BANNED_WORD" not in shown and "guaranteed" not in shown
+    assert any(r"\$99" in m.value for m in at.markdown) and any("Start free →" in m.value for m in at.markdown)
