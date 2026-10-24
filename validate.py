@@ -96,16 +96,6 @@ def validate(post: TrxckwrldPost, claims: dict[str, Claim], voice: VoiceRules) -
     return out
 
 
-def check_expired_claims(post: TrxckwrldPost, claims: dict[str, Claim]) -> list[Violation]:
-    # TODO(Mode B, after the demo): flag trend/seasonal claims past expires_at; Claim has no expires_at yet.
-    return []
-
-
-def check_source_similarity(post: TrxckwrldPost, source_texts: list[str]) -> list[Violation]:
-    # TODO(after the demo): reject drafts that copy or closely paraphrase the trend items they came from.
-    return []
-
-
 def _v(code: str, message: str, span: str) -> Violation:
     return Violation(code=code, message=f"{message}: {span!r}", span=span)
 
