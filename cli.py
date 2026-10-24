@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     load_dotenv()
-    sys.stdout.reconfigure(errors="replace")  # claim wordings use en dashes; a cp1252/cp437 pipe must not crash
+    sys.stdout.reconfigure(encoding="utf-8")  # pipes default to cp1252 on Windows, which garbles the en dash in "4–15"
     result = run_request(Request(text=args.text, notes=args.notes), on_event=_progress)
 
     print(f"status: {result.status}")

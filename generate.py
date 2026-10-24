@@ -25,6 +25,7 @@ N_ANGLES = 3
 MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
+RUN_ID = "%Y%m%d-%H%M%S-%f"
 
 
 class _Angles(BaseModel):  # response shape for the angles call only
@@ -47,7 +48,7 @@ def run_brief(
     claims = load_claims() if claims is None else claims  # the knowledge base is always loaded
     voice = load_voice() if voice is None else voice
     now = datetime.datetime.now()
-    run_dir = out_root / now.strftime("%Y%m%d-%H%M%S-%f")
+    run_dir = out_root / now.strftime(RUN_ID)
     result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source)
 
     if brief.needs_source:
@@ -58,14 +59,25 @@ def run_brief(
         try:
             _generate(brief, result, claims, voice, client or anthropic.Anthropic(), on_event)
         except Exception as e:
-            result.status = "failed_validation"  # RunResult has no error status; meta.json carries the error
-            _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
-            e.add_note(f"run folder: {run_dir}")
+            _write_error(run_dir, result, claims, now, e)
             raise
 
     _write_run(run_dir, result, claims, now)
     on_event("done", {"status": result.status, "run_dir": str(run_dir)})
     return result
+
+
+def write_failed_request(error: Exception, claims: dict[str, Claim], out_root: Path = OUT) -> None:
+    """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
+    now = datetime.datetime.now()
+    run_dir = out_root / now.strftime(RUN_ID)
+    _write_error(run_dir, RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="failed_validation"), claims, now, error)
+
+
+def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: Exception) -> None:
+    result.status = "failed_validation"  # RunResult has no error status; meta.json carries the error
+    _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
+    e.add_note(f"run folder: {run_dir}")
 
 
 def _generate(brief, result, claims, voice, client, on_event) -> None:
@@ -152,11 +164,12 @@ def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
 
 def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, error: str | None = None) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
-    used = ["system.txt", "angles.txt", "draft.txt"] + (["normalize.txt"] if result.brief.origin == "request" else [])
+    origin = result.brief.origin if result.brief else "request"  # no brief: Mode A failed while building it
+    used = ["system.txt", "angles.txt", "draft.txt"] + (["normalize.txt"] if origin == "request" else [])
     meta = {
         "created": now.isoformat(timespec="seconds"),
-        "mode": "A" if result.brief.origin == "request" else "B",
-        "brief_origin": result.brief.origin,
+        "mode": "A" if origin == "request" else "B",
+        "brief_origin": origin,
         "status": "error" if error else result.status,
         "error": error,
         "model": MODEL,

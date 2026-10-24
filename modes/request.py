@@ -5,7 +5,7 @@ Nothing is web-searched or guessed.
 """
 import anthropic
 
-from generate import ask, load_prompt, run_brief, system_prompt
+from generate import OUT, ask, load_prompt, run_brief, system_prompt, write_failed_request
 from knowledge.loader import load_claims, load_voice
 from schemas import Brief, Claim, Request, RunResult, VoiceRules
 
@@ -37,5 +37,9 @@ def run_request(
     claims = load_claims() if claims is None else claims
     voice = load_voice() if voice is None else voice
     client = client or anthropic.Anthropic()
-    brief = request_to_brief(request, claims, voice=voice, client=client)
+    try:
+        brief = request_to_brief(request, claims, voice=voice, client=client)
+    except Exception as e:
+        write_failed_request(e, claims, run_kwargs.get("out_root", OUT))
+        raise
     return run_brief(brief, claims=claims, voice=voice, client=client, **run_kwargs)

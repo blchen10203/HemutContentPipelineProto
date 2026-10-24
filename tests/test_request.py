@@ -1,6 +1,8 @@
 """Mode A with a scripted fake client: request -> Brief, gap rule, sensitivity. No network."""
 import json
 
+import pytest
+
 from test_generate import ANGLES, GOOD, N_ANGLES, FakeClient
 
 from knowledge.loader import load_claims
@@ -58,3 +60,13 @@ def test_covered_request_runs_the_core(tmp_path):
     result = run_request(Request(text="Reddit-style post about IFTA automation"), client=client, out_root=tmp_path)
     assert result.status == "ok" and len(client.calls) == 2 + N_ANGLES
     assert client.calls[0]["system"] == client.calls[1]["system"]  # normalize shares the cached system prompt
+
+
+def test_failed_request_call_still_writes_run_folder(tmp_path):
+    with pytest.raises(RuntimeError, match="overloaded") as info:
+        run_request(Request(text="Reddit-style post about IFTA"), client=FakeClient(RuntimeError("overloaded")), out_root=tmp_path)
+    (run_dir,) = [d for d in tmp_path.iterdir() if d.is_dir()]
+    assert str(run_dir) in info.value.__notes__[0]
+    meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
+    assert meta["status"] == "error" and meta["mode"] == "A" and "RuntimeError: overloaded" in meta["error"]
+    assert "normalize.txt" in meta["prompt_versions"] and meta["validator"] == []
