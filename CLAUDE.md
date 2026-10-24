@@ -33,22 +33,25 @@ A weekly planner mixes seasonal + trend + evergreen Briefs into a content plan.
 ```
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
                  loader.py (loads + checks claims.yaml / voice.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
+                 pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
-schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, SeasonWindow, TrendItem, TrendCard
+schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
 validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM, expired claims, source similarity)
-generate.py      core: Brief -> angles -> draft -> validate -> retry
+generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retry, with an on_event progress callback
+app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
 prompts/         versioned prompt files, not inline strings
 modes/           request.py (Mode A)   scheduled.py (Mode B)
 brief_sources/   seasonal.py   trends/ (base.py, rss.py, federal_register.py, reddit.py, trxckwrld.py, instagram.py, tiktok.py, x.py)
 planner.py       weekly mix: pillar targets + active seasons + top trend cards, avoids repeated angles
 export/          trxckwrld.py (adapter, later)
 cli.py           entry points for both modes + review
-tests/           golden/ + unit tests
+tests/           golden/  fixtures/ (frozen dated data, e.g. the demo trend fixture) + unit tests
 out/runs/<timestamp>/   drafts + meta.json
 ```
 
 ## Conventions
-- Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework, no web UI until the core loop works.
+- Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework.
+- One Streamlit app (app.py) as a thin shell. It only calls functions in generate.py, modes/, planner.py, and knowledge/. No business logic, validation, or prompt text in app.py. Local only, no auth, never posts.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
 - Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature, validator results.
 - Every trend source implements one interface (`brief_sources/trends/base.py`), so adding or swapping a platform touches one file.
@@ -60,21 +63,24 @@ out/runs/<timestamp>/   drafts + meta.json
 - Trend and seasonal code is tested with fixture data, never live network calls.
 
 ## Build order
-Oct 31 demo:
-0. Project skeleton (done)
-1. knowledge/ files: fact_sheet, claims, voice
-2. schemas.py: Request, Brief, TrxckwrldPost, StatCard
+Oct 31 demo: a local demo of BOTH modes through a thin Streamlit UI. Project skeleton is done.
+1. knowledge/: voice.yaml, generated fact_sheet.md (claims.yaml is done)
+2. schemas.py: Request, Brief, TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
 3. validate.py + golden tests
-4. generate.py core with retry-on-validator-errors
-5. Mode A: `cli.py request "..."` including the needs_source gap check; CLI review to out/
+4. generate.py core: run_brief() with retry and an on_event progress callback
+5. Mode A: modes/request.py (function first) + minimal cli.py
+6. Mode B lite: seasonality.yaml + bridge_map.yaml (human-verified), seasonal source, ONE frozen dated trend fixture, planner.py, modes/scheduled.py
+7. Streamlit UI (app.py)
+8. Demo hardening + DEMO.md
 
-Mid-November:
-6. seasonality.yaml + bridge_map.yaml (human-verified sources) + seasonal brief source
-7. planner.py + `cli.py plan --week YYYY-MM-DD` dry run ("what would we post that week")
-8. Trends v1: RSS + Federal Register sources, clustering, scoring, sensitivity filter, trend cards -> Briefs
-9. LLM judge, diversity check, image templates
+Cut list if behind, in this order:
+1. Knowledge tab in the UI
+2. Trend fixture (Mode B goes seasonal + evergreen only)
+3. Pending claims from attached sources
 
-After November:
-10. Trxckwrld trend source (when access), Reddit API
-11. Instagram (official Hashtag Search API, needs App Review), X (paid API), TikTok (no general API) only if access is approved
-12. Review UI, Trxckwrld export adapter
+## After the demo
+- Live trend sources: RSS, Federal Register, Reddit, Trxckwrld (when access), Instagram, X, TikTok (official APIs only, once access is approved)
+- Clustering/scoring of trends
+- LLM judge, diversity check, source-similarity check
+- Image templates
+- Trxckwrld export adapter
