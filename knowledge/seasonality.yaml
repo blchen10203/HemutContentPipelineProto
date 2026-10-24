@@ -18,7 +18,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: Bryan Chen (blchen@usc.edu)
+  verified_by: Bryan Chen
 
 - id: ifta-q2
   name: IFTA Q2 return (April-June)
@@ -28,7 +28,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: Chelsey Sheng(chelseys@usc.edu)
+  verified_by: Chelsey Sheng
 
 - id: ifta-q3
   name: IFTA Q3 return (July-September)
@@ -38,7 +38,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: Bryan Chen (blchen@usc.edu)
+  verified_by: Bryan Chen
 
 - id: ifta-q4
   name: IFTA Q4 return (October-December)
@@ -48,7 +48,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: Bryan Chen (blchen@usc.edu)
+  verified_by: Bryan Chen
 
 # NOAA: "meteorological winter includes December, January, and February." 02-28 also covers leap years but one day.
 - id: winter-weather
@@ -59,4 +59,4 @@
   lead_days: 14
   source_url: https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons
   checked: 2026-10-24
-  verified_by: Bryan Chen (blchen@usc.edu)
+  verified_by: Bryan Chen

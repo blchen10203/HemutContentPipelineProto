@@ -59,7 +59,7 @@ Click **Run**. One call, a few seconds. Result: **Needs a source before anything
 
 Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default). Click **Plan**. This makes no API calls. Walk through the plan:
 
-1. **ifta-q3** (seasonal): the IFTA Q3 return is due Oct 31. The reason line says the season window is unverified, meaning a human hasn't signed it off yet. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
+1. **ifta-q3** (seasonal): the IFTA Q3 return is due Oct 31. The reason line names who checked the season dates against the source. Season windows count even when unverified, but then the reason says so. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
 2. **detention** (trend): from the frozen trend fixture. The reason shows how many items back it and when the trend card expires.
 3. to 5. **Evergreen pillars**: pricing, rate cons, switching.
 
