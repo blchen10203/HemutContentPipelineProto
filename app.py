@@ -23,7 +23,8 @@ st.caption("Drafts for human review only. Nothing is posted.")
 def on_event_for(status):
     def on_event(name: str, payload: dict) -> None:
         if name == "brief":
-            status.write(f"**Brief** ({payload['origin']}, {payload['format']}): {payload['pain']} → {payload['hemut_feature']}")
+            status.write(f"**Brief** ({payload['origin']}, {payload['format']}): {payload['pain']} → {payload['hemut_feature']}"
+                         .replace("$", "\\$"))  # two $ in markdown render as LaTeX
         elif name == "angles":
             status.write("**Angles:** " + " · ".join(a["hook"] for a in payload["angles"]))
         elif name == "draft":
@@ -37,7 +38,7 @@ def on_event_for(status):
 def show_result(result: RunResult) -> None:
     if result.needs_source:
         st.warning("**Needs a source before anything is drafted.** Nothing in claims.yaml covers:\n\n"
-                   + "\n".join(f"- {item}" for item in result.needs_source))
+                   + "\n".join(f"- {item}" for item in result.needs_source).replace("$", "\\$"))
     elif result.status == "blocked_sensitive":
         st.error("**Blocked: sensitive topic.** A human decides whether to write about this.")
     for i, attempts in enumerate(result.drafts):
@@ -89,6 +90,8 @@ with week_tab:
     plan_clicked = st.button("Plan")
     draft_clicked = st.button("Draft all", type="primary")
     if plan_clicked or draft_clicked:
+        if st.session_state.get("week_day") != day:  # drafts belong to one week's plan
+            st.session_state.week_results = []
         st.session_state.week_day = day
     if st.session_state.get("week_day") == day:
         skipped: list[str] = []
