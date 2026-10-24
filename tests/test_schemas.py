@@ -90,6 +90,9 @@ def test_text_attachment_takes_any_text():
     "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post",
     "https://hemut.com/pricing?utm_source=&utm_medium=post&utm_campaign=x",
     "hemut.com/pricing?utm_source=a&utm_medium=b&utm_campaign=c",
+    "https://hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=x",  # not one of the two CTA pages
+    "https://command.hemut.co/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=x",
+    "https://hemut.com/pricing?utm_source=reddit&utm_medium=post&utm_campaign=x",
 ])
 def test_bad_utm_rejected(url):
     with pytest.raises(ValidationError, match="utm"):

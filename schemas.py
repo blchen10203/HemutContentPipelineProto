@@ -103,6 +103,9 @@ class StatCard(BaseModel):
     label: str
 
 
+CTA_PAGES = {"https://command.hemut.com/signup", "https://hemut.com/pricing"}  # the only links system.txt allows
+
+
 class TrxckwrldPost(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -122,6 +125,9 @@ class TrxckwrldPost(BaseModel):
         missing = [k for k in ("utm_source", "utm_medium", "utm_campaign") if k not in params]
         if parts.scheme not in ("http", "https") or missing:
             raise ValueError(f"cta_url must be an http(s) URL with utm_source, utm_medium and utm_campaign; missing {missing}")
+        page = f"{parts.scheme}://{parts.netloc}{parts.path}".rstrip("/")
+        if page not in CTA_PAGES or params["utm_source"] != ["trxckwrld"]:
+            raise ValueError(f"cta_url must be one of {sorted(CTA_PAGES)} with utm_source=trxckwrld, got {url!r}")
         return url
 
 
