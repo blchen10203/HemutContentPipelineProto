@@ -157,3 +157,7 @@ def test_render_bad_placeholder_raises(body, match):
 def test_render_bad_stat_card_claim_raises():
     with pytest.raises(PlaceholderError, match="unknown claim id"):
         render_post(post(stat_card={"claim_id": "no-such-claim", "label": "Save"}), CLAIMS)
+
+
+def test_run_result_error_status():
+    assert RunResult(run_id="r1", run_dir="out/runs/r1", status="error").status == "error"

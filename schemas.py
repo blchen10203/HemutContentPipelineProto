@@ -150,7 +150,7 @@ class RunResult(BaseModel):
 
     run_id: str
     run_dir: str
-    status: Literal["ok", "needs_source", "failed_validation", "blocked_sensitive"]
+    status: Literal["ok", "needs_source", "failed_validation", "blocked_sensitive", "error"]  # error: API/auth failure or aborted run
     brief: Brief | None = None
     angles: list[Angle] = []
     drafts: list[list[DraftAttempt]] = []  # one attempt list per angle

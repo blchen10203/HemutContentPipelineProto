@@ -62,7 +62,7 @@ def run_with_status(label: str, job):
         out = job(on_event_for(status))
     except Exception as e:
         status.update(label=f"{label}: failed", state="error")
-        st.error(f"{type(e).__name__}: {e}\n\n" + "\n".join(getattr(e, "__notes__", [])))
+        st.error(f"**Status: error.** {type(e).__name__}: {e}\n\n" + "\n".join(getattr(e, "__notes__", [])))
         return None
     status.update(label=f"{label}: done", state="complete", expanded=False)
     return out

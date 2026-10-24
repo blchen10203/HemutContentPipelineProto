@@ -106,6 +106,7 @@ def test_api_error_still_writes_run_folder(tmp_path):
     assert str(run_dir) in info.value.__notes__[0]
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     assert meta["status"] == "error" and "RuntimeError: boom" in meta["error"]
+    assert json.loads((run_dir / "result.json").read_text(encoding="utf-8"))["status"] == "error"
     assert [len(d) for d in meta["validator"]] == [2, 0]  # angle 1's two attempts kept, angle 2 had none
     assert (run_dir / "draft-1.md").is_file() and not (run_dir / "draft-2.md").exists()
 

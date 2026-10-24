@@ -69,4 +69,5 @@ def test_failed_request_call_still_writes_run_folder(tmp_path):
     assert str(run_dir) in info.value.__notes__[0]
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     assert meta["status"] == "error" and meta["mode"] == "A" and "RuntimeError: overloaded" in meta["error"]
+    assert json.loads((run_dir / "result.json").read_text(encoding="utf-8"))["status"] == "error"
     assert "normalize.txt" in meta["prompt_versions"] and meta["validator"] == []

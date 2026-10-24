@@ -52,6 +52,16 @@ def main(argv: list[str] | None = None) -> None:
 
     load_dotenv()
     sys.stdout.reconfigure(encoding="utf-8")  # pipes default to cp1252 on Windows, which garbles the en dash in "4–15"
+    try:
+        _run(args)
+    except Exception as e:  # API/auth errors: the run folder is already written and named in the notes
+        print(f"status: error\n{type(e).__name__}: {e}")
+        for note in getattr(e, "__notes__", []):
+            print(note)
+        sys.exit(1)
+
+
+def _run(args) -> None:
     if args.command == "request":
         _print_result(run_request(Request(text=args.text, notes=args.notes), on_event=_progress))
         return

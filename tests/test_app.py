@@ -34,3 +34,13 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     assert drafts_shown(click(at, "Draft all")) == 2
     click(at, "Plan")  # a rerun must not wipe either tab's results
     assert drafts_shown(at) == 2 and any(m.value.startswith("**1. ifta-q3**") for m in at.markdown)
+
+
+def test_app_shows_error_status(monkeypatch):
+    def fail(request, on_event):
+        raise RuntimeError("authentication_error")
+    monkeypatch.setattr(modes.request, "run_request", fail)
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.text_area[0].input("Social post about detention").run()
+    click(at, "Run")
+    assert not at.exception and any("Status: error" in e.value and "authentication_error" in e.value for e in at.error)

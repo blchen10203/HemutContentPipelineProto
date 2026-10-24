@@ -72,11 +72,11 @@ def write_failed_request(error: BaseException, claims: dict[str, Claim], out_roo
     """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
-    _write_error(run_dir, RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="failed_validation"), claims, now, error)
+    _write_error(run_dir, RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="error"), claims, now, error)
 
 
 def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: BaseException) -> None:
-    result.status = "failed_validation"  # RunResult has no error status; meta.json carries the error
+    result.status = "error"
     _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
     e.add_note(f"run folder: {run_dir}")
 
@@ -171,7 +171,7 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
         "created": now.isoformat(timespec="seconds"),
         "mode": "A" if origin == "request" else "B",
         "brief_origin": origin,
-        "status": "error" if error else result.status,
+        "status": result.status,
         "error": error,
         "model": MODEL,
         "effort": EFFORT,
