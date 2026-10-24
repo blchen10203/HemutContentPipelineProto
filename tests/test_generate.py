@@ -5,7 +5,9 @@ from types import SimpleNamespace
 
 import yaml
 
-from generate import N_ANGLES, run_brief
+import pytest
+
+from generate import N_ANGLES, Refused, run_brief
 from schemas import Brief
 
 GOLDEN = Path(__file__).parent / "golden"
@@ -22,11 +24,13 @@ BRIEF = Brief(origin="request", audience="small fleets", pain="IFTA by hand", he
 class FakeClient:
     def __init__(self, *replies, stop_reason="end_turn"):
         self.replies, self.calls, self.stop_reason = list(replies), [], stop_reason
-        self.beta = SimpleNamespace(messages=SimpleNamespace(create=self._create))
+        self.messages = SimpleNamespace(create=self._create)
 
     def _create(self, **kwargs):
         self.calls.append(kwargs)
         reply = self.replies.pop(0) if len(self.replies) > 1 else self.replies[0]
+        if isinstance(reply, Exception):
+            raise reply
         return SimpleNamespace(stop_reason=self.stop_reason, content=[SimpleNamespace(type="text", text=reply)])
 
 
@@ -45,7 +49,7 @@ def test_good_first_try(tmp_path):
     assert events == ["angles"] + ["draft"] * N_ANGLES + ["done"]
     assert len(client.calls) == 1 + N_ANGLES
     meta = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))
-    assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt"}
+    assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt", "normalize.txt"}
     assert (Path(result.run_dir) / "draft-1.md").is_file()
     system = client.calls[0]["system"][0]["text"]
     assert "command-base-price" in system and "{fact_sheet}" not in system and "{{claim:<id>}}" in system
@@ -89,3 +93,26 @@ def test_needs_source_and_sensitive_make_no_calls(tmp_path):
         result, events = run(client, tmp_path, brief)
         assert result.status == status and client.calls == [] and events == ["done"]
         assert (Path(result.run_dir) / "meta.json").is_file()
+
+
+def run_dirs(tmp_path):
+    return [d for d in tmp_path.iterdir() if d.is_dir()]
+
+
+def test_api_error_still_writes_run_folder(tmp_path):
+    with pytest.raises(RuntimeError, match="boom") as info:
+        run(FakeClient(ANGLES, BAD, GOOD, RuntimeError("boom")), tmp_path)  # fails on the second angle's first call
+    (run_dir,) = run_dirs(tmp_path)
+    assert str(run_dir) in info.value.__notes__[0]
+    meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
+    assert meta["status"] == "error" and "RuntimeError: boom" in meta["error"]
+    assert [len(d) for d in meta["validator"]] == [2, 0]  # angle 1's two attempts kept, angle 2 had none
+    assert (run_dir / "draft-1.md").is_file() and not (run_dir / "draft-2.md").exists()
+
+
+def test_refused_angles_call_writes_run_folder_and_raises(tmp_path):
+    with pytest.raises(Refused):
+        run(FakeClient(ANGLES, stop_reason="refusal"), tmp_path)
+    (run_dir,) = run_dirs(tmp_path)
+    meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
+    assert meta["status"] == "error" and "refusal" in meta["error"] and meta["validator"] == []

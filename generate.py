@@ -1,7 +1,8 @@
 """Core pipeline, shared by both modes: Brief -> angles -> draft -> validate -> retry (max 2). Writes out/runs/<id>/.
 
 run_brief(brief) never posts anything. on_event(name, payload) reports progress for the CLI and Streamlit:
-"angles", "draft" (one per attempt), "done".
+"angles", "draft" (one per attempt), "done". If the API fails mid-run, the run folder is still written, then the
+error is re-raised.
 """
 import datetime
 import hashlib
@@ -18,17 +19,20 @@ from knowledge.loader import ROOT, load_claims, load_voice
 from schemas import Angle, Brief, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
-MODEL = "claude-opus-5-5"
+MODEL = "claude-opus-5-5"  # no server-side fallback, so this is always the model that answered
 EFFORT = "medium"  # Opus 5.5 rejects temperature; effort is the only sampling-side control
 N_ANGLES = 3
 MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
-FALLBACK_BETA = "server-side-fallback-2026-07-01"  # a refused request is re-run on Anthropic's recommended model
 
 
 class _Angles(BaseModel):  # response shape for the angles call only
     angles: list[Angle]
+
+
+class Refused(Exception):
+    """The model stopped without a usable answer (refusal or max_tokens)."""
 
 
 def run_brief(
@@ -51,29 +55,40 @@ def run_brief(
     elif brief.sensitivity == "high":
         result.status = "blocked_sensitive"
     else:
-        client = client or anthropic.Anthropic()
-        system = _system_prompt(claims, voice)
-        brief_json = brief.model_dump_json(indent=2)
-        reply = _ask(client, system, [_user(_prompt("angles.txt", n=str(N_ANGLES), brief=brief_json))], _Angles)
-        result.angles = _Angles.model_validate_json(reply).angles
-        on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
-        for i, angle in enumerate(result.angles):
-            first = _prompt("draft.txt", brief=brief_json, angle=angle.model_dump_json(indent=2))
-            result.drafts.append(_draft(client, system, first, claims, voice, lambda a: on_event("draft", {"angle": i, **a})))
-        if not any(attempts[-1].violations == [] for attempts in result.drafts):
-            result.status = "failed_validation"
+        try:
+            _generate(brief, result, claims, voice, client or anthropic.Anthropic(), on_event)
+        except Exception as e:
+            result.status = "failed_validation"  # RunResult has no error status; meta.json carries the error
+            _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
+            e.add_note(f"run folder: {run_dir}")
+            raise
 
     _write_run(run_dir, result, claims, now)
     on_event("done", {"status": result.status, "run_dir": str(run_dir)})
     return result
 
 
-def _draft(client, system, first_prompt, claims, voice, on_attempt) -> list[DraftAttempt]:
-    messages, attempts = [_user(first_prompt)], []
+def _generate(brief, result, claims, voice, client, on_event) -> None:
+    system = system_prompt(claims, voice)
+    brief_json = brief.model_dump_json(indent=2)
+    reply = ask(client, system, [_user(load_prompt("angles.txt", n=str(N_ANGLES), brief=brief_json))], _Angles)
+    result.angles = _Angles.model_validate_json(reply).angles
+    on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
+    for i, angle in enumerate(result.angles):
+        attempts: list[DraftAttempt] = []
+        result.drafts.append(attempts)  # filled in place, so an API error keeps the attempts made so far
+        first = load_prompt("draft.txt", brief=brief_json, angle=angle.model_dump_json(indent=2))
+        _draft(client, system, first, claims, voice, attempts, lambda a: on_event("draft", {"angle": i, **a}))
+    if not any(attempts and attempts[-1].violations == [] for attempts in result.drafts):
+        result.status = "failed_validation"
+
+
+def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAttempt], on_attempt) -> None:
+    messages = [_user(first_prompt)]
     for n in range(1 + MAX_RETRIES):
         try:
-            reply = _ask(client, system, messages, TrxckwrldPost)
-        except _Refused as e:  # retrying the same request will not help
+            reply = ask(client, system, messages, TrxckwrldPost)
+        except Refused as e:  # retrying the same request will not help
             attempts.append(DraftAttempt(attempt=n, violations=[Violation(code="PARSE_ERROR", message=str(e))]))
             on_attempt({"attempt": n, "violations": [v.model_dump() for v in attempts[-1].violations]})
             break
@@ -96,25 +111,19 @@ def _draft(client, system, first_prompt, claims, voice, on_attempt) -> list[Draf
             _user("The validator rejected that draft:\n" + "\n".join(f"- {v.code}: {v.message}" for v in violations)
                   + "\nWrite the whole post again with these fixed."),
         ]
-    return attempts
 
 
-class _Refused(Exception):
-    pass
-
-
-def _ask(client, system: str, messages: list, shape: type[BaseModel]) -> str:
-    response = client.beta.messages.create(
+def ask(client, system: str, messages: list, shape: type[BaseModel]) -> str:
+    """One structured-output call; returns the JSON text. Raises Refused if the model gave no usable answer."""
+    response = client.messages.create(
         model=MODEL,
         max_tokens=16000,
         system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],  # same prefix on every call
         messages=messages,
         output_config={"effort": EFFORT, "format": {"type": "json_schema", "schema": anthropic.transform_schema(shape)}},
-        betas=[FALLBACK_BETA],
-        fallbacks="default",
     )
     if response.stop_reason in ("refusal", "max_tokens"):
-        raise _Refused(f"model stopped with {response.stop_reason}")
+        raise Refused(f"model stopped with {response.stop_reason}")
     return next(b.text for b in response.content if b.type == "text")
 
 
@@ -122,42 +131,47 @@ def _user(text: str) -> dict:
     return {"role": "user", "content": text}
 
 
-def _prompt(name: str, **values: str) -> str:
+def load_prompt(name: str, **values: str) -> str:
     text = (PROMPTS / name).read_text(encoding="utf-8")
     for key, value in values.items():  # not str.format: prompts contain literal {{claim:<id>}}
         text = text.replace("{" + key + "}", value)
     return text
 
 
-def _system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
-    return _prompt(
+def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
+    """Rules, voice and the whole fact sheet. Identical for every call in a run (and across modes), so it caches."""
+    return load_prompt(
         "system.txt",
         product_names=", ".join(voice.allowed_product_names),
         retired_names=", ".join(voice.retired_names),
         banned_words=", ".join(f'"{w}"' for w in voice.banned_words),
         vocabulary=", ".join(voice.vocabulary),
-        fact_sheet=render_fact_sheet(claims),  # rendered from the claims in use, whole, so it always matches the validator
+        fact_sheet=render_fact_sheet(claims),  # rendered from the claims in use, so it always matches the validator
     )
 
 
-def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime) -> None:
-    run_dir.mkdir(parents=True)
-    used = ["system.txt", "angles.txt", "draft.txt"]
+def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, error: str | None = None) -> None:
+    run_dir.mkdir(parents=True, exist_ok=True)
+    used = ["system.txt", "angles.txt", "draft.txt"] + (["normalize.txt"] if result.brief.origin == "request" else [])
     meta = {
         "created": now.isoformat(timespec="seconds"),
         "mode": "A" if result.brief.origin == "request" else "B",
         "brief_origin": result.brief.origin,
-        "status": result.status,
+        "status": "error" if error else result.status,
+        "error": error,
         "model": MODEL,
         "effort": EFFORT,
         "temperature": None,  # not accepted by the model
-        "prompt_versions": {p: hashlib.sha256((PROMPTS / p).read_bytes()).hexdigest()[:12] for p in used},
+        # read_text normalizes line endings, so the hash is the same on a CRLF checkout
+        "prompt_versions": {p: hashlib.sha256(load_prompt(p).encode()).hexdigest()[:12] for p in used},
         "knowledge_checked": sorted({c.checked.isoformat() for c in claims.values()}),
         "validator": [[{"attempt": a.attempt, "violations": [v.model_dump() for v in a.violations]} for a in d] for d in result.drafts],
     }
     (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     (run_dir / "result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")
     for i, attempts in enumerate(result.drafts):
+        if not attempts:
+            continue
         last = attempts[-1]
         body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
         flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)

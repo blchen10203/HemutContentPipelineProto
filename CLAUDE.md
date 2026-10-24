@@ -53,7 +53,7 @@ out/runs/<timestamp>/   drafts + meta.json
 - Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework.
 - One Streamlit app (app.py) as a thin shell. It only calls functions in generate.py, modes/, planner.py, and knowledge/. No business logic, validation, or prompt text in app.py. Local only, no auth, never posts.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
-- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature, validator results.
+- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature or effort, validator results.
 - Every trend source implements one interface (`brief_sources/trends/base.py`), so adding or swapping a platform touches one file.
 - Schemas are the contract between modules. Don't change them without updating tests.
 
