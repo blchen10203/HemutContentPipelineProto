@@ -7,7 +7,8 @@
 # - CVSA International Roadcheck, Operation Safe Driver Week, Brake Safety Week: dates are set each year, not fixed.
 # - Peak season, produce season: no official source defines the dates.
 
-# IFTA: "IFTA returns are filed quarterly and due the last day of the month following the quarter."
+# IFTA: quarterly filing calendar on the source page: April 30, July 31, October 31, January 31 of the following year.
+# "When the due date falls on a weekend or legal holiday, the next business day applies." (Oct 31, 2026 is a Saturday.)
 # The window is that filing month; lead_days starts it in the last week of the quarter, while receipts can still be gathered.
 - id: ifta-q1
   name: IFTA Q1 return (January-March)
@@ -17,7 +18,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: null
+  verified_by: Bryan Chen (blchen@usc.edu)
 
 - id: ifta-q2
   name: IFTA Q2 return (April-June)
@@ -27,7 +28,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: null
+  verified_by: Chelsey Sheng(chelseys@usc.edu)
 
 - id: ifta-q3
   name: IFTA Q3 return (July-September)
@@ -37,7 +38,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: null
+  verified_by: Bryan Chen (blchen@usc.edu)
 
 - id: ifta-q4
   name: IFTA Q4 return (October-December)
@@ -47,7 +48,7 @@
   lead_days: 7
   source_url: https://www.iftach.org/Carriers/
   checked: 2026-10-24
-  verified_by: null
+  verified_by: Bryan Chen (blchen@usc.edu)
 
 # NOAA: "meteorological winter includes December, January, and February." 02-28 also covers leap years but one day.
 - id: winter-weather
@@ -58,4 +59,4 @@
   lead_days: 14
   source_url: https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons
   checked: 2026-10-24
-  verified_by: null
+  verified_by: Bryan Chen (blchen@usc.edu)
