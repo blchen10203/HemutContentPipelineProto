@@ -60,6 +60,21 @@ def test_bad_snapshot_path_fails(repo, snapshot):
         load(repo, [claim(source_snapshot=snapshot)])
 
 
+@pytest.mark.parametrize("overrides", [
+    {"value": 99},  # numeric value, price type
+    {"type": "company", "value": 20},  # numeric value, otherwise-allowed type
+    {"type": "competitor", "value": "no published prices"},  # non-numeric, but not an allowed type
+])
+def test_empty_phrasings_rejected(repo, overrides):
+    with pytest.raises(ValueError, match="needs at least one phrasing"):
+        load(repo, [claim(phrasings=[], **overrides)])
+
+
+def test_empty_phrasings_allowed_for_record_only_text(repo):
+    claims = load(repo, [claim(type="company", value="A customer quote", phrasings=[])])
+    assert claims["command-base-price"].phrasings == []
+
+
 def test_unknown_key_fails(repo):
     with pytest.raises(ValueError, match="phrasing"):
         load(repo, [claim(phrasing=["typo of phrasings"])])

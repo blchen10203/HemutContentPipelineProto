@@ -1,1 +1,1511 @@
-# Every number allowed in copy, with its source. Built from hemut.com/llms-full.txt and /pricing.
+# Every fact allowed in copy. Built only from the snapshots in knowledge/sources/ (2026-10-23).
+# Loaded and checked by knowledge/loader.py into schemas.Claim.
+#
+# Rules for this file:
+# - One entry per number or product claim. `context` holds qualifiers that must travel with the claim.
+# - `phrasings` are the only wordings allowed in copy. None of them drop a qualifier.
+# - requires_approval: true for ROI metrics, competitor facts, and customer names/quotes.
+# - Where sources disagree, both entries are kept and marked "# CONFLICT:". Nothing is resolved here.
+# - llms-full says the pricing page wins on disagreement, so price facts cite the pricing page where it states them.
+
+# ---------------------------------------------------------------- Prices (base + bands)
+
+- id: command-base-price
+  type: price
+  value: 99
+  unit: USD/month
+  phrasings: ["Command starts at $99 a month with 3 trucks included", "$99 a month, which includes your first 3 trucks"]
+  context: "Includes the first 3 trucks only; per-truck band rates apply after that. Fleets of 31+ trucks are Enterprise."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# Pricing page shows only 10-truck totals for Pro/All-in; base prices below are from llms-full and match (521 - 7x39 = 248; 599 - 7x43 = 298).
+- id: command-pro-base-price
+  type: price
+  value: 248
+  unit: USD/month
+  phrasings: ["Command Pro: $248 a month with 3 trucks included"]
+  context: "Includes the first 3 trucks only; per-truck band rates apply after that."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-all-in-base-price
+  type: price
+  value: 298
+  unit: USD/month
+  phrasings: ["Command All-in: $298 a month with 3 trucks included"]
+  context: "Includes the first 3 trucks only; per-truck band rates apply after that."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-band-4-15
+  type: price
+  value: 29
+  unit: USD/truck/month
+  phrasings: ["$29 a month per truck for trucks 4–15 on Command"]
+  context: "Applies only to trucks 4–15. Bands work like tax brackets: each rate applies only to the trucks inside its own band."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-band-16-30
+  type: price
+  value: 24
+  unit: USD/truck/month
+  phrasings: ["$24 a month per truck for trucks 16–30 on Command"]
+  context: "Applies only to trucks 16–30. Fleets of 31+ trucks are Enterprise."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-pro-band-4-15
+  type: price
+  value: 39
+  unit: USD/truck/month
+  phrasings: ["$39 a month per truck for trucks 4–15 on Command Pro"]
+  context: "Applies only to trucks 4–15, like a tax bracket."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-pro-band-16-30
+  type: price
+  value: 34
+  unit: USD/truck/month
+  phrasings: ["$34 a month per truck for trucks 16–30 on Command Pro"]
+  context: "Applies only to trucks 16–30. Fleets of 31+ trucks are Enterprise."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-all-in-band-4-15
+  type: price
+  value: 43
+  unit: USD/truck/month
+  phrasings: ["$43 a month per truck for trucks 4–15 on Command All-in"]
+  context: "Applies only to trucks 4–15, like a tax bracket."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-all-in-band-16-30
+  type: price
+  value: 38
+  unit: USD/truck/month
+  phrasings: ["$38 a month per truck for trucks 16–30 on Command All-in"]
+  context: "Applies only to trucks 16–30. Fleets of 31+ trucks are Enterprise."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: bands-work-like-tax-brackets
+  type: price
+  value: "Each per-truck rate applies only to the trucks inside its own band"
+  phrasings: ["The bands work the way tax brackets do: each rate only applies to the trucks inside its own band", "You are never re-priced from scratch for adding one truck"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Prices (fleet totals)
+
+- id: command-6-truck-price
+  type: price
+  value: 186
+  unit: USD/month
+  phrasings: ["$186 a month for 6 trucks on Command"]
+  context: "Command plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-10-truck-price
+  type: price
+  value: 302
+  unit: USD/month
+  phrasings: ["A 10-truck fleet pays $302 a month on Command", "$302 a month for 10 trucks on Command"]
+  context: "Command plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-15-truck-price
+  type: price
+  value: 447
+  unit: USD/month
+  phrasings: ["$447 a month for 15 trucks on Command"]
+  context: "Command plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-20-truck-price
+  type: price
+  value: 567
+  unit: USD/month
+  phrasings: ["$567 a month for 20 trucks on Command"]
+  context: "Command plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-30-truck-price
+  type: price
+  value: 807
+  unit: USD/month
+  phrasings: ["$807 a month for 30 trucks on Command"]
+  context: "Command plan only. 30 trucks is the largest self-serve fleet; 31+ is Enterprise."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-pro-10-truck-price
+  type: price
+  value: 521
+  unit: USD/month
+  phrasings: ["$521 a month for 10 trucks on Command Pro"]
+  context: "Command Pro plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: command-all-in-10-truck-price
+  type: price
+  value: 599
+  unit: USD/month
+  phrasings: ["$599 a month for 10 trucks on Command All-in"]
+  context: "Command All-in plan only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Pricing terms
+
+- id: trucks-included
+  type: price
+  value: 3
+  unit: trucks
+  phrasings: ["Your first 3 trucks are included in every plan"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: only-trucks-are-billed
+  type: price
+  value: "Dispatchers, drivers and trailers are never counted; you pay only for trucks"
+  phrasings: ["Dispatchers, drivers and trailers are never counted, so you pay only for trucks", "Add as many dispatchers as your office needs"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: what-counts-as-a-truck
+  type: price
+  value: "Any tractor you dispatch in Command, whether you own it or the driver does"
+  phrasings: ["A truck is any tractor you dispatch in Command, whether you own it or the driver does"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: enterprise-threshold
+  type: price
+  value: 31
+  unit: trucks
+  phrasings: ["Fleets of 31 trucks or more are Enterprise, priced to the operation", "Over 30 trucks? Enterprise is priced to your operation"]
+  context: "Enterprise has no published price; it is quoted. Includes EDI connections and data migration."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: enterprise-includes
+  type: price
+  value: "EDI connections and data migration off your current system"
+  phrasings: ["Enterprise is priced around your operation, including the EDI connections and the migration off the system you run today"]
+  context: "Enterprise only (31+ trucks)."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: prices-published
+  type: price
+  value: "Every self-serve rate is published, with no quote to request"
+  phrasings: ["Every rate is published on hemut.com/pricing, with no quote to request", "Self-serve plans are published, and only fleets of 31 trucks or more are quoted"]
+  context: "Enterprise (31+ trucks) is quoted, so never say 'every price' without the self-serve qualifier."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: no-free-tier
+  type: price
+  value: "There is no free tier"
+  phrasings: ["There is no free tier"]
+  context: "The free trial ends; a card is required to continue."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: no-setup-fee
+  type: price
+  value: "No setup fee"
+  phrasings: ["No setup fee"]
+  context: "Data migration is part of Enterprise pricing."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: no-contract
+  type: price
+  value: "No card, no contract, no implementation call to start"
+  phrasings: ["No card, no contract, no implementation call"]
+  context: "Self-serve plans. Large-fleet onboarding is scoped."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Free trial
+# The snapshots also contain shorter trial wordings that drop the 5-loads condition
+# ("a 30 day free trial and no credit card" in llms-full; "Thirty days, no card." on /pricing).
+# They are deliberately NOT allowed phrasings here.
+
+- id: trial-days
+  type: price
+  value: 30
+  unit: days
+  phrasings: ["Free for 30 days or 5 loads per truck, whichever comes first", "A free trial of 30 days or 5 loads per truck, whichever comes first, with no credit card"]
+  context: "Always '30 days or 5 loads per truck, whichever comes first'. Never state the 30 days alone."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: trial-loads-per-truck
+  type: price
+  value: 5
+  unit: loads per truck
+  phrasings: ["30 days or 5 loads per truck, whichever comes first"]
+  context: "Always paired with the 30 days and 'whichever comes first'."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: trial-no-card
+  type: price
+  value: "No credit card to start the trial"
+  phrasings: ["No credit card to start"]
+  context: "A card is asked for when the trial ends."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: trial-runs-on-all-in
+  type: price
+  value: "Every trial runs on Command All-in, the whole product"
+  phrasings: ["Every trial is Command All-in: the whole product, not a sampler", "Every trial runs on Command All-in, so you can try every role before you pick a plan"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: trial-end
+  type: price
+  value: "A card is required when the trial ends; the account locks until one is on file; nothing is deleted"
+  phrasings: ["We ask for a card when the trial ends, and the account locks until one is on file. Nothing is deleted."]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Agent add-ons
+
+- id: email-agent-tier-300
+  type: price
+  value: 99
+  unit: USD/month
+  phrasings: ["The email agent is $99 a month for 300 emails sent"]
+  context: "Monthly allowance on top of any plan; 300 emails sent. Enterprise is scoped."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: email-agent-tier-750
+  type: price
+  value: 199
+  unit: USD/month
+  phrasings: ["The email agent is $199 a month for 750 emails sent"]
+  context: "Monthly allowance on top of any plan; 750 emails sent."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: email-agent-tier-1500
+  type: price
+  value: 349
+  unit: USD/month
+  phrasings: ["The email agent is $349 a month for 1,500 emails sent"]
+  context: "Monthly allowance on top of any plan; 1,500 emails sent."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: voice-agent-tier-150
+  type: price
+  value: 99
+  unit: USD/month
+  phrasings: ["The voice agent is $99 a month for 150 connected calls"]
+  context: "Monthly allowance on top of any plan; 150 connected calls. Set up with Hemut. Enterprise is scoped."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: voice-agent-tier-400
+  type: price
+  value: 249
+  unit: USD/month
+  phrasings: ["The voice agent is $249 a month for 400 connected calls"]
+  context: "Monthly allowance on top of any plan; 400 connected calls."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: voice-agent-tier-800
+  type: price
+  value: 449
+  unit: USD/month
+  phrasings: ["The voice agent is $449 a month for 800 connected calls"]
+  context: "Monthly allowance on top of any plan; 800 connected calls."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: agents-from-99
+  type: price
+  value: 99
+  unit: USD/month
+  phrasings: ["Email and voice agents from $99 a month"]
+  context: "'from' must stay: $99 is the lowest tier of each agent. Added on top of any plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: agent-allowance-terms
+  type: price
+  value: "Allowances reset monthly, do not roll over, and the agent never stops mid-month"
+  phrasings: ["Allowances reset every billing month and do not roll over, and we tell you before you hit the ceiling — the agent never stops mid-month"]
+  context: "Each agent is a monthly allowance bought on top of any plan, not a contract."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: agent-setup
+  type: feature
+  value: "Email agent: switch on yourself in Settings. Voice agent: set up with Hemut."
+  phrasings: ["Switch on the email agent yourself in Settings", "The voice agent is set up with us"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: email-agent-does
+  type: feature
+  value: "Answers office email: load status, rate asks, document chases"
+  phrasings: ["The email agent answers the email your office spends its morning on — load status, rate asks, document chases"]
+  context: "Paid add-on, from $99 a month."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: voice-agent-does
+  type: feature
+  value: "Makes and takes calls: check calls, driver ETAs, customer updates"
+  phrasings: ["The voice agent makes and takes the calls that move a load — check calls, driver ETAs, customer updates"]
+  context: "Paid add-on, from $99 a month. Hemut has not verified a backhaul-calling equivalent (see pcs-backhaul-booster)."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Plan contents
+
+- id: plan-command-includes
+  type: product
+  value: "Loads, dispatch and live tracking; Overview and Tasks; document storage; compliance expiry reminders; fuel tools; IFTA quarterly reports; usage analytics (Lite); 5 starter playbooks"
+  phrasings: ["Command: run the fleet day to day — loads, dispatch and live tracking in one place"]
+  context: "Base plan. Fuel tools = IFTA mileage, fuel card sync and fuel surcharge."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: plan-command-pro-includes
+  type: product
+  value: "Everything in Command, plus auto-bid, rate intelligence, toll estimation, email quoting, RFP, driver ranking, Find Loads, lane routes, maintenance, DVIR, repair shops, trailer and tractor pools, trailer cargo state, safety scorecards, fault and idle analytics, reefer monitoring, claims, parts inventory, CARB"
+  phrasings: ["Command Pro: everything in Command, plus the tools that price freight and win it"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: plan-command-all-in-includes
+  type: product
+  value: "Everything in Pro, plus detention alerts, detailed shipper tracking links, custom reports and dashboards, financial planning, AI insights, usage analytics Pro, the full Playbooks library and builder, priority support"
+  phrasings: ["Command All-in: everything in Pro, plus the reporting, planning and automation layer"]
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: starter-playbooks
+  type: feature
+  value: 5
+  unit: playbooks
+  phrasings: ["5 starter playbooks: late-delivery heads-up, revised ETA, overdue invoice chase, POD close-out, document expiring"]
+  context: "Command and Command Pro. Command All-in gets the full Playbooks library and builder instead."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: playbooks-full-library
+  type: feature
+  value: "The full Playbooks library and builder"
+  phrasings: ["The full Playbooks library and builder"]
+  context: "Command All-in only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: usage-analytics-tiers
+  type: feature
+  value: "Usage analytics Lite on Command and Command Pro; Pro on Command All-in"
+  phrasings: ["Usage analytics: how your team uses Command"]
+  context: "Lite on Command and Pro; Pro on All-in."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: starter-agents-every-plan
+  type: feature
+  value: "Starter agents are included in every plan; Command All-in adds the full agent library and a builder"
+  phrasings: ["Starter agents are included in every plan", "Command All-in adds the full agent library and a builder: describe any job in a sentence and Hemi turns it into an agent"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Products
+
+- id: product-command
+  type: product
+  value: "Command: a full trucking TMS built as an AI operating system"
+  phrasings: ["Command is a full trucking TMS built as an AI operating system: dispatch, live tracking, documents, billing, settlements and IFTA, with AI agents built in"]
+  context: "The product most carriers run on; the other products extend it."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-control
+  type: product
+  value: "Control: Hemi, the freight assistant inside Command"
+  phrasings: ["Control: Hemi, the freight assistant inside Command. Ask in plain words or by voice to find loads, track trucks, check rates and dispatch, and turn your SOPs into agents."]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-forge
+  type: product
+  value: "Forge: RFP and bid automation for carriers"
+  phrasings: ["Forge: RFP and bid automation for carriers — build lane bids with your own pricing method and answer RFPs in a fraction of the time"]
+  context: "'a fraction of the time' is the source's wording; no number is published, so never put one on it."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-custom
+  type: product
+  value: "Custom: a custom system for an operation no platform fits"
+  phrasings: ["Custom: a custom system for an operation no platform fits, delivered in phases"]
+  context: "Part of an Enterprise engagement."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-hemut-diesel
+  type: product
+  value: "Hemut Diesel: a fuel card with fleet discounts and nationwide coverage"
+  phrasings: ["Hemut Diesel: a fuel card with fleet discounts and nationwide coverage, with software and support included"]
+  context: "No discount amount is published; never state one."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-free-carrier-tools
+  type: product
+  value: "Free carrier tools: USDOT and MC carrier lookup and plain guides to UCR, MCS-150, IFTA, BOC-3 and DOT inspections"
+  phrasings: ["A free USDOT and MC carrier lookup", "Plain guides to UCR, MCS-150, IFTA, BOC-3 and DOT inspections"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: product-hemi
+  type: product
+  value: "Hemi: the personal assistant built into Hemut, covering every desk in a carrier's office"
+  phrasings: ["Hemi is the personal assistant built into Hemut. It turns rate cons into loads, keeps customers updated, chases PODs, sends invoices and works out driver pay.", "Your team only handles what Hemi flags"]
+  context: "Desks vary by plan (see hemi-desk-* entries)."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Hemi desks
+
+- id: hemi-desk-inbox-rate-cons
+  type: feature
+  value: "Rate confirmations become loads; loads, stops and documents in one place; nobody retypes an email again"
+  phrasings: ["Rate confirmations become loads", "Nobody retypes an email again"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-check-calls-tracking
+  type: feature
+  value: "Live truck positions and ETAs; customers warned before a load runs late; revised ETAs sent when plans change"
+  phrasings: ["Customers warned before a load runs late", "Revised ETAs sent when plans change"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-pod-paperwork
+  type: feature
+  value: "PODs chased until they are in; expiring documents flagged before they lapse; driver files and permits kept together"
+  phrasings: ["PODs chased until they are in", "Expiring documents flagged before they lapse"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-billing
+  type: feature
+  value: "Delivered loads become invoices; factoring packets ready to send; QuickBooks kept in step"
+  phrasings: ["Delivered loads become invoices", "Factoring packets ready to send"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-payments-collections
+  type: feature
+  value: "Overdue invoices chased; payments matched to their invoices; short pays and deductions surfaced"
+  phrasings: ["Overdue invoices chased", "Short pays and deductions surfaced"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-settlements-ifta
+  type: feature
+  value: "Driver pay worked out from the loads run; settlement statements ready to send; IFTA quarters built from your miles and fuel"
+  phrasings: ["Driver pay worked out from the loads run", "IFTA quarters built from your miles and fuel"]
+  context: "Every plan."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-dispatch
+  type: feature
+  value: "The right driver ranked for every load; hours of service in view before you assign; backhauls found before a truck sits"
+  phrasings: ["The right driver ranked for every load", "Backhauls found before a truck sits"]
+  context: "Command Pro and up only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-detention
+  type: feature
+  value: "Detention flagged while the truck waits; time at the dock on record; ready to bill with the load"
+  phrasings: ["Detention flagged while the truck waits", "Time at the dock on record, ready to bill with the load"]
+  context: "Command All-in only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: hemi-desk-any-job
+  type: feature
+  value: "Describe the job in a sentence; Hemi turns it into an agent; it runs on every load from then on"
+  phrasings: ["Describe the job in a sentence and Hemi turns it into an agent"]
+  context: "Command All-in only."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Command features
+
+- id: feature-rate-cons-from-email
+  type: feature
+  value: "Rate confirmations that arrive by email are read and turned into orders"
+  phrasings: ["A rate confirmation that arrives by email is read and turned into an order, so the office reviews instead of retyping"]
+  context: "A load can also be keyed in by hand."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-dispatch-board
+  type: feature
+  value: "One board for loads, drivers, movements, tractors and trailers"
+  phrasings: ["One board for loads, drivers, movements, tractors and trailers"]
+  context: "Ranked driver assignment is Command Pro and up."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-hos-at-assignment
+  type: feature
+  value: "The dispatcher board shows a driver's hours of service at the moment you assign a load"
+  phrasings: ["The dispatcher board shows a driver's hours of service at the moment you put a load on them"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-driver-ranking
+  type: feature
+  value: "On Command Pro, drivers are ranked for each load"
+  phrasings: ["On Command Pro, drivers are ranked for each load so the assignment starts from a short list"]
+  context: "Command Pro and up only."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-tracking
+  type: feature
+  value: "ELD hours of service, live truck positions and proactive ETAs"
+  phrasings: ["Live truck positions and proactive ETAs"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# CONFLICT: llms-full lists "a tracking link a customer can open" under Command with no plan limit,
+# and says "ELD positions feed a tracking page you can send a customer; detailed shipper links are on Command All-in".
+# The /pricing table describes "Detailed shipper tracking links: A link your customer opens to follow their load"
+# as All-in only. Which customer link the lower plans get is unclear. Both kept; resolve with Hemut before use.
+- id: feature-customer-tracking-link
+  type: feature
+  value: "A tracking link a customer can open"
+  phrasings: ["ELD positions feed a tracking page you can send a customer"]
+  context: "Plan availability unclear; see conflict note and feature-detailed-shipper-tracking-links."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: feature-detailed-shipper-tracking-links
+  type: feature
+  value: "Detailed shipper tracking links: a link your customer opens to follow their load"
+  phrasings: ["Detailed shipper tracking links on Command All-in"]
+  context: "Command All-in only, per the /pricing table. See conflict note."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-back-office-in-plans
+  type: feature
+  value: "Invoicing, factoring exports, driver settlements, QuickBooks sync and IFTA quarterly reports are part of Command"
+  phrasings: ["Invoicing, factoring exports, driver settlements, QuickBooks sync and IFTA quarterly reports are part of Command, not separate purchases"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-compliance-expiry
+  type: feature
+  value: "Driver credential and document expiry turns into a renewal task before it lapses"
+  phrasings: ["Driver credential and document expiry turns into a renewal task before it lapses"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-beside-legacy-tms
+  type: feature
+  value: "Command can connect to the TMS a carrier runs today, so dispatchers start in Hemut while the old system stays the record"
+  phrasings: ["Command can run beside your legacy TMS first, so you don't have to replace it on day one"]
+  context: "Part of an Enterprise engagement. llms-full's 'common mistakes' line omits this qualifier; keep it."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-integrations
+  type: feature
+  value: "ELD, QuickBooks and McLeod integrations; factoring exports"
+  phrasings: ["ELD, QuickBooks and McLeod integrations, plus factoring exports"]
+  context: "EDI connections are part of Enterprise only."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-driver-app
+  type: feature
+  value: "Hemut driver app: loads and paperwork from the phone"
+  phrasings: ["Drivers get their loads and paperwork in the Hemut driver app"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-one-current-version
+  type: feature
+  value: "One current version for every customer"
+  phrasings: ["Every customer is on the current version"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: feature-roi-calculator
+  type: feature
+  value: "ROI calculator: yearly savings from five inputs; every line shows its math; no email needed"
+  phrasings: ["See what Hemut saves your fleet with the ROI calculator; every line shows its math", "Results need no email"]
+  context: "Inputs: trucks, loads per truck per week, office staff cost per hour, plan, and whether the carrier factors."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Setup steps
+
+- id: setup-signup-needs
+  type: feature
+  value: "Your name, a work email and your USDOT number"
+  phrasings: ["All you need to start is your name, a work email and your USDOT number", "We read your company from the FMCSA register, so there is almost nothing to type"]
+  context: "Self-serve signup at command.hemut.com/signup."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: setup-signup-minutes
+  type: feature
+  value: 5
+  unit: minutes
+  phrasings: ["Self-serve signup in about five minutes"]
+  context: "'about' must stay; self-serve fleets only."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: setup-same-afternoon
+  type: feature
+  value: "Most small fleets dispatch the same afternoon"
+  phrasings: ["Most small fleets dispatch the same afternoon", "You can be dispatching the same afternoon"]
+  context: "Hemut has not measured or published a median; never turn this into a number of hours."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: setup-what-comes-across
+  type: feature
+  value: "Customers, lanes and past loads from your inbox; drivers from a spreadsheet; ELD connects so trucks appear on the map"
+  phrasings: ["Customers, lanes and past loads are found in your inbox, drivers come in from a spreadsheet, and your ELD connects so trucks appear on the map"]
+  context: "Anything the old system holds that is not in your inbox or a spreadsheet needs an export from that system."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: setup-enterprise-team
+  type: feature
+  value: "Fleets of 31+ trucks: a named Hemut team moves your data and EDI connections"
+  phrasings: ["For fleets of 31 trucks or more, a named Hemut team moves your data and EDI connections"]
+  context: "No fixed published timeline; it depends on your data and EDI partners."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Company
+
+# Hemut's "preferred citation" paragraph in llms-full also says "a 30 day free trial and no credit card",
+# dropping the 5-loads condition the pricing page states. That clause is left out of the phrasing below.
+- id: company-what-is-hemut
+  type: company
+  value: "Hemut is the AI operating system for trucking carriers"
+  phrasings: ["Hemut is the AI operating system for trucking carriers", "Its main product, Hemut Command, is a full TMS for asset-based carriers that puts dispatch, live tracking, documents, billing, settlements, IFTA and AI agents in one system"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-who-it-is-for
+  type: company
+  value: "Asset-based trucking carriers: companies that own trucks and employ drivers"
+  phrasings: ["Built for asset-based trucking carriers, from a few trucks to large fleets"]
+  context: "Small fleets sign up on their own; larger fleets and legacy-TMS connections work with a named Hemut team."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-founder
+  type: company
+  value: "Founded by Loki Cheema"
+  phrasings: ["Founded by Loki Cheema, who ran his own trucking company in Fresno, California"]
+  context: "Founded with a team he met at UCLA."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-investors
+  type: company
+  value: "Backed by Y Combinator, Pioneer Fund, Sunset Ventures and other investors"
+  phrasings: ["Backed by Y Combinator"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-launch
+  type: company
+  value: "April 2026"
+  phrasings: ["Launched to the broader market in April 2026"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-trxckwrld-co-owner
+  type: company
+  value: "Hemut is a co-owner of Trxckwrld, a trucking community platform"
+  phrasings: ["Hemut co-owns Trxckwrld"]
+  context: "Disclose on Trxckwrld posts; every post must be visibly from Hemut."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# CONFLICT: llms-full gives the legal and brand name as "Hemut"; the /pricing and /roi-case-studies footers
+# read "© Hemut Co All Rights Reserved 2026". Both kept.
+- id: company-legal-name
+  type: company
+  value: "Hemut"
+  phrasings: ["Hemut"]
+  context: "llms-full: 'Legal and brand name: Hemut'. See company-footer-name."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-footer-name
+  type: company
+  value: "Hemut Co"
+  phrasings: ["Hemut Co"]
+  context: "Site footer copyright line. Conflicts with company-legal-name."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: company-links
+  type: company
+  value: "hemut.com; signup at command.hemut.com/signup; support at hemut.com/support"
+  phrasings: ["Start free at command.hemut.com/signup", "hemut.com/pricing"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-no-customer-count
+  type: company
+  value: "Hemut has not published a customer count"
+  phrasings: []
+  context: "Guard entry: never state or imply a number of Hemut customers."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-not-loadstop
+  type: company
+  value: "Hemut is not LoadStop; LoadStop is a separate TMS made by another company"
+  phrasings: ["Hemut is not LoadStop. LoadStop is a TMS made by a different company. Hemut makes Command."]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+- id: company-not-tracking-app-or-load-board
+  type: company
+  value: "Hemut is not only a tracking app and not a load board; Command is a full TMS"
+  phrasings: ["Command is the system a carrier runs its own freight on, not a load board"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: false
+
+# ---------------------------------------------------------------- Customers (all require approval)
+
+- id: customer-meiborg-brothers
+  type: company
+  value: "Meiborg Brothers"
+  phrasings: ["Meiborg Brothers, a carrier, brokerage and 3PL based in Illinois and Texas, works with Hemut on a custom platform"]
+  context: "Custom platform, rollout in progress in parallel with existing systems."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-meiborg-size
+  type: metric
+  value: "$100M+"
+  unit: USD
+  phrasings: ["Meiborg is a $100M+ carrier, brokerage, and 3PL"]
+  context: "'+' must stay. Revenue basis not stated on the page."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-meiborg-tool-count
+  type: metric
+  value: "10+"
+  unit: software tools
+  phrasings: ["Before Hemut, Meiborg's back office ran on a stack of 10+ disconnected enterprise software tools"]
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-meiborg-software-spend
+  type: metric
+  value: 82
+  unit: percent
+  phrasings: ["When fully deployed, Meiborg's software spend will drop by 82%"]
+  context: "Projected, not achieved: 'when fully deployed ... will drop'. Never state in past tense."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-meiborg-parallel-rollout
+  type: company
+  value: "Rollout runs in parallel with existing systems: no hard cutover, no downtime"
+  phrasings: ["The rollout runs in parallel with their existing systems — no hard cutover, no downtime"]
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-kismet-trucking
+  type: company
+  value: "Kismet Trucking"
+  phrasings: ["Kismet Trucking, a carrier in Fresno, California, runs on Hemut Command"]
+  context: "Smaller carrier; moved from pen and paper; Command is their first digital operating platform."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-kismet-automation
+  type: metric
+  value: "More than half"
+  unit: workflows automated
+  phrasings: ["More than half of Kismet's existing workflows are now automated"]
+  context: "No exact percentage published; never convert to a number."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# CONFLICT: llms-full lists PrimeLink Express among "Customers named on ROI and case studies",
+# but the /roi-case-studies snapshot names only Meiborg Brothers and Kismet Trucking.
+- id: customer-primelink-express
+  type: company
+  value: "PrimeLink Express"
+  phrasings: ["PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command"]
+  context: "Named only in llms-full; absent from the ROI page snapshot. See conflict note."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# Customer quotes are recorded for reference. CLAUDE.md bans testimonials and quotes in generated copy.
+- id: customer-quote-raman-primelink
+  type: company
+  value: "For the first time, I can see what every dispatcher is working on and where every load came from. I make decisions on numbers now, not gut feel."
+  phrasings: []
+  context: "Raman, PrimeLink Express. Testimonial: not allowed in copy."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: customer-quote-james-cooper
+  type: company
+  value: "Working with Hemut has put us in the driver seat and given us control over the backbone of our operations. We've gone from 20 systems cobbled together to one seamless platform that solves our problems."
+  phrasings: []
+  context: "James Cooper, COO; company not named on the page. Contains '20 systems'. Testimonial: not allowed in copy."
+  source_url: https://hemut.com/pricing
+  source_snapshot: knowledge/sources/pricing_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# ---------------------------------------------------------------- ROI metrics (all require approval)
+# Presented on /roi-case-studies as "Metrics we've delivered for our clients". The page gives no client, period or method.
+
+- id: roi-dispatcher-hours-saved
+  type: metric
+  value: 11
+  unit: hours per dispatcher per week
+  phrasings: ["11 hours saved per dispatcher, per week"]
+  context: "Hemut-reported client metric; no client, period or method given."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: roi-software-spend-eliminated
+  type: metric
+  value: "$300,000+"
+  unit: USD
+  phrasings: ["$300,000+ eliminated in bloated software expenditure"]
+  context: "'+' must stay. Hemut-reported client metric; no client, period or method given."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: roi-revenue-per-mile
+  type: metric
+  value: 4.7
+  unit: percent
+  phrasings: ["4.7% increase in revenue per mile"]
+  context: "Hemut-reported client metric; no client, period or method given."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: roi-labor-expense
+  type: metric
+  value: 52
+  unit: percent
+  phrasings: ["52% reduction in labor expense"]
+  context: "Hemut-reported client metric; no client, period or method given."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: roi-lane-bid-win-rate
+  type: metric
+  value: 1.4
+  unit: x
+  phrasings: ["1.4x win rate on lane bids"]
+  context: "Hemut-reported client metric; no client, period or method given. Baseline not stated."
+  source_url: https://hemut.com/roi-case-studies
+  source_snapshot: knowledge/sources/roi-case-studies_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# ---------------------------------------------------------------- Competitors (all require approval)
+# From Hemut's compare pages inside llms-full. Hemut opened the competitor pages on October 21, 2026.
+
+# McLeod
+- id: mcleod-pricing
+  type: competitor
+  value: "McLeod does not publish prices; demo request"
+  phrasings: ["McLeod does not publish prices; its homepage offers a demo request"]
+  context: "Per McLeod's pages as reviewed by Hemut, October 21, 2026."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-trial
+  type: competitor
+  value: "No free trial on the pages Hemut reviewed"
+  phrasings: ["McLeod lists no free trial on the pages we reviewed"]
+  context: "'on the pages we reviewed' must stay."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-companies-served
+  type: competitor
+  value: "1200+"
+  unit: companies
+  phrasings: ["McLeod reports 1200+ companies served on its homepage"]
+  context: "Vendor's own homepage figure."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-team-size
+  type: competitor
+  value: "570+"
+  unit: team members
+  phrasings: ["McLeod reports 570+ team members on its homepage"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# CONFLICT: McLeod's homepage says "140+" certified partners; FleetOwner (September 23, 2025) says
+# "about 70 integration partners", nine of them AI providers. Both are cited in llms-full. Both kept.
+- id: mcleod-certified-partners
+  type: competitor
+  value: "140+"
+  unit: certified partners
+  phrasings: ["McLeod lists 140+ certified partners on its homepage"]
+  context: "Per McLeod's homepage. Conflicts with mcleod-integration-partners-fleetowner."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-integration-partners-fleetowner
+  type: competitor
+  value: "about 70"
+  unit: integration partners
+  phrasings: ["About nine of McLeod's roughly 70 integration partners are AI providers, per FleetOwner"]
+  context: "Per FleetOwner, September 23, 2025. Conflicts with mcleod-certified-partners."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-ai
+  type: competitor
+  value: "RespondAI (first-party inbox AI); certified AI order creation providers Vooma, Everest, Drumkit"
+  phrasings: ["McLeod has RespondAI, its own inbox tool, and certifies outside AI order creation providers including Vooma, Everest and Drumkit"]
+  context: "RespondAI per FleetOwner (September 2025); providers per IT Supply Chain (November 25, 2024)."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: mcleod-products-and-fit
+  type: competitor
+  value: "LoadMaster for carriers (incl. an LTL edition), PowerBroker for brokerages; fits large carriers, brokers and 3PLs with dedicated IT"
+  phrasings: ["McLeod is the deeper, longer-established system for large carriers and brokers, sold by demo and quote"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# PCS
+- id: pcs-fleet-size
+  type: competitor
+  value: "50 to 1,000"
+  unit: trucks
+  phrasings: ["PCS states its carrier product is for 50 to 1,000 trucks"]
+  context: "Per PCS's carrier page."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: pcs-go-live
+  type: competitor
+  value: "30 to 90"
+  unit: days after contract signing
+  phrasings: ["PCS says most carriers are up and running between 30 and 90 days after the contract is signed"]
+  context: "Per PCS's FAQ."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: pcs-pricing-and-trial
+  type: competitor
+  value: "Prices not published; demo request; no free trial on the pages reviewed"
+  phrasings: ["PCS does not publish prices and lists no free trial on the pages we reviewed"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: pcs-cortex-ai
+  type: competitor
+  value: "36+"
+  unit: data points
+  phrasings: ["PCS's Cortex AI recommends drivers using 36+ data points"]
+  context: "Cortex also ranks load opportunities and offers natural language search. Hemut ranks drivers on Pro but PCS describes more ranking inputs."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: pcs-backhaul-booster
+  type: competitor
+  value: "Backhaul Booster uses AI voice agents to make the calls to find backhauls"
+  phrasings: ["PCS's Backhaul Booster uses AI voice agents to call for backhauls"]
+  context: "Hemut has not verified a backhaul-calling equivalent."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: pcs-mobile-and-accounting
+  type: competitor
+  value: "PCS Mobile, described as free for drivers; AR/AP, payroll and driver settlement module"
+  phrasings: ["PCS offers PCS Mobile, described as free for drivers, and an accounting module for AR/AP, payroll and settlements"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# Trimble TMW
+- id: tmw-pricing-and-trial
+  type: competitor
+  value: "Prices not published ('get a quote'); no free trial on the pages reviewed"
+  phrasings: ["Trimble TMW does not publish prices and lists no free trial on the pages we reviewed"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: tmw-version-requirements
+  type: competitor
+  value: "Browser and agent updates need TMW.Suite v2024.5, TruckMate v26.3 or Innovative v2025.3 or later"
+  phrasings: ["Trimble's browser and agent updates need TMW.Suite v2024.5, TruckMate v26.3 or Innovative v2025.3 or later"]
+  context: "Per FreightWaves, September 28, 2026."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: tmw-arc-agent-hours
+  type: competitor
+  value: 10
+  unit: agent hours per month
+  phrasings: ["Trimble's Arc Agent includes 10 agent hours a month in its single tier"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: tmw-order-intake-agent
+  type: competitor
+  value: "Order Intake Agent announced November 17, 2025 as a pre-release trial for TMW.Suite"
+  phrasings: ["Trimble announced its Order Intake Agent on November 17, 2025 as a pre-release trial for TMW.Suite"]
+  context: "Hemut could not confirm general availability."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: tmw-ecosystem-and-fit
+  type: competitor
+  value: "Trimble add-ons: Reveal BI, Smart Workflow, Fleet Hub, Freight Visibility, CoPilot, TMT Fleet Maintenance; TruckMate covers LTL"
+  phrasings: ["TMW.Suite is an enterprise platform with the Trimble ecosystem behind it"]
+  context: "Per FreightWaves (September 28, 2026), Trimble is adding browser views, APIs and an MCP layer to systems customers already run."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# Alvys
+- id: alvys-billing
+  type: competitor
+  value: "Per load, quoted based on volume of loads; no per-seat charge; no dollar amounts published for its three plans"
+  phrasings: ["Alvys charges per load, quoted on your volume, and does not publish dollar rates for its three plans"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-trial
+  type: competitor
+  value: 14
+  unit: days
+  phrasings: ["Alvys lists a 14 day free trial on its Foundations plan"]
+  context: "Foundations plan only."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-go-live
+  type: competitor
+  value: "under 2 to 4 weeks"
+  phrasings: ["Alvys says go-live takes under 2 to 4 weeks, depending on plan and complexity"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-onboarding
+  type: competitor
+  value: "Onboarding included at no extra cost; no setup fee; month to month, no lock-in"
+  phrasings: ["Alvys states there is no lock-in, no setup fee and onboarding at no extra cost"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-integrations
+  type: competitor
+  value: "120+"
+  unit: integrations
+  phrasings: ["Alvys lists 120+ integrations at no extra cost"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-edi-partners
+  type: competitor
+  value: "2 on Growth, 5 on Scale"
+  unit: EDI partners included
+  phrasings: ["Alvys includes 2 EDI partners on Growth and 5 on Scale"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-ai
+  type: competitor
+  value: "AI load creation on Foundations; Foundry agentic platform; Insights AI is an add-on"
+  phrasings: ["Alvys offers AI load creation on Foundations and its Foundry agentic platform; Insights AI is an add-on"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: alvys-customers
+  type: competitor
+  value: "3000+"
+  unit: MCs
+  phrasings: ["Alvys says it is trusted by 3000+ MCs, a vendor claim"]
+  context: "Vendor claim Hemut could not verify independently; 'vendor claim' must stay."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+# LoadStop
+- id: loadstop-pricing
+  type: competitor
+  value: "'Tailored Pricing' on every tier, no dollar amounts; subscription plus one-time setup; no free trial on the pages reviewed"
+  phrasings: ["LoadStop lists 'Tailored Pricing' with a one-time setup charge and no dollar amounts"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: loadstop-tiers
+  type: competitor
+  value: "Silver 5 to 25, Gold 26 to 100, Platinum 101 to 200, Enterprise 200+"
+  unit: trucks
+  phrasings: ["LoadStop's tiers are Silver 5 to 25 trucks, Gold 26 to 100, Platinum 101 to 200, Enterprise 200+"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: loadstop-integrations-edi
+  type: competitor
+  value: "120+ integrations; native EDI included on every plan"
+  phrasings: ["LoadStop lists 120+ integrations and native EDI on every plan"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: loadstop-uptime-sla
+  type: competitor
+  value: 99.9
+  unit: percent uptime SLA
+  phrasings: ["LoadStop lists a 99.9% uptime SLA on every plan"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: loadstop-ai-toolkit
+  type: competitor
+  value: "AI Toolkit bought separately: Load Build, Bid Automation, Exception Detection, Workflow Automation, Dispatch Planner, Document Validation"
+  phrasings: ["LoadStop sells a separate AI Toolkit"]
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true
+
+- id: loadstop-customers
+  type: competitor
+  value: "500+"
+  unit: fleets and brokers
+  phrasings: ["LoadStop says it is trusted by 500+ fleets and brokers, a vendor claim"]
+  context: "Vendor claim; 'vendor claim' must stay."
+  source_url: https://hemut.com/llms-full.txt
+  source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
+  checked: 2026-10-23
+  requires_approval: true

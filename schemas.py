@@ -6,7 +6,7 @@ Still to come: Brief, TrxckwrldPost, StatCard.
 import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class Claim(BaseModel):
@@ -16,12 +16,19 @@ class Claim(BaseModel):
     type: Literal["price", "product", "feature", "metric", "company", "competitor"]
     value: int | float | str
     unit: str | None = None
-    phrasings: list[str] = Field(min_length=1)
+    phrasings: list[str]  # empty = record only, never in copy; allowed only for non-numeric product/feature/company
     context: str | None = None
     source_url: str = Field(pattern=r"^https?://")
     source_snapshot: str  # repo-relative, e.g. knowledge/sources/pricing_2026-10-23.txt
     checked: datetime.date
     requires_approval: bool
+
+    @model_validator(mode="after")
+    def _numbers_need_phrasings(self):
+        # Only descriptive, non-numeric claims may be record-only (e.g. testimonials kept for traceability).
+        if not self.phrasings and (self.type not in {"product", "feature", "company"} or not isinstance(self.value, str)):
+            raise ValueError(f"{self.type} claim with value {self.value!r} needs at least one phrasing")
+        return self
 
 
 class VoiceRules(BaseModel):
