@@ -63,7 +63,7 @@
 # ---------------------------------------------------------------- Evergreen pillars
 
 - tag: evergreen-pricing
-  pain: TMS vendors hide prices behind a demo and a quote
+  pain: Not knowing what a TMS costs until after a demo and a quote
   hemut_feature: Every self-serve price is published, with a free trial and no card
   claim_ids: [prices-published, command-base-price, trial-days]
 - tag: evergreen-rate-cons
