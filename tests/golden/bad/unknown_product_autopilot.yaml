@@ -1,0 +1,8 @@
+post:
+  title: "Backhauls on autopilot"
+  body: 'Hemut Autopilot books your backhauls while you sleep.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [UNKNOWN_PRODUCT]

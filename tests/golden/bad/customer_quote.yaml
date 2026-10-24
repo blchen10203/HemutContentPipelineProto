@@ -1,0 +1,8 @@
+post:
+  title: "Fleet owners love it"
+  body: '"Hemut cut our paperwork so much we hired another driver," says Mike, a fleet owner in Fresno.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [CUSTOMER_VOICE]

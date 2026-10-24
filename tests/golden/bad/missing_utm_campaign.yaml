@@ -1,0 +1,8 @@
+post:
+  title: "Start today"
+  body: 'Dispatch, tracking and billing in one system.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [MISSING_UTM]

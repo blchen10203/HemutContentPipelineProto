@@ -1,0 +1,8 @@
+post:
+  title: "Free forever"
+  body: '{{claim:command-free-forever}}.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: [command-free-forever]
+  requires_approval: false
+expected_codes: [UNKNOWN_CLAIM]

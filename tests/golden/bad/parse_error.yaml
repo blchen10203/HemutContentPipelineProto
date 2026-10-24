@@ -1,0 +1,8 @@
+# No body, and a key the schema does not know.
+post:
+  title: Start today
+  author: Mike
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+expected_codes: [PARSE_ERROR]

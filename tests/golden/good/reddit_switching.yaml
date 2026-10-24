@@ -1,0 +1,12 @@
+# Reddit-style post. Lowercase "reach out" must not trip the retired name "Reach".
+post:
+  title: What switching TMS actually takes for a small fleet
+  body: |
+    Switching systems is the part nobody wants. Here's what Hemut Command asks of you:
+
+    {{claim:setup-signup-needs}}. {{claim:setup-signup-needs:1}}.
+
+    {{claim:setup-same-afternoon}}. {{claim:trial-no-card}}. If you get stuck, reach out to our team.
+  cta_text: Sign up
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=switching"
+  claim_ids_used: [setup-signup-needs, setup-same-afternoon, trial-no-card]

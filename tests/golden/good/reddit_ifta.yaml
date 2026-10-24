@@ -1,0 +1,15 @@
+# Reddit-style post: IFTA pain, features and price all through placeholders.
+post:
+  title: "IFTA quarter coming up? Here's how we take the weekend out of it"
+  body: |
+    If you still build IFTA by hand, pulling miles and matching fuel receipts, this is for you. Hemut Command does it from the loads you already run:
+
+    - {{claim:hemi-desk-settlements-ifta:1}}
+    - {{claim:hemi-desk-settlements-ifta}}
+    - {{claim:feature-back-office-in-plans}}
+
+    {{claim:command-base-price}}. {{claim:trial-days}}.
+  cta_text: Start your free trial
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=ifta-q4"
+  claim_ids_used: [hemi-desk-settlements-ifta, feature-back-office-in-plans, command-base-price, trial-days]
+  requires_approval: false

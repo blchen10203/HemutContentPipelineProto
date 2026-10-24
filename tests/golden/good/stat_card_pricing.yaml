@@ -1,0 +1,10 @@
+# Stat card: the number comes only from the claim, never from the label.
+post:
+  title: What a small fleet pays on Command
+  body: "{{claim:trucks-included}}. After that, each truck is priced in bands. {{claim:bands-work-like-tax-brackets}}. {{claim:prices-published}}."
+  cta_text: See every rate
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=stat_card&utm_campaign=pricing"
+  claim_ids_used: [trucks-included, bands-work-like-tax-brackets, prices-published, command-10-truck-price]
+  stat_card:
+    claim_id: command-10-truck-price
+    label: Example fleet on Command

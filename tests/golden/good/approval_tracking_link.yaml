@@ -1,0 +1,8 @@
+# Uses an approval-required claim (feature-customer-tracking-link), so the flag is set.
+post:
+  title: Fewer check-in calls from your customers
+  body: "{{claim:hemi-desk-check-calls-tracking}}. {{claim:hemi-desk-check-calls-tracking:1}}. And {{claim:feature-customer-tracking-link}}, so they can look for themselves."
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=tracking"
+  claim_ids_used: [hemi-desk-check-calls-tracking, feature-customer-tracking-link]
+  requires_approval: true

@@ -1,0 +1,8 @@
+post:
+  title: "Compare before you buy"
+  body: 'Comparing systems? {{claim:mcleod-pricing}}. {{claim:prices-published}}.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: [mcleod-pricing, prices-published]
+  requires_approval: false
+expected_codes: [APPROVAL_FLAG_WRONG]

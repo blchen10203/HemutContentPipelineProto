@@ -1,0 +1,7 @@
+# Short ad. A short quoted term ("rate con") is fine.
+post:
+  title: Rate cons in, loads out
+  body: 'Every "rate con" that lands in your inbox: {{claim:hemi-desk-inbox-rate-cons}}. {{claim:hemi-desk-inbox-rate-cons:1}}. Your office reviews instead of retyping.'
+  cta_text: Try Hemut Command
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=ad&utm_campaign=rate-cons"
+  claim_ids_used: [hemi-desk-inbox-rate-cons]

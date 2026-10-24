@@ -1,0 +1,8 @@
+post:
+  title: "Best move I made"
+  body: 'I switched my 8 trucks to Command and never looked back.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [CUSTOMER_VOICE, UNBACKED_NUMBER]

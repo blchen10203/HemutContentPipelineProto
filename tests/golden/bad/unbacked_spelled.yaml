@@ -1,0 +1,8 @@
+post:
+  title: "Cheap TMS"
+  body: 'Hemut Command costs ninety-nine dollars a month for small fleets.'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [UNBACKED_NUMBER]
