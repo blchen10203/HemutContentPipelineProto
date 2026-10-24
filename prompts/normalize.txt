@@ -1,1 +1,17 @@
-Placeholder: turns a short free-text brief into a structured Brief.
+Someone at Hemut is asking for a post. Turn their request into a brief. You are not writing the post yet.
+
+- origin: request
+- audience: who the post is for, from the request. If it does not say, carriers running small to mid-size fleets.
+- pain: the specific problem the post leads with.
+- hemut_feature: the Hemut capability that solves it, in plain words.
+- format: reddit_post for a Reddit-style or community post, short_ad for an ad, stat_card for a single-number graphic, otherwise social_post.
+- claim_ids: ids from the fact sheet that back what the request is about. Use only ids that appear in the fact sheet.
+- needs_source: every thing the request mentions that no fact-sheet claim covers: a feature, product, plan, deal, discount, price, date, number, customer or partnership. Write each as a short phrase taken from the request. Do not guess, round, or swap in a nearby claim that says something different. Who the post is for (for example "5-15 truck fleets") is not a claim and never goes here. If everything is covered, leave it empty.
+- sensitivity: high if the request touches crashes, deaths, injuries, layoffs, bankruptcies, immigration, English-proficiency or non-domiciled CDL enforcement, or politics. Otherwise low.
+- origin_ref: leave empty.
+
+Request:
+{request}
+
+Notes from the requester:
+{notes}
