@@ -1,0 +1,83 @@
+# Demo script (Oct 31, about 10 minutes)
+
+A local demo of both modes through the Streamlit app. Nothing is posted anywhere: every run only writes files to `out/runs/<timestamp>/`.
+
+## Setup (the day before)
+
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
+
+```sh
+uv venv
+uv pip install --python .venv/Scripts/python.exe -e .   # macOS/Linux: .venv/bin/python
+cp .env.example .env                                   # then set ANTHROPIC_API_KEY=sk-ant-...
+.venv\Scripts\activate                                 # macOS/Linux: source .venv/bin/activate
+pytest -q                                              # all tests pass, no network
+streamlit run app.py                                   # opens http://localhost:8501
+```
+
+The CLI commands below assume the venv is active.
+
+## Morning of: pre-run everything (fallback)
+
+A request takes about 70 seconds and "Draft all" runs five briefs back to back (about 5 minutes). Run every demo item once in the morning, in the app or with the CLI:
+
+```sh
+python cli.py request "Reddit-style ad about IFTA automation for 5-15 truck fleets"
+python cli.py request "Post about Hemut's new fuel card with 50% off in November"
+python cli.py week --date 2026-10-31
+```
+
+Each run prints its run folder. Keep those folders open in a file browser or editor. If the API is slow or down during the demo, show the pre-run `draft-*.md` and `meta.json` files instead of running live.
+
+**Don't click anything while a run is going.** Any click in Streamlit restarts the script and aborts the run. The run folder is still written, with status `error`, but the drafts on screen are gone.
+
+## 1. Mode A happy path (3 min)
+
+Tab **Request (Mode A)**. Type:
+
+> Reddit-style ad about IFTA automation for 5-15 truck fleets
+
+Click **Run**. While it runs (about 70s), the status box shows the Brief, then the three angles, then one line per draft attempt with its violation count. Talk over it:
+
+- The request becomes a Brief (audience, pain, Hemut feature, format, the claim ids that cover it).
+- Three angles, one draft each. Every draft goes through the deterministic validator. A draft with a violation is sent back with the violations, at most twice.
+
+When it finishes, point at one draft:
+
+- Every number and product fact in it was inserted from `knowledge/claims.yaml` by claim id. The model never writes a number itself, and the validator rejects any number that didn't come from a claim.
+- It is visibly from Hemut, with the Trxckwrld co-ownership disclosed. No testimonials, no customer voice.
+- The CTA link carries UTM tags.
+
+## 2. Mode A gap (1 min)
+
+Same tab. Type:
+
+> Post about Hemut's new fuel card with 50% off in November
+
+Click **Run**. One call, a few seconds. Result: **Needs a source before anything is drafted**, listing what no claim covers (the 50% / November deal). No angles, no drafts. It does not web-search or guess. A Hemut person has to supply a source first.
+
+## 3. Mode B weekly plan (4 min)
+
+Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default). Click **Plan**. This makes no API calls. Walk through the plan:
+
+1. **ifta-q3** (seasonal): the IFTA Q3 return is due Oct 31. The reason line says the season window is unverified, meaning a human hasn't signed it off yet. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
+2. **detention** (trend): from the frozen trend fixture. The reason shows how many items back it and when the trend card expires.
+3. to 5. **Evergreen pillars**: pricing, rate cons, switching.
+
+Then the **Left out** list, one line per thing the planner refused:
+
+- `check-call-overload`: the trend card **expired** Oct 28. Drafts built on expired claims are invalid.
+- `english-proficiency-enforcement`: **sensitive**. Never auto-briefed; a human decides.
+- `truck-parking`: **no bridge**. A trend reaches a Brief only through `bridge_map.yaml` (trend to pain to Hemut feature). No bridge, no Brief.
+
+Click **Draft all**. Results appear one brief at a time (about 5 minutes total). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
+
+## 4. What to point out (2 min)
+
+- **Nothing is posted.** There is no posting code and no platform write API. Output is files in `out/runs/`.
+- **Every number traces to a claim.** Open `knowledge/claims.yaml` (or the **Knowledge** tab) and find the claim behind a price in a draft. It has a source URL, a dated snapshot in `knowledge/sources/` and a checked date.
+- **Approval badges.** A draft that uses a claim marked `requires_approval` (ROI numbers, competitor facts, customer names) shows an orange **Approval needed** badge. The flag is worked out from the claims, never taken from the model.
+- **The run folder.** Open the folder named under the results:
+  - `draft-N.md`: the rendered draft, ready for a human to review.
+  - `meta.json`: mode, brief origin, model, effort, prompt versions (content hashes), knowledge checked dates, and every validator result for every attempt.
+  - `result.json`: the full Brief, angles and attempts.
