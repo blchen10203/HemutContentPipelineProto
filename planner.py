@@ -50,11 +50,16 @@ def plan_week(
     used = {_angle(p) for p in previous}
     plan, tags = [], set()
     for item in candidates:
+        tag = item.brief.origin_ref
         if _angle(item) in used:
-            skipped.append(f"{item.brief.origin_ref}: angle used last week ({item.brief.pain})")
-        elif item.brief.origin_ref not in tags and len(plan) < slots:
+            skipped.append(f"{tag}: angle used last week ({item.brief.pain})")
+        elif tag in tags:
+            continue  # this tag's other angle is already in the plan
+        elif len(plan) >= slots:
+            skipped.append(f"{tag}: no slot left this week")
+        else:
             plan.append(item)
-            tags.add(item.brief.origin_ref)
+            tags.add(tag)
     return plan
 
 

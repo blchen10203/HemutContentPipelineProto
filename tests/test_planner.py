@@ -3,6 +3,8 @@ import datetime
 import json
 from pathlib import Path
 
+import pytest
+
 from test_generate import ANGLES, GOOD, N_ANGLES, FakeClient
 
 from brief_sources.seasonal import active_seasons, window
@@ -87,7 +89,23 @@ def test_repeated_angle_skipped_and_tag_rotates():
 def test_run_week_runs_each_brief(tmp_path):
     plan = plan_week(D(2026, 10, 31))[:1]
     client = FakeClient(ANGLES, GOOD)
-    (result,) = run_week(D(2026, 10, 31), plan, client=client, out_root=tmp_path)
+    (result,) = list(run_week(D(2026, 10, 31), plan, client=client, out_root=tmp_path))
     assert result.status == "ok" and len(client.calls) == 1 + N_ANGLES
     meta = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))
     assert meta["mode"] == "B" and meta["brief_origin"] == "seasonal" and "normalize.txt" not in meta["prompt_versions"]
+
+
+def test_week_failure_keeps_earlier_results(tmp_path):
+    plan = plan_week(D(2026, 10, 31))[:2]
+    week = run_week(D(2026, 10, 31), plan, client=FakeClient(ANGLES, GOOD, GOOD, GOOD, RuntimeError("boom")), out_root=tmp_path)
+    assert next(week).status == "ok"  # the first Brief is handed back before the second one fails
+    with pytest.raises(RuntimeError):
+        next(week)
+
+
+def test_overflow_is_reported_not_silent():
+    skipped = []
+    plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 3 pillars: 5 tags for 4 slots
+    assert tags(plan) == ["ifta-q4", "winter-weather", "evergreen-pricing", "evergreen-rate-cons"]
+    assert "evergreen-switching: no slot left this week" in skipped
+    assert not any(s.startswith(("ifta-q4", "winter-weather")) for s in skipped)  # a tag's second angle is not "left out"
