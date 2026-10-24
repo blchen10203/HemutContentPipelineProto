@@ -1,46 +1,78 @@
 # Hemut Content Pipeline
 
-Turns a short brief into review-ready static content promoting Hemut's TMS (Hemut Command), Trxckwrld first. Output is drafts + export files. **Nothing is ever posted.**
+Generates review-ready ad/post text promoting Hemut's TMS (Hemut Command), Trxckwrld first. Output is drafts + export files. **Nothing is ever posted.**
+
+## Two modes, one core
+Both modes only decide *what to write about*. They each produce a `Brief`; everything after that is the same core pipeline:
+
+`Brief -> angles -> draft -> validate -> retry (max 2) -> human review -> out/`
+
+**Mode A: On-demand request.** A Hemut person asks for an ad about a specific thing (e.g. "Reddit-style ad about IFTA automation for 5-15 truck fleets"), optionally with notes and source links. The request is turned into a Brief and run through the core.
+
+**Mode B: Automated.** Brief sources create Briefs on a schedule:
+1. **Seasonal**: recurring problems and deadlines in trucking (peak season, produce season, winter weather, IFTA quarters, enforcement weeks, etc.). Active seasons boost how often Hemut's matching solution is advertised.
+2. **Trends**: what's being talked about now in trucker spaces, trucking news, and social platforms.
+A weekly planner mixes seasonal + trend + evergreen Briefs into a content plan.
 
 ## Hard rules
-- Never post, publish, or call any write API for Trxckwrld, Meta, or any social platform. Export to `out/` only.
-- Never push to the Trxckwrld repo. Read its post model; produce JSON in that shape.
-- The Trxckwrld repo is NOT available yet. Don't guess its schema or block on it. Use our own `TrxckwrldPost` model; a separate `export/trxckwrld.py` adapter will map it to their format once we have access.
-- Facts come only from `knowledge/`. If a fact isn't in `fact_sheet.md` or `claims.yaml`, it doesn't go in copy.
+- Never post, publish, or call any write API for Trxckwrld, Meta, X, TikTok, or any platform. Export to `out/` only.
+- Never push to the Trxckwrld repo. The Trxckwrld repo is NOT available yet: don't guess its schema or block on it. Use our own `TrxckwrldPost`; `export/trxckwrld.py` will map it once we have access.
+- The knowledge base is ALWAYS loaded for every generation, in both modes. Facts come only from `knowledge/`.
+- Mode A gap rule: if a request mentions something not covered by `claims.yaml` (a new feature, a deal, a number), STOP and return `needs_source` listing the unknown items. Never web-search or guess to fill the gap. If the requester attaches a source (URL or text), create *pending* claims with `requires_approval: true`; drafts using them are flagged for approval.
 - Every number in generated copy must map to a `claims.yaml` entry or be flagged for human review. Never silently allowed.
 - No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld).
-- Product names only from `voice.yaml` (Command, Control, Hemi, Forge, Custom, Hemut Diesel). "Core" and "Reach" are not current names.
+- Product names only from `voice.yaml` (Command, Control, Hemi, Forge, Custom, Hemut Diesel). "Core" and "Reach" are retired names.
+- Seasonal and trend facts (dates, deadlines, "rates are spiking") are claims too: they need a source URL, and trend claims need `expires_at`. Drafts built on expired claims are invalid.
+- Trends only reach a Brief through `knowledge/bridge_map.yaml` (trend -> pain -> Hemut feature). No bridge, no Brief.
+- Sensitive topics are never auto-briefed: crashes, deaths, injuries, layoffs, bankruptcies, immigration / English-proficiency / non-domiciled CDL enforcement, politics. Flag them `sensitivity: high` for a human.
+- Social trends inform topic, hook structure, and format ("pattern cards") only. Never copy or closely paraphrase a source post or image; drafts must stay below a similarity threshold to their source items.
+- No unofficial scraping of Instagram, TikTok, X, or Facebook. Use official APIs only, and only once access is approved. Until then those sources are stubs.
 - Secrets in `.env`, never committed.
 
 ## Layout
 ```
-knowledge/   fact_sheet.md  claims.yaml  voice.yaml
-schemas.py   Pydantic v2 models: Brief, TrxckwrldPost, StatCard
-validate.py  deterministic checks (numbers, names, banned words, voice, CTA/UTM)
-generate.py  brief -> structured brief -> angles -> draft -> validate -> retry (max 2)
-prompts/     normalize.txt  angles.txt  draft.txt   (versioned files, not inline strings)
-tests/       golden/ (good + bad examples)  test_validate.py
+knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
+schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, SeasonWindow, TrendItem, TrendCard
+validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM, expired claims, source similarity)
+generate.py      core: Brief -> angles -> draft -> validate -> retry
+prompts/         versioned prompt files, not inline strings
+modes/           request.py (Mode A)   scheduled.py (Mode B)
+brief_sources/   seasonal.py   trends/ (base.py, rss.py, federal_register.py, reddit.py, trxckwrld.py, instagram.py, tiktok.py, x.py)
+planner.py       weekly mix: pillar targets + active seasons + top trend cards, avoids repeated angles
+export/          trxckwrld.py (adapter, later)
+cli.py           entry points for both modes + review
+tests/           golden/ + unit tests
 out/runs/<timestamp>/   drafts + meta.json
 ```
 
 ## Conventions
 - Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework, no web UI until the core loop works.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
-- Every run writes `meta.json`: prompt versions, fact sheet checked-date, model, temperature, validator results.
+- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature, validator results.
+- Every trend source implements one interface (`brief_sources/trends/base.py`), so adding or swapping a platform touches one file.
 - Schemas are the contract between modules. Don't change them without updating tests.
 
 ## Testing
 - `tests/golden/` holds hand-written good and bad outputs. The validator must pass every good one and reject every bad one.
 - Run `pytest` before any change to `validate.py` or `schemas.py` is considered done.
+- Trend and seasonal code is tested with fixture data, never live network calls.
 
-## Build order (Oct 31 demo)
-0. Project skeleton: pyproject.toml, folder layout, .gitignore, .env.example, one passing test
-1. knowledge/ files (claims built from https://hemut.com/llms-full.txt and /pricing)
-2. schemas.py (Trxckwrld text post + stat card only)
+## Build order
+Oct 31 demo:
+0. Project skeleton (done)
+1. knowledge/ files: fact_sheet, claims, voice
+2. schemas.py: Request, Brief, TrxckwrldPost, StatCard
 3. validate.py + golden tests
-4. generate.py with retry-on-validator-errors
-5. CLI review: show draft, claims used, validator result; approve/reject to out/
+4. generate.py core with retry-on-validator-errors
+5. Mode A: `cli.py request "..."` including the needs_source gap check; CLI review to out/
 
-Mid-November (not now): LLM judge, diversity check, image templates, review dashboard, Trxckwrld JSON export, `calendar.yaml` of sourced trucking deadlines that auto-create briefs.
+Mid-November:
+6. seasonality.yaml + bridge_map.yaml (human-verified sources) + seasonal brief source
+7. planner.py + `cli.py plan --week YYYY-MM-DD` dry run ("what would we post that week")
+8. Trends v1: RSS + Federal Register sources, clustering, scoring, sensitivity filter, trend cards -> Briefs
+9. LLM judge, diversity check, image templates
 
-After November (not now): reactive trend detection (Trxckwrld data, news RSS, Federal Register). Trends only feed briefs via a bridge map (trend → pain → feature); trend facts get registry entries with expiry dates; sensitive topics (crashes, deaths, layoffs, immigration/ELP/CDL enforcement) are never auto-briefed.
+After November:
+10. Trxckwrld trend source (when access), Reddit API
+11. Instagram (official Hashtag Search API, needs App Review), X (paid API), TikTok (no general API) only if access is approved
+12. Review UI, Trxckwrld export adapter
