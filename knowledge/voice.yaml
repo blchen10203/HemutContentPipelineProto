@@ -4,46 +4,46 @@ allowed_product_names: [Command, Control, Hemi, Forge, Custom, Hemut Diesel]
 retired_names: [Core, Reach]
 
 # PROPOSED, NEEDS BRYAN'S SIGN-OFF: banned_words and vocabulary below.
-# Basis: knowledge/sources/llms-full_2026-10-23.txt talks plain, operator to operator
-# ("rate cons become loads", "the office reviews instead of retyping"). None of the banned words
-# appear in it; "transform", "solution" and "seamless" appear only in site chrome and one testimonial.
-
-# Hype the source never uses, plus terms that misstate the offer (there is no free tier or guarantee).
+# banned_words holds only claims that are absolute, or false or deceptive in an ad (FTC Act section 5:
+# claims need substantiation; FTC "Free" guide, 16 CFR 251). Style is not policed here.
+# Matched case-insensitively as phrases; none appear in any claims.yaml phrasing.
 banned_words:
-  - revolutionary
-  - game-changer
-  - game-changing
-  - cutting-edge
-  - state-of-the-art
-  - next-gen
-  - best-in-class
-  - world-class
-  - industry-leading
+  # Absolute promises of results
+  - guarantee
+  - "100%"
+  - risk-free
+  - no risk
+  - error-free
+  - zero errors
+  - eliminate all
+  - pays for itself
+  - double your
+  - triple your
+  - 10x
+  - instant results
+  - always on time
+  - proven to
+  - proven results
+  # Superlatives and exclusivity Hemut cannot substantiate (no ranking or customer count is published)
   - "#1"
-  - seamless
-  - effortless
-  - magic
-  - synergy
-  - leverage
-  - robust
-  - unlock
-  - supercharge
-  - skyrocket
-  - empower
-  - elevate
-  - harness
-  - streamline
-  - transform
-  - disrupt
-  - solution
-  - say goodbye
-  - imagine
-  - hassle-free
-  - AI-powered
-  - guaranteed
-  - unlimited
-  - free plan
+  - number one
+  - industry-leading
+  - market leader
+  - the only
+  - lowest price
+  - cheapest
+  # False offer terms: there is no free tier, and agents have monthly allowances
   - free forever
+  - free plan
+  - free account
+  - unlimited
+  # False government endorsement
+  - FMCSA approved
+  - FMCSA certified
+  - DOT approved
+  - DOT certified
+  - government approved
+  - audit-proof
 
 # Operator words the source uses for the job itself. Prefer these over generic software terms.
 vocabulary:
