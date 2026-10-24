@@ -1,12 +1,19 @@
-"""Pydantic v2 models that are the contract between modules.
+"""Pydantic v2 models that are the contract between modules, plus claim-placeholder rendering.
 
 Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml).
-Still to come: Brief, TrxckwrldPost, StatCard.
+Mode A input:   SourceAttachment, Request.
+Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, RunResult.
+Mode B:         SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem.
+
+Copy never contains free numbers or claim text. It references claims as {{claim:<id>}} (first phrasing)
+or {{claim:<id>:<n>}} (nth phrasing, 0-based); render_post() fills them from claims.yaml.
 """
 import datetime
+import re
 from typing import Literal
+from urllib.parse import parse_qs, urlsplit
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class Claim(BaseModel):
@@ -38,3 +45,209 @@ class VoiceRules(BaseModel):
     retired_names: list[str]
     banned_words: list[str]
     vocabulary: list[str]
+
+
+# ---------------------------------------------------------------- Mode A input
+
+class SourceAttachment(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    kind: Literal["url", "text"]
+    value: str
+
+
+class Request(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: str = Field(min_length=1)
+    notes: str | None = None
+    sources: list[SourceAttachment] = []
+
+
+# ---------------------------------------------------------------- Core
+
+class Brief(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    origin: Literal["request", "seasonal", "trend", "evergreen"]
+    audience: str  # e.g. "5-15 truck fleets"
+    pain: str
+    hemut_feature: str
+    format: Literal["reddit_post", "social_post", "short_ad", "stat_card"]
+    claim_ids: list[str]
+    needs_source: list[str] = []
+    sensitivity: Literal["low", "high"] = "low"
+    origin_ref: str | None = None  # season id, trend card id, or pillar name
+
+
+class Angle(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    hook: str
+    pain: str
+    feature: str
+    claim_ids: list[str]
+
+
+class StatCard(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    claim_id: str  # the number always comes from this claim's first phrasing, never from the label
+    label: str
+
+
+class TrxckwrldPost(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str
+    body: str
+    cta_text: str
+    cta_url: str
+    claim_ids_used: list[str]
+    stat_card: StatCard | None = None
+    requires_approval: bool = False
+
+    @field_validator("cta_url")
+    @classmethod
+    def _has_utm(cls, url: str) -> str:
+        parts = urlsplit(url)
+        params = parse_qs(parts.query)  # blank values are dropped, so "utm_source=" counts as missing
+        missing = [k for k in ("utm_source", "utm_medium", "utm_campaign") if k not in params]
+        if parts.scheme not in ("http", "https") or missing:
+            raise ValueError(f"cta_url must be an http(s) URL with utm_source, utm_medium and utm_campaign; missing {missing}")
+        return url
+
+
+class Violation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    code: Literal[
+        "UNBACKED_NUMBER", "RETIRED_NAME", "UNKNOWN_PRODUCT", "BANNED_WORD", "CUSTOMER_VOICE",
+        "MISSING_UTM", "UNKNOWN_CLAIM", "APPROVAL_FLAG_WRONG", "PLACEHOLDER_ERROR", "PARSE_ERROR",
+    ]
+    message: str
+    span: str | None = None
+
+
+class DraftAttempt(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    attempt: int
+    raw_post: TrxckwrldPost | None = None
+    rendered_text: str | None = None
+    violations: list[Violation]
+
+
+class RunResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run_id: str
+    run_dir: str
+    status: Literal["ok", "needs_source", "failed_validation", "blocked_sensitive"]
+    brief: Brief | None = None
+    angles: list[Angle] = []
+    drafts: list[list[DraftAttempt]] = []  # one attempt list per angle
+    needs_source: list[str] = []
+
+
+# ---------------------------------------------------------------- Mode B
+
+class SeasonWindow(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    name: str
+    pain: str
+    start: str = Field(pattern=r"^\d{2}-\d{2}$")  # MM-DD; start after end means the window wraps past Dec 31
+    end: str = Field(pattern=r"^\d{2}-\d{2}$")
+    lead_days: int = Field(ge=0)  # how many days before start to begin advertising
+    source_url: str = Field(pattern=r"^https?://")
+    checked: datetime.date
+    verified_by: str | None = None
+
+    @field_validator("start", "end")
+    @classmethod
+    def _real_month_day(cls, value: str) -> str:
+        try:
+            datetime.datetime.strptime(f"2000-{value}", "%Y-%m-%d")  # leap year, so 02-29 is allowed
+        except ValueError:
+            raise ValueError(f"{value!r} is not a real MM-DD date") from None
+        return value
+
+
+class BridgeEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    tag: str  # season id or trend tag
+    pain: str
+    hemut_feature: str
+    claim_ids: list[str]
+
+
+class TrendItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    title: str
+    url: str = Field(pattern=r"^https?://")
+    published: datetime.date
+    source: Literal["rss", "federal_register", "fixture"]
+    summary: str
+
+
+class TrendCard(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    tag: str
+    items: list[str]  # TrendItem ids
+    sensitivity: Literal["low", "high"]
+    sensitivity_reason: str | None = None
+    expires_at: datetime.date
+
+
+class PlanItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    brief: Brief
+    reason: str  # plain English, e.g. "IFTA Q4 deadline Jan 31 is 12 days out"
+
+
+# ---------------------------------------------------------------- Claim placeholders
+
+PLACEHOLDER = re.compile(r"\{\{claim:([a-z0-9]+(?:-[a-z0-9]+)*)(?::(\d+))?\}\}")
+
+
+class PlaceholderError(ValueError):
+    """A {{claim:...}} placeholder that cannot be filled from claims.yaml."""
+
+
+def used_claim_ids(post: TrxckwrldPost) -> set[str]:
+    """Claim ids referenced by the post's placeholders, plus its stat card's claim (it renders into the copy too)."""
+    ids = {m[1] for m in PLACEHOLDER.finditer("\n".join([post.title, post.body, post.cta_text]))}
+    if post.stat_card:
+        ids.add(post.stat_card.claim_id)
+    return ids
+
+
+def render_post(post: TrxckwrldPost, claims: dict[str, Claim]) -> str:
+    """Title, body, optional stat card ("<label>: <first phrasing>") and CTA, with every placeholder filled."""
+    parts = [post.title, post.body]
+    if post.stat_card:
+        parts.append(f"{post.stat_card.label}: {{{{claim:{post.stat_card.claim_id}}}}}")
+    parts.append(f"{post.cta_text} {post.cta_url}")
+
+    def fill(m: re.Match) -> str:
+        claim, n = claims.get(m[1]), int(m[2] or 0)
+        if claim is None:
+            raise PlaceholderError(f"{m[0]}: unknown claim id")
+        if not claim.phrasings:
+            raise PlaceholderError(f"{m[0]}: claim has no phrasings, so it can never appear in copy")
+        if n >= len(claim.phrasings):
+            raise PlaceholderError(f"{m[0]}: claim has only {len(claim.phrasings)} phrasing(s)")
+        return claim.phrasings[n]
+
+    text = PLACEHOLDER.sub(fill, "\n\n".join(parts))
+    if "{{" in text:  # anything left is a placeholder the pattern rejected, e.g. {{claim:Bad_Id}} or {{price}}
+        raise PlaceholderError(f"malformed placeholder near {text[text.index('{{'):][:40]!r}")
+    return text
