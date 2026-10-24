@@ -13,7 +13,7 @@ import re
 from typing import Literal
 from urllib.parse import parse_qs, urlsplit
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, field_validator, model_validator
 
 
 class Claim(BaseModel):
@@ -21,7 +21,7 @@ class Claim(BaseModel):
 
     id: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
     type: Literal["price", "product", "feature", "metric", "company", "competitor"]
-    value: int | float | str
+    value: StrictInt | StrictFloat | str  # strict: YAML true/yes must not become the number 1
     unit: str | None = None
     phrasings: list[str]  # empty = record only, never in copy; allowed only for non-numeric product/feature/company
     context: str | None = None
@@ -49,15 +49,22 @@ class VoiceRules(BaseModel):
 
 # ---------------------------------------------------------------- Mode A input
 
+# These two are the trust boundary for typed user input; app.py does no validation of its own.
 class SourceAttachment(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     kind: Literal["url", "text"]
-    value: str
+    value: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _url_is_http(self):
+        if self.kind == "url" and not re.match(r"https?://\S+$", self.value):
+            raise ValueError(f"url attachment must be an http(s) URL, got {self.value!r}")
+        return self
 
 
 class Request(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)  # so min_length rejects blank text
 
     text: str = Field(min_length=1)
     notes: str | None = None

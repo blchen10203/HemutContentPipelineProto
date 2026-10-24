@@ -75,6 +75,20 @@ def test_empty_phrasings_allowed_for_record_only_text(repo):
     assert claims["command-base-price"].phrasings == []
 
 
+def test_repeated_key_fails(repo):
+    path = repo / "knowledge" / "claims.yaml"
+    text = yaml.safe_dump([claim(requires_approval=True)])
+    path.write_text(text + "  requires_approval: false\n")  # same key again, last would silently win
+    with pytest.raises(ValueError, match="duplicate key 'requires_approval'"):
+        load_claims(path, root=repo)
+
+
+@pytest.mark.parametrize("value", [True, False])
+def test_boolean_value_fails(repo, value):
+    with pytest.raises(ValueError, match="value"):
+        load(repo, [claim(value=value)])
+
+
 def test_unknown_key_fails(repo):
     with pytest.raises(ValueError, match="phrasing"):
         load(repo, [claim(phrasing=["typo of phrasings"])])

@@ -69,9 +69,20 @@ def test_bad_literal_rejected(model, data, field, bad):
         model.model_validate({**data, field: bad})
 
 
-def test_empty_request_text_rejected():
+@pytest.mark.parametrize("text", ["", "   \n"])
+def test_blank_request_text_rejected(text):
     with pytest.raises(ValidationError):
-        Request(text="")
+        Request(text=text)
+
+
+@pytest.mark.parametrize("value", ["not a url", "hemut.com/deal", "ftp://hemut.com", "   "])
+def test_bad_url_attachment_rejected(value):
+    with pytest.raises(ValidationError):
+        SourceAttachment(kind="url", value=value)
+
+
+def test_text_attachment_takes_any_text():
+    assert SourceAttachment(kind="text", value="  Deal: 20% off fuel through Nov  ").value == "Deal: 20% off fuel through Nov"
 
 
 @pytest.mark.parametrize("url", [
