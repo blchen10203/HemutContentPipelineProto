@@ -36,7 +36,7 @@ knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridg
                  pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
 schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
-validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM, expired claims, source similarity)
+validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM)
 generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retry, with an on_event progress callback
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
 prompts/         versioned prompt files, not inline strings

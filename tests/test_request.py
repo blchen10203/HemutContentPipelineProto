@@ -71,3 +71,11 @@ def test_failed_request_call_still_writes_run_folder(tmp_path):
     assert meta["status"] == "error" and meta["mode"] == "A" and "RuntimeError: overloaded" in meta["error"]
     assert json.loads((run_dir / "result.json").read_text(encoding="utf-8"))["status"] == "error"
     assert "normalize.txt" in meta["prompt_versions"] and meta["validator"] == []
+
+
+def test_interrupted_request_call_still_writes_run_folder(tmp_path):
+    # a Streamlit rerun during the request -> Brief call is a BaseException, like KeyboardInterrupt
+    with pytest.raises(KeyboardInterrupt):
+        run_request(Request(text="Reddit-style post about IFTA"), client=FakeClient(KeyboardInterrupt()), out_root=tmp_path)
+    (run_dir,) = [d for d in tmp_path.iterdir() if d.is_dir()]
+    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["status"] == "error"
