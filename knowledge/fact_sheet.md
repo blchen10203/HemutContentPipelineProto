@@ -115,8 +115,8 @@ Claims under "Approval required" need human sign-off before a post may use them.
 
 ### Features
 
-- "ELD positions feed a tracking page you can send a customer" Context: Plan availability unclear; see conflict note and feature-detailed-shipper-tracking-links. `feature-customer-tracking-link`
-- "Detailed shipper tracking links on Command All-in" Context: Command All-in only, per the /pricing table. See conflict note. `feature-detailed-shipper-tracking-links`
+- "ELD positions feed a tracking page you can send a customer" Context: Conflicts with feature-detailed-shipper-tracking-links: llms-full puts a customer tracking link in Command with no plan limit; the /pricing table makes the customer link All-in only. Unresolved. `feature-customer-tracking-link`
+- "Detailed shipper tracking links on Command All-in" Context: Command All-in only, per the /pricing table. Conflicts with feature-customer-tracking-link, which llms-full gives every plan. Unresolved. `feature-detailed-shipper-tracking-links`
 
 ### Metrics
 
@@ -136,7 +136,7 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "Meiborg Brothers, a carrier, brokerage and 3PL based in Illinois and Texas, works with Hemut on a custom platform" Context: Custom platform, rollout in progress in parallel with existing systems. `customer-meiborg-brothers`
 - "The rollout runs in parallel with their existing systems — no hard cutover, no downtime" `customer-meiborg-parallel-rollout`
 - "Kismet Trucking, a carrier in Fresno, California, runs on Hemut Command" Context: Smaller carrier; moved from pen and paper; Command is their first digital operating platform. `customer-kismet-trucking`
-- "PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command" Context: Named only in llms-full; absent from the ROI page snapshot. See conflict note. `customer-primelink-express`
+- "PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command" Context: Conflict: llms-full says the ROI page names PrimeLink Express, but the ROI page snapshot does not. Unresolved. `customer-primelink-express`
 - Record only, never use in copy. Context: Raman, PrimeLink Express. Testimonial: not allowed in copy. `customer-quote-raman-primelink`
 - Record only, never use in copy. Context: James Cooper, COO; company not named on the page. Contains '20 systems'. Testimonial: not allowed in copy. `customer-quote-james-cooper`
 

@@ -752,7 +752,7 @@
   type: feature
   value: "A tracking link a customer can open"
   phrasings: ["ELD positions feed a tracking page you can send a customer"]
-  context: "Plan availability unclear; see conflict note and feature-detailed-shipper-tracking-links."
+  context: "Conflicts with feature-detailed-shipper-tracking-links: llms-full puts a customer tracking link in Command with no plan limit; the /pricing table makes the customer link All-in only. Unresolved."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
   checked: 2026-10-23
@@ -762,7 +762,7 @@
   type: feature
   value: "Detailed shipper tracking links: a link your customer opens to follow their load"
   phrasings: ["Detailed shipper tracking links on Command All-in"]
-  context: "Command All-in only, per the /pricing table. See conflict note."
+  context: "Command All-in only, per the /pricing table. Conflicts with feature-customer-tracking-link, which llms-full gives every plan. Unresolved."
   source_url: https://hemut.com/pricing
   source_snapshot: knowledge/sources/pricing_2026-10-23.txt
   checked: 2026-10-23
@@ -1087,7 +1087,7 @@
   type: company
   value: "PrimeLink Express"
   phrasings: ["PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command"]
-  context: "Named only in llms-full; absent from the ROI page snapshot. See conflict note."
+  context: "Conflict: llms-full says the ROI page names PrimeLink Express, but the ROI page snapshot does not. Unresolved."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
   checked: 2026-10-23
