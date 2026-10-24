@@ -10,35 +10,35 @@
 - tag: ifta-q1
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
-  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans]
+  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q1-due]
 - tag: ifta-q1
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
-  claim_ids: [feature-back-office-in-plans, command-base-price]
+  claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q1-due]
 - tag: ifta-q2
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
-  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans]
+  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q2-due]
 - tag: ifta-q2
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
-  claim_ids: [feature-back-office-in-plans, command-base-price]
+  claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q2-due]
 - tag: ifta-q3
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
-  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans]
+  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q3-due]
 - tag: ifta-q3
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
-  claim_ids: [feature-back-office-in-plans, command-base-price]
+  claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q3-due]
 - tag: ifta-q4
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
-  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans]
+  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q4-due]
 - tag: ifta-q4
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
-  claim_ids: [feature-back-office-in-plans, command-base-price]
+  claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q4-due]
 
 - tag: winter-weather
   pain: Weather delays push loads late and customers call the office for updates

@@ -1,0 +1,9 @@
+# Seasonal IFTA post that states the Q3 due date through its claim, next-business-day qualifier included.
+post:
+  title: "IFTA quarter ending? Don't rebuild the return from receipts"
+  body: |
+    {{claim:ifta-q3-due:1}}. In Command you get {{claim:hemi-desk-settlements-ifta:1}}, so the office checks the return instead of building it.
+  cta_text: Start your free trial
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=social_post&utm_campaign=ifta-q3"
+  claim_ids_used: [ifta-q3-due, hemi-desk-settlements-ifta]
+  requires_approval: false

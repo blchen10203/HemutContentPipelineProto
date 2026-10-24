@@ -3,9 +3,10 @@
 HTML pages also keep the untouched response as <name>_<date>.html; the .txt is its visible text,
 extracted the same way every run so dated snapshots diff cleanly. Claims cite these files.
 
-Run: python fetch_sources.py
+Run: python fetch_sources.py [name ...]   (no names: every URL below)
 """
 import datetime
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -15,6 +16,7 @@ URLS = {
     "llms-full": "https://hemut.com/llms-full.txt",
     "pricing": "https://hemut.com/pricing",
     "roi-case-studies": "https://hemut.com/roi-case-studies",
+    "iftach-carriers": "https://www.iftach.org/Carriers/",  # IFTA quarterly due dates
 }
 OUT = Path(__file__).parent / "knowledge" / "sources"
 SKIP = {"script", "style", "noscript", "template", "svg"}
@@ -56,14 +58,17 @@ def html_to_text(html: str) -> str:
     return "\n".join(line for line in lines if line) + "\n"
 
 
-def main():
+def main(names: list[str] | None = None):
+    if unknown := set(names or []) - URLS.keys():
+        raise SystemExit(f"Unknown source names {sorted(unknown)}; known: {sorted(URLS)}")
+    urls = {n: URLS[n] for n in names} if names else URLS
     OUT.mkdir(parents=True, exist_ok=True)
     today = datetime.date.today().isoformat()
     # Claims cite these files, so a dated snapshot is never silently replaced.
-    if existing := sorted(p.name for p in OUT.glob(f"*_{today}.*")):
+    if existing := sorted(p.name for n in urls for p in OUT.glob(f"{n}_{today}.*")):
         raise SystemExit(f"Snapshots for {today} already exist, delete them to refetch: {existing}")
     with httpx.Client(follow_redirects=True, timeout=30, headers={"User-Agent": "Mozilla/5.0"}) as client:
-        for name, url in URLS.items():
+        for name, url in urls.items():
             r = client.get(url)
             r.raise_for_status()
             if "html" in r.headers.get("content-type", ""):
@@ -75,4 +80,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

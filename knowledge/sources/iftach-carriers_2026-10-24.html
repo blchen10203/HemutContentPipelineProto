@@ -1,0 +1,3765 @@
+<!DOCTYPE html>
+<html ><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>IFTA, Inc. International Fuel Tax Association</title>
+	  <!-- Favicons -->
+<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
+	
+  <base target="_self"> 
+
+  <link rel="stylesheet" href="https://www.iftach.org/files/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://www.iftach.org/files/MDB-Pro_4.19.0/css/mdb.min.css">
+  <link href="https://www.iftach.org/files/fontawesome6/css/all.css" rel="stylesheet"> 
+
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
+  <link rel="stylesheet" type="text/css" href="https://www.iftach.org/files/css/mainlogin2.css">
+	
+    <script src="https://www.iftach.org/files/js/jquery-3.5.1.slim.min2.js"></script>
+    <script src="https://www.iftach.org/files/js/popper.min.js"></script>
+ 
+<script>
+
+    $(document).ready(function() {
+        $('#userForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Show that something is loading
+            $('#response').html("<b>Loading response...</b>");
+
+            $.ajax({
+                type: 'POST',
+                url: 'https://www.iftach.org/reg/post_User_ID.php', 
+                data: $(this).serialize()
+            })
+            .done(function(data) {
+                $('#response').html(data); // Show the response
+
+                // On success, close the modal after 3 seconds if the response matches
+             
+                    setTimeout(function() { 
+                        $('#Modal1').modal('hide'); // Close the modal using Bootstrap's method
+						 
+					$('.modal-backdrop').remove();
+                    }, 3000); // 3 seconds
+                 
+            })
+            .fail(function() {
+                // In case of failure
+                alert("Posting failed.ID");
+            });
+        });
+    });
+
+
+
+
+$(document).ready(function(){
+    $('#userForm2').submit(function(){
+     
+        // show that something is loading
+		
+        $('#response2').html("<b>Loading response...</b>");
+         
+        /*
+         * 'post_receiver.php' - where you will pass the form data
+         * $(this).serialize() - to easily read form data
+         * function(data){... - data contains the response from post_receiver.php
+         */
+        $.ajax({
+            type: 'POST',
+            url: 'https://www.iftach.org/reg/post_User_password.php', 
+            data: $(this).serialize()
+        })
+               .done(function(data){
+             
+			$('#response2').html(data);// show the response
+			
+			// on success close the modal after 3 seconds.
+		
+				setTimeout(function(){ 
+					$('#settingspass').hide();
+					 
+					$('.modal-backdrop').remove();
+				}, 3000);
+ 		
+			 
+  
+        })
+        .fail(function() {
+         
+            // just in case posting your form failed
+            alert( "Posting failed." );
+             
+        });
+ 
+        // to prevent refreshing the whole page page
+        return false;
+ 
+    });
+});
+
+
+  $(document).ready(function() {
+	
+            $('#userForm3').submit(function(e) {
+				
+				 $('#responsewheel3').html("<img src='/images3/wheel.gif' width='25'>");//animation wheel that runs while php is running for a response.
+					// Set a timeout to hide the animation after 8 seconds
+					setTimeout(function() {
+						$('#responsewheel3').html(''); // Clear the content of the element to stop the animation
+					}, 5000); // 8000 milliseconds = 8 seconds
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+					 
+                    url: 'https://www.iftach.org/user-login-2025-self-admin.php',
+					 dataType: "text",
+					 
+                    data: $(this).serialize(),
+                    success: function(data) {
+ 
+					
+function isURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
+
+ 
+
+if (data.indexOf("https://")>-1) {
+window.location.href = data;
+}else{
+$( "#toggle" ).effect( "shake" );
+ $('#response3').html(data);
+ // Set a timeout to clear the content after 5 seconds
+        setTimeout(function() {
+            $('#response3').html(''); // Clear the content
+        }, 11000); // 5000 milliseconds = 5 seconds	
+	 // Set a timeout to re-enable the login button after 5 minutes
+            setTimeout(function() {
+                button.prop("disabled", true);
+                button.removeClass("btn-disabled");
+            }, 300000); // 300000 milliseconds = 5 minutes
+	
+	
+	
+	
+}
+
+ 
+
+                    }
+                });
+            });
+        });
+
+ 
+</script>
+
+      <script src="https://www.iftach.org/files/js/jquery-1.10.2.js"></script><!-- this script and the one below are required for anywhere alogin and mobile versions to work.  This was added on 9/11/24 for updated anywhere login code--> 
+  <script src="https://www.iftach.org/files/js/jquery-ui.js"></script>
+  
+<script>
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie by name
+    function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim(); // Trim whitespace
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // Function to delete a cookie
+    function deleteCookie(name) {
+        document.cookie = name + "=; Max-Age=-99999999; path=/"; // Expire the cookie by setting a past expiration date
+    }
+
+    // Function to store the current page URL as a cookie
+    function setPageCookie() {
+        deleteCookie("currentPage"); // Remove old cookie first
+        let currentUrl = window.location.href;
+        setCookie("currentPage", currentUrl, 1); // Store for 1 day
+    }
+
+    // Run both onload functions together
+    window.onload = function () {
+        // Restore checkbox state
+        let isChecked = getCookie("secureAreaChecked");
+        let checkbox = document.getElementById("customCheck2");
+        if (checkbox && isChecked === "true") {
+            checkbox.checked = true;
+        }
+
+        // Add event listener to store checkbox state
+        if (checkbox) {
+            checkbox.addEventListener("change", function () {
+                setCookie("secureAreaChecked", this.checked, 30); // Store for 30 days
+            });
+        }
+
+        // Set page URL cookie
+        setPageCookie();
+    };
+</script>
+
+	
+   <link rel="stylesheet" type="text/css" href="https://www.iftach.org/files/css/login.css">	
+	
+		<style type="text/css">
+@media (min-width: 768px) {
+.navbar-brand.abs
+    {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        text-align: center;
+    }
+}
+		
+.navbar {
+  padding:0rem;
+  
+}
+
+.dropdown .dropdown-menu {
+  border-radius:0;
+ }
+
+
+/* Medium devices (tablets, 768px and up) 
+The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {  
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+  border-radius:0;
+ }
+}
+
+	
+	.navbar-custom {
+    background-color: #2c73ad;
+}
+
+/* change the brand and text color */
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: black;
+}
+
+/* change the link color */
+.navbar-custom .navbar-nav .nav-link {
+    color: #000;
+}
+
+/* change the color of active or hovered links */
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:hover .nav-link {
+    color: #000;
+}
+
+/* for dropdown only - change the color of droodown */
+.navbar-custom .dropdown-menu {
+    background-color: #2c73ad;
+	 border: 1px solid BLACK;
+	 width: 300px;
+}
+
+.navbar-custom .dropdown-item {
+    color: #ffffff;
+}
+
+.navbar-custom .dropdown-item:hover,
+.navbar-custom .dropdown-item:focus {
+    color: #191919;
+    background-color: #23cc23;
+}
+	.has-search { /* ADDED */
+  position: relative;
+}
+ 
+		
+ /* Might want to delete this later. */		
+@media (max-width: 750px) { /* ADDED */
+  .navbar-collapse {
+     max-height: 750px;
+    overflow-y: auto;
+   
+  }
+}
+		
+		nav .navbar-nav li a{
+  color: white !important;
+  }
+		
+		.navbar-nav > li{
+  padding-left:10px;
+  padding-right:10px;
+}
+			
+		nav .navbar-nav div a{
+  color: white !important;
+  }
+		
+		.navbar-nav > div{
+  padding-left:10px;
+  padding-right:10px;
+}	
+			
+a.nav-link {
+  text-decoration: none;
+ text-align: left;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  padding: 5px;
+  left: -5px;
+}
+ 
+	
+		  
+@media (min-width: 768px) 
+	  { 
+a.nav-link {
+  text-decoration: none;
+ text-align: center;
+  font-weight:600;
+  font-size: 12px;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  padding: 5px;
+  left: -5px;
+}
+	 
+	  
+	  }			
+/* tablet */			
+@media (min-width: 992px) 
+	 { 
+a.nav-link {
+  text-decoration: none;
+ text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  padding: 5px;
+  left: -5px;
+}
+ 
+	  } 
+	/*large screen */		
+	  @media (min-width: 1200px) 
+	  {
+a.nav-link {
+  text-decoration: none;
+ text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  padding: 5px;
+  left: -5px;
+}
+	  }	
+			
+	
+#secondaryNav {
+  justify-content: flex-end;
+  transition: all 0.5s; 
+}
+
+ 
+
+    /* EOS */
+ 
+ .container-search {
+     max-width: 600px;
+     margin: 40px auto
+ }
+
+ .searchbar {
+     position: relative;
+     min-width: 40px;
+     width: 0%;
+     height: 40px;
+     float: right;
+     overflow: hidden;
+     -webkit-transition: width 0.3s;
+     -moz-transition: width 0.3s;
+     -ms-transition: width 0.3s;
+     -o-transition: width 0.3s;
+     transition: width 0.3s
+ }
+
+ .searchbar-input {
+     top: 0;
+     right: 0;
+     border: 0;
+     outline: 0;
+     background: #ffffff;
+     width: 100%;
+     height: 30px;
+     margin: 0;
+     padding: 5px 1px 3px 5px;
+     font-size: 20px;
+     color: #000;
+	 margin-top: 5px;
+	  
+	 border-radius: 5px;
+ }
+
+ .searchbar-input::-webkit-input-placeholder {
+     color: #fff
+ }
+
+ .searchbar-input:-moz-placeholder {
+     color: #fff
+ }
+
+ .searchbar-input::-moz-placeholder {
+     color: #fff
+ }
+
+ .searchbar-input:-ms-input-placeholder {
+     color: #fff
+ }
+
+ .searchbar-icon,
+ .searchbar-submit {
+     width: 41px;
+     height: 40px;
+     display: block;
+     position: absolute;
+     top: 0;
+     font-family: verdana;
+     font-size: 22px;
+     right: 0;
+     padding: 0;
+     margin: 0;
+     border: 0;
+     outline: 0;
+     line-height: 40px;
+     text-align: center;
+     cursor: pointer;
+     color: #fff;
+     background: #2c73ad;
+     border-left: 1px solid white;
+ }
+
+ .searchbar-open {
+     width: 100%
+ }
+	
+	
+ /* When modal opens */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* When modal closes */
+body {
+  overflow: auto;
+}
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+        .modal-header {
+            border-bottom: 1px solid #e9ecef;
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+        }
+        @media (min-width: 576px) {
+            .modal-dialog {
+                max-width: 100%;
+            }
+        }
+        @media (min-width: 768px) {
+            .modal-dialog {
+                max-width: 100%;
+            }
+        }
+        @media (min-width: 992px) {
+            .modal-dialog {
+                max-width: 80%;
+            }
+        }
+        @media (min-width: 1200px) {
+            .modal-dialog {
+                max-width: 70%;
+            }
+        }
+
+		.modal {
+ overflow-y: auto;
+}
+
+.modal-open {
+ overflow: auto;
+}	
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group-inline .btn {
+            margin-right: 10px;
+        }
+
+        .custom-control-label {
+            font-weight: bold;
+        }
+	
+			
+        body { font-family: Arial, sans-serif;   }
+        .caps-warning { color: red; display: none; font-size: 14px; margin-top: 5px; }
+/* Dark mode overrides */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode a {
+    color: #80bfff;
+}
+
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+body.dark-mode .navbar {
+    background-color: #1a1a1a;
+}				
+	</style>
+
+	
+<script type='text/javascript'> $(document).ready(function(){
+ var submitIcon = $('.searchbar-icon');
+ var inputBox = $('.searchbar-input');
+ var searchbar = $('.searchbar');
+ var isOpen = false;
+ submitIcon.click(function(){
+ if(isOpen == false){
+ searchbar.addClass('searchbar-open');
+ inputBox.focus();
+ isOpen = true;
+ } else {
+ searchbar.removeClass('searchbar-open');
+ inputBox.focusout();
+ isOpen = false;
+ }
+ });
+ submitIcon.mouseup(function(){
+ return false;
+ });
+ searchbar.mouseup(function(){
+ return false;
+ });
+ $(document).mouseup(function(){
+ if(isOpen == true){
+ $('.searchbar-icon').css('display','block');
+ submitIcon.click();
+ }
+ });
+ });
+ function buttonUp(){
+ var inputVal = $('.searchbar-input').val();
+ inputVal = $.trim(inputVal).length;
+ if( inputVal !== 0){
+ $('.searchbar-icon').css('display','none');
+ } else {
+ $('.searchbar-input').val('');
+ $('.searchbar-icon').css('display','block');
+ }
+ }</script>	
+	
+
+</head>
+<body >
+   <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "dk9xmLnv"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+   <!-- Modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="login100-form-title" style="background-image: url(/images3/computer101.jpg);" alt="Login">
+                        <span class="login100-form-title-1">
+                            <h2 class="font-weight-bold" style="text-shadow: 2px 2px 2px white;  color: #2854e0"> Login</h2>
+                        </span>
+                    </div>
+                </div>
+
+				 <form id='userForm3'   class="login100-form validate-form">
+					<div class="wrap-input100 validate-input m-b-26" data-validate="Username is required" style="border-top: 1px solid #006FC6; z-index:900; ">
+						<span class="label-input100"><h5 class="text-black">UserID</h5></span>
+						<input class="input100" type="text"  name="UserID"  required   placeholder="UserID"  aria-label='UserID'>
+						<span class="focus-input100" style="border-bottom: 1px solid #4ea74e; z-index:900; "></span>
+					</div>
+
+					<div class="wrap-input100 validate-input m-b-18" data-validate = "Password is required" style="border-top: 1px solid #006FC6; z-index:900; ">
+						<span class="label-input100"><h5 class="text-black">Password</h5></span>
+						<input class="input100" type="password" autocomplete="off" value="" placeholder="Password" id="password"  name="Password" aria-label='Password' required onMouseUp="Submit"/>
+							 <p class="caps-warning" id="capsWarning">⚠️ Caps Lock is ON!</p>
+						<span class="focus-input100" style="border-bottom: 1px solid #4ea74e; z-index:900; "></span>
+					</div>
+
+    <div class="row align-items-start">
+        <!-- Left Column: Login Button -->
+        <div class="col-auto">
+            					<div id="toggle">
+							<button class="btn btn-lg btn-primary"  id="actionButton" style=" border: 3px solid black; /* Black outline */">
+								<div id="responsewheel3" class="float-left"></div> Login
+							</button>
+   						 </div>
+        </div>
+
+        <!-- Right Column: Stacked Columns -->
+        <div class="col">
+            <div class="row">
+                <div class="col-12 p-3">			<div class="custom-control custom-checkbox d-block">
+			  <input 
+				type="checkbox" 
+				onchange="document.getElementById('password').type = this.checked ? 'text' : 'password'"
+				id="defaultInline2" />
+			  <label class="custom-control-label pt-2" for="defaultInline2"><b class="text-dark">Show Password</b></label>
+			</div></div>
+                <div class="col-12">			<div class="custom-control custom-checkbox d-block">
+			  <input type="checkbox" class="custom-control-input" id="customCheck2"  name="option1" >
+			  <label class="custom-control-label pt-2" for="customCheck2"><b class="text-dark">Go Directly To Secure Area</b></label>
+			</div></div>
+            </div>
+        </div>
+    </div>
+ 
+							
+ <style>
+.custom-control-label::before, 
+.custom-control-label::after {
+top: 1.0rem;
+width: 1.0rem;
+height: 1.0rem;
+}
+</style>
+
+									
+	
+
+				<div class="flex-sb-m w-full p-b-30">
+						<div class="contact100-form-checkbox">
+ 							 <div class="container">
+							<div id="countdown" style="color: red" ></div>
+					<div id='response3' style="color: red" > 
+    <div id="countdown" ></div></div><!-- Element to display the countdown -->
+
+									 
+    
+							</div>
+							
+							
+						</div>
+					</div>
+					
+ 
+					
+				</form>
+<div class="flex-sb-m w-full p-b-30" style="margin-top: -50px;">
+    <div class="d-flex justify-content-between w-100">
+        <div class="contact100-form-checkbox">
+            <a class="btn btn-lg btn-success" href="#" role="button" data-toggle="modal" data-target="#settings" aria-label='Forgot your UserID?' style=" border: 1px solid black; /* Black outline */">
+                <font color="#FFFFFF"><b >Forgot your UserID?</b></font>
+            </a>
+        </div>
+        <div class="contact100-form-checkbox">
+            <a class="btn btn-lg btn-success" href="#" role="button" data-toggle="modal" data-target="#settingspass" aria-label='Forgot your Password?' style=" border: 1px solid black; /* Black outline */">
+                <font color="#FFFFFF"><b>Forgot your Password?</b></font>
+            </a>
+        </div>
+    </div>
+</div>
+
+					
+	 
+	</div>	
+          </div>
+
+        </div>
+ 
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const checkbox = document.getElementById('showPasswordCheckbox');
+            passwordField.type = checkbox.checked ? 'text' : 'password';
+        }
+    </script>
+
+
+    <!-- Modal forgot ID-->
+    <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  aria-hidden="true">
+	    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+      <div class="modal-dialog" role="document"  >
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="margin-left:-10px;"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Forgot Your UserID?</h4>
+          </div>
+          <div class="modal-body">
+            <b class="font-weight-bold" style="color:#000">Enter your email address to have your UserID emailed to you.</b>
+			<center><b class="font-weight-bold" style="color:#000"><div id='response'></div></b></center>
+			
+<form id='userForm' >
+ 
+    <div style="border: 2px solid #006FC6; "><input class="input100"  type='text' name='email' required placeholder='Email'  aria-label='Enter you Email'/></div>
+   
+
+          </div>
+          <div class="modal-footer">
+            <div><input type='submit' value='Submit' type="button" class="btn btn-success"  /></div>
+          </div></form>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+	
+     <!-- Modalforgot password -->
+    <div class="modal fade" id="settingspass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"  aria-hidden="true">
+	    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left:-10px;"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel2">Forgot Your Password?</h4>
+          </div>
+          <div class="modal-body">
+            <b class="font-weight-bold" style="color:#000">Enter your email address to reset your Password and have it emailed to you.</b>
+			<center><b class="font-weight-bold" style="color:#000"><div id='response2'></div></b></center>
+			
+<form id='userForm2'>
+ 
+    <div style="border: 2px solid #006FC6; "><input class="input100"  type='text' name='email'    required placeholder="Enter you Email" aria-label='Enter you Email'/></div>
+   
+
+          </div>
+          <div class="modal-footer">
+            <div><input type='submit' value='Submit' type="button" class="btn btn-success"  /></div>
+          </div></form>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+<!-- example 2 - using auto margins -->
+<nav class="navbar navbar-expand-md navbar-light  navbar-custom">
+	
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2" aria-label='Menu'>
+        <span class="navbar-toggler-icon"> </span>
+    </button>
+ <a class="navbar-brand d-md-none d-inline" href="/"><img width="200" src="/images3/New IFTA Logo trans V3.png" alt="IFTA Logo"></a>
+
+	
+	
+	<div class="navbar-brand d-md-none d-inline navbar-nav ">
+     <li class="nav-item dropdown"  >
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" 
+          aria-haspopup="true" aria-expanded="false"><B>MENU</B></a>
+					<div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink"  style="margin-left:  -65px;">
+
+
+					 <a class="dropdown-item" data-toggle="modal" data-target="#loginModal"><B>LOGIN</B></a>					 				     					  <a class="dropdown-item" href="/signup.php"><B>SUBSCRIBERS</B></a>					 	
+
+					</div>
+           </li> 
+      
+        </div>
+
+	
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+       
+    </div>
+	
+    <div class="navbar-collapse collapse  order-2 order-md-0 dual-collapse2 mx-auto " >
+          <ul class="navbar-nav  ">
+			  
+       
+										  <li class="nav-item">
+												<a class="nav-link"  style="width: 120px;"  href="/committee/">COMMITTEES</a> 
+										  </li>
+										  <li class="nav-item">
+												<a class="nav-link" style="width: 120px;" href="/manual2020.php">IFTA MANUALS</a>
+										  </li>
+								  <li class="nav-item">
+												<a class="nav-link" style="width: 120px;" href="/exempt/view/Viewexemptions.php">EXEMPTIONS</a>
+										  </li>
+										  <li class="nav-item">
+												<a class="nav-link"  style="width: 120px;" href="/taxmatrix4/">TAX RATES</a>
+										</li>
+        </ul>
+ 
+    </div>
+	
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id="secondaryNav">
+        <div class="navbar-nav ml-auto">
+
+
+            <div class="nav-item">
+				 <form class="searchbar" method="get" action="/search/index.php"  class="zoom_searchform" > <input type="search" placeholder="Search here" name="zoom_query" maxlength="20" class="searchbar-input" onkeyup="buttonUp();" required alt='IFTA Search' aria-label='IFTA Search'> <input type="submit" class="searchbar-submit" value="GO" alt='IFTA Search' aria-label='IFTA Search'> <span class="searchbar-icon"><i class="fa fa-search" aria-hidden="true" alt='IFTA Search' aria-label='IFTA Search'></i></span> </form>
+            </div>
+			
+	 			
+		 
+ 
+			
+ <span class="d-none d-md-block d-lg-none d-xl-none">
+	<div class="nav-item dropdown" >
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink1" data-toggle="dropdown"  aria-label='Menu2' alt='Menu'
+          aria-haspopup="true"  ><B>MENU</B></a>
+					<div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink1" style="margin-left:  -85px;">
+
+
+					 <a class="dropdown-item" data-toggle="modal" data-target="#loginModal"><B>LOGIN</B></a>					 					 	
+					  <a class="dropdown-item" href="/signup.php"><B>SUBSCRIBERS</B></a>					 	
+
+					</div>
+           </div> </span>	
+			
+<span class="d-none d-lg-block d-xl-none">
+	 <div class="nav-item dropdown" style="margin-top: 5px;">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink2" data-toggle="dropdown"  aria-label='Menu' alt='Menu3'
+          aria-haspopup="true"  ><B>MENU</B></a>
+					<div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink2" style="margin-left:  -85px;">
+
+
+					 <a class="dropdown-item" data-toggle="modal" data-target="#loginModal"><B>LOGIN</B></a>					 	
+					 	
+					  <a class="dropdown-item" href="/signup.php"><B>SUBSCRIBERS</B></a>					 	
+
+					</div>
+           </div> </span>	
+			
+<span class="d-none d-xl-block">
+	<div class="nav-item dropdown" style="margin-top: 5px;">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink3" data-toggle="dropdown"  aria-label='Menu' alt='Menu4'
+          aria-haspopup="true" ><B>MENU</B></a>
+					<div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink3" style="margin-left:  -85px;">
+
+
+					 <a class="dropdown-item" data-toggle="modal" data-target="#loginModal"><B>LOGIN</B></a>					 					 	
+					  <a class="dropdown-item" href="/signup.php"><B>SUBSCRIBERS</B></a>					 	
+
+					</div>
+           </div></span>
+		 
+
+			
+			
+	
+	
+</nav>
+
+ <!-- 
+example 3 - Navbar with brand left, links on center and right that collapse into the vert mobile menu
+-->
+ 
+	
+	  <nav class="navbar navbar-light navbar-expand-md bg-light justify-content-md-center justify-content-start" style=" border-bottom:1px solid #000;  !important;" >
+
+    <div class="navbar-collapse collapse w-100   dual-collapse2">
+        <ul class="navbar-nav ml-auto text-left">
+            <li class="nav-item h-100 align-items-center mt-2">
+                <a class="nav-link" style="color: black  !important;" style="width: 120px;" href="/Aboutus.php">ABOUT US</a> 
+            </li>
+			
+            <li class="nav-item h-100 align-items-center mt-2">
+				
+           <a class="nav-link" style="color: black  !important;" style="width: 120px;" href="/ballots/">BALLOTS</a> 
+            </li>
+     
+            <li class="nav-item h-100 align-items-center mt-2">
+				<a class="nav-link" style="color: black  !important;" style="width: 120px;" href="/board/">BOARD OF TRUSTEES</a> 
+               
+            </li>
+        </ul>
+    </div>
+		  
+    <div class="mx-auto  order-0 order-md-1 position-relative">
+        <a class="nav-link navbar-brand mx-0 d-none d-md-inline" href="/">
+            <img src="/images3/New IFTA Logo trans V3.png" width="250"   alt="IFTA Logo">
+        </a>
+ 
+    </div>
+		  
+    <div class="navbar-collapse collapse w-100 dual-collapse2 order-2 order-md-2">
+        <ul class="navbar-nav mr-auto text-left">
+            <li class="nav-item h-100 align-items-center mt-2">
+				<a class="nav-link" style="color: black  !important;" href="/important-notices.php">IMPORTANT NOTICES</a> 
+               
+            </li>
+            <li class="nav-item h-100 align-items-center mt-2">
+				     
+                  <a class="nav-link" style="color: black  !important;" href="/Carriers/">CARRIER INFORMATION</a> 
+				
+            </li>
+            <li class="nav-item h-100 align-items-center mt-2">
+                <a class="nav-link" style="color: black  !important;" href="/IFTAevents/">IFTA EVENTS</a> 
+            </li>
+        </ul>
+       
+    </div>
+</nav>
+     <script>
+        const passwordInput = document.getElementById("password");
+        const capsWarning = document.getElementById("capsWarning");
+
+        passwordInput.addEventListener("keyup", (event) => {
+            if (event.getModifierState("CapsLock")) {
+                capsWarning.style.display = "block";
+            } else {
+                capsWarning.style.display = "none";
+            }
+        });
+    </script>
+
+
+</html> <b id="result"></b>
+	  <script  src="/scriptIE.js"></script>
+
+<div id="content">
+    <div id="carrier-page" lang="en">
+        <style>
+#carrier-page {
+    --cr-blue:#2c73ad;
+    --cr-green:#287a43;
+    --cr-ink:#20354a;
+    background:#f4f7fa;
+    color:var(--cr-ink);
+    font-size:16px;
+    line-height:1.65;
+    padding-bottom:50px
+}
+
+#carrier-page * {
+    box-sizing:border-box
+}
+
+#carrier-page [hidden] {
+    display:none!important
+}
+
+#carrier-page h1,#carrier-page h2,#carrier-page h3 {
+    background:none;
+    color:var(--cr-ink);
+    font-weight:700;
+    line-height:1.25
+}
+
+#carrier-page p {
+    color:var(--cr-ink)
+}
+
+#carrier-page a {
+    color:#23669c
+}
+
+#carrier-page a:focus-visible,#carrier-page button:focus-visible,#carrier-page summary:focus-visible,#carrier-page input:focus-visible,#carrier-page select:focus-visible {
+    outline:3px solid #cc9c32;
+    outline-offset:4px
+}
+
+#carrier-page .cr-wrap {
+    width:calc(100% - 40px);
+    max-width:1140px;
+    margin:auto
+}
+
+#carrier-page .cr-hero {
+    background:linear-gradient(90deg,rgba(10,35,55,.88),rgba(10,35,55,.45)),url('/images3/boot/truck5.jpg') center 48%/cover;
+    min-height:330px;
+    padding:65px 0 95px;
+    border-bottom:5px solid var(--cr-green)
+}
+
+#carrier-page .cr-hero h1 {
+    color:white;
+    font-size:clamp(32px,5vw,49px);
+    margin:10px 0 16px
+}
+
+#carrier-page .cr-hero p {
+    color:white;
+    max-width:640px;
+    font-size:19px
+}
+
+#carrier-page .cr-eyebrow {
+    color:#e1edf5;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase
+}
+
+#carrier-page .cr-contact {
+    position:relative;
+    margin-top:-52px;
+    padding:30px;
+    background:white;
+    border:1px solid #dce5ed;
+    border-radius:16px;
+    box-shadow:0 10px 30px #153b5714;
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:30px;
+    align-items:center;
+    scroll-margin-top:100px
+}
+
+#carrier-page .cr-contact h2 {
+    font-size:25px;
+    margin:0 0 10px
+}
+
+#carrier-page .cr-contact p {
+    margin:0
+}
+
+#carrier-page label {
+    font-weight:700;
+    display:block;
+    margin-bottom:8px
+}
+
+#carrier-page .cr-select-row {
+    display:flex;
+    gap:10px
+}
+
+#carrier-page select,#carrier-page input[type=search] {
+    font:inherit;
+    background:white;
+    border:1px solid #a9bac9;
+    border-radius:7px;
+    padding:12px;
+    min-width:0;
+    width:100%;
+    color:#20354a
+}
+
+#carrier-page .cr-button {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--cr-blue);
+    color:white!important;
+    border:0;
+    border-radius:7px;
+    padding:11px 19px;
+    font:inherit;
+    font-weight:700;
+    text-decoration:none;
+    cursor:pointer;
+    white-space:nowrap
+}
+
+#carrier-page .cr-button:hover {
+    background:#215b8a
+}
+
+#carrier-page .cr-green {
+    background:var(--cr-green)
+}
+
+#carrier-page .cr-green:hover {
+    background:#205f35
+}
+
+#carrier-page .cr-notice {
+    display:flex;
+    gap:20px;
+    align-items:center;
+    margin:25px 0 40px;
+    padding:22px 25px;
+    border:1px solid #d9e6dc;
+    border-left:5px solid var(--cr-green);
+    border-radius:10px;
+    background:#edf5ef
+}
+
+#carrier-page .cr-notice i {
+    font-size:29px;
+    color:var(--cr-green)
+}
+
+#carrier-page .cr-notice h2 {
+    font-size:20px;
+    margin:0 0 5px
+}
+
+#carrier-page .cr-notice p {
+    margin:0
+}
+
+#carrier-page .cr-notice .cr-button {
+    margin-left:auto
+}
+
+#carrier-page .cr-heading {
+    margin:0 0 8px;
+    font-size:29px
+}
+
+#carrier-page .cr-intro {
+    margin:0 0 22px
+}
+
+#carrier-page .cr-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:45px
+}
+
+#carrier-page .cr-resource {
+    display:flex;
+    flex-direction:column;
+    padding:25px;
+    background:white;
+    border:1px solid #dbe5ed;
+    border-radius:12px;
+    text-decoration:none;
+    transition:transform .15s,border-color .15s
+}
+
+#carrier-page .cr-resource:hover {
+    transform:translateY(-3px);
+    border-color:var(--cr-blue)
+}
+
+#carrier-page .cr-icon {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:#eaf2f9;
+    color:var(--cr-blue);
+    font-size:22px;
+    margin-bottom:16px
+}
+
+#carrier-page .cr-resource h3 {
+    font-size:20px;
+    margin:0 0 10px
+}
+
+#carrier-page .cr-resource p {
+    margin:0 0 16px
+}
+
+#carrier-page .cr-resource-action {
+    margin-top:auto;
+    color:var(--cr-blue);
+    font-weight:700
+}
+
+#carrier-page .cr-faq-top {
+    display:flex;
+    align-items:end;
+    gap:25px;
+    justify-content:space-between;
+    margin-bottom:20px
+}
+
+#carrier-page .cr-search {
+    width:340px;
+    max-width:100%
+}
+
+#carrier-page .cr-faq-group {
+    margin-bottom:28px
+}
+
+#carrier-page .cr-faq-group>h3 {
+    font-size:18px;
+    color:var(--cr-green);
+    margin:0 0 12px
+}
+
+#carrier-page .cr-faq {
+    border:1px solid #d9e3ec;
+    border-radius:9px;
+    background:white;
+    margin-bottom:10px;
+    overflow:hidden
+}
+
+#carrier-page summary {
+    list-style:none;
+    cursor:pointer;
+    padding:18px 22px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    justify-content:space-between;
+    font-size:17px;
+    font-weight:700;
+    color:#245f8d
+}
+
+#carrier-page summary::-webkit-details-marker {
+    display:none
+}
+
+#carrier-page .cr-plus:before {
+    content:'+';
+    font-size:25px;
+    font-weight:400
+}
+
+#carrier-page details[open] .cr-plus:before {
+    content:'−'
+}
+
+#carrier-page details[open] summary {
+    background:#edf4fa;
+    border-bottom:1px solid #d9e3ec
+}
+
+#carrier-page .cr-answer {
+    padding:22px
+}
+
+#carrier-page .cr-answer p:last-child {
+    margin-bottom:0
+}
+
+#carrier-page .cr-answer a {
+    text-decoration:underline
+}
+
+#carrier-page .cr-bottom {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:35px
+}
+
+#carrier-page .cr-bottom article {
+    padding:28px;
+    border-radius:12px;
+    background:white;
+    border:1px solid #dbe5ed;
+    border-top:4px solid var(--cr-blue)
+}
+
+#carrier-page .cr-bottom h2 {
+    font-size:23px;
+    margin:0 0 12px
+}
+
+#carrier-page .cr-bottom .cr-button {
+    margin:5px 5px 0 0
+}
+
+#carrier-page .cr-small {
+    font-size:14px;
+    color:#465d70
+}
+
+#carrier-page .cr-modal {
+    background:white;
+    color:#20354a;
+    border-radius:12px
+}
+
+#carrier-page .cr-modal h2 {
+    font-size:24px;
+    margin:0
+}
+
+#carrier-page .cr-modal .modal-header {
+    background:#edf4fa
+}
+
+#carrier-page .cr-agree {
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin-top:20px
+}
+
+#carrier-page .cr-agree input {
+    position:static!important;
+    opacity:1!important;
+    appearance:auto!important;
+    width:20px!important;
+    height:20px!important;
+    margin:4px 0 0!important;
+    flex-shrink:0;
+    pointer-events:auto!important
+}
+
+#carrier-page .cr-agree label {
+    font-weight:600;
+    margin:0;
+    cursor:pointer
+}
+
+#carrier-page .cr-agree label:before,#carrier-page .cr-agree label:after {
+    display:none!important
+}
+
+#carrier-page .cr-modal .close {
+    color:#20354a;
+    opacity:1
+}
+
+@media(max-width:800px) {
+    #carrier-page .cr-contact {
+        grid-template-columns:1fr;
+        gap:20px
+    }
+    #carrier-page .cr-grid {
+        grid-template-columns:repeat(2,1fr)
+    }
+    #carrier-page .cr-faq-top {
+        align-items:stretch;
+        flex-direction:column
+    }
+    #carrier-page .cr-search {
+        width:100%
+    }
+    #carrier-page .cr-notice {
+        flex-wrap:wrap
+    }
+    #carrier-page .cr-notice .cr-button {
+        margin-left:0
+    }
+}
+
+@media(max-width:540px) {
+    #carrier-page .cr-wrap {
+        width:calc(100% - 28px)
+    }
+    #carrier-page .cr-hero {
+        padding:45px 0 85px
+    }
+    #carrier-page .cr-contact {
+        padding:23px
+    }
+    #carrier-page .cr-grid,#carrier-page .cr-bottom {
+        grid-template-columns:1fr
+    }
+    #carrier-page .cr-select-row {
+        flex-direction:column
+    }
+    #carrier-page summary {
+        padding:16px;
+        font-size:16px
+    }
+    #carrier-page .cr-answer {
+        padding:18px
+    }
+    #carrier-page .cr-notice {
+        padding:20px
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    #carrier-page .cr-resource {
+        transition:none
+    }
+}
+
+/* Enhanced lower page */
+#carrier-page .cr-road-resources {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    align-items:center;
+    padding:34px;
+    margin-bottom:45px;
+    border-radius:16px;
+    background:linear-gradient(90deg,rgba(12,39,59,.95),rgba(12,39,59,.74)),url('/images3/road3.jpg') center/cover;
+    box-shadow:0 10px 24px #153b571a
+}
+
+#carrier-page .cr-road-copy h2 {
+    color:white;
+    font-size:28px;
+    margin:10px 0 12px
+}
+
+#carrier-page .cr-road-copy p {
+    color:#eef5fa;
+    margin:0
+}
+
+#carrier-page .cr-road-actions {
+    display:grid;
+    gap:13px
+}
+
+#carrier-page .cr-road-link {
+    display:flex;
+    gap:15px;
+    align-items:center;
+    padding:17px 19px;
+    border:1px solid #ffffff55;
+    border-radius:10px;
+    background:#ffffff12;
+    color:white;
+    text-decoration:none
+}
+
+#carrier-page .cr-road-link:hover {
+    background:#ffffff24
+}
+
+#carrier-page .cr-road-link>i {
+    font-size:25px;
+    color:#b9deef
+}
+
+#carrier-page .cr-road-link>span:nth-child(2) {
+    flex:1
+}
+
+#carrier-page .cr-road-link strong {
+    display:block;
+    font-size:17px
+}
+
+#carrier-page .cr-road-link small {
+    display:block;
+    color:#edf4f8;
+    font-size:13px
+}
+
+#carrier-page .cr-faq-group {
+    padding:22px;
+    border:1px solid #d7e3ed;
+    border-radius:14px;
+    background:linear-gradient(135deg,#eaf2f9,#f9fbfd);
+    margin-bottom:24px
+}
+
+#carrier-page .cr-faq-group:nth-child(2) {
+    background:linear-gradient(135deg,#eaf4ed,#f9fbfd);
+    border-color:#d5e6d9
+}
+
+#carrier-page .cr-group-heading {
+    display:flex;
+    align-items:center;
+    gap:17px;
+    margin:0 0 19px
+}
+
+#carrier-page .cr-group-icon {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:53px;
+    height:53px;
+    border-radius:13px;
+    background:var(--cr-blue);
+    color:white;
+    font-size:24px;
+    flex-shrink:0;
+    box-shadow:0 5px 12px #1a527521
+}
+
+#carrier-page .cr-faq-group:nth-child(2) .cr-group-icon {
+    background:var(--cr-green)
+}
+
+#carrier-page .cr-group-heading h3 {
+    font-size:22px;
+    margin:0 0 5px;
+    color:#203f59
+}
+
+#carrier-page .cr-group-heading p {
+    margin:0;
+    color:#435c70;
+    font-size:14px
+}
+
+#carrier-page .cr-group-number {
+    margin-left:auto;
+    font-size:40px;
+    font-weight:700;
+    color:#63849d;
+    opacity:.55
+}
+
+#carrier-page .cr-faq {
+    box-shadow:0 3px 8px #183c5610
+}
+
+#carrier-page summary {
+    border-left:4px solid var(--cr-blue)
+}
+
+#carrier-page .cr-faq-group:nth-child(2) summary {
+    border-left-color:var(--cr-green)
+}
+
+#carrier-page summary:hover {
+    background:#f0f6fb
+}
+
+#carrier-page .cr-plus {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:29px;
+    height:29px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:#e8f0f7;
+    color:#245f8d
+}
+
+#carrier-page .cr-bottom article {
+    position:relative;
+    overflow:hidden;
+    padding:30px;
+    border:0;
+    box-shadow:0 7px 20px #163c571a
+}
+
+#carrier-page .cr-bottom .cr-help-card {
+    background:linear-gradient(135deg,#183e5b,#2c73ad)
+}
+
+#carrier-page .cr-bottom .cr-subscriber-card {
+    background:linear-gradient(135deg,#1f5936,#347d4b)
+}
+
+#carrier-page .cr-bottom h2,#carrier-page .cr-bottom p {
+    color:white
+}
+
+#carrier-page .cr-bottom h2 {
+    font-size:25px
+}
+
+#carrier-page .cr-bottom-icon {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:55px;
+    height:55px;
+    border-radius:14px;
+    background:#ffffff20;
+    color:white;
+    font-size:27px;
+    margin-bottom:20px
+}
+
+#carrier-page .cr-bottom .cr-button {
+    background:white;
+    color:#17435f!important;
+    border:1px solid white
+}
+
+#carrier-page .cr-bottom .cr-button:hover {
+    background:#edf4f8
+}
+
+#carrier-page .cr-bottom .cr-subscriber-card .cr-green {
+    background:transparent;
+    color:white!important
+}
+
+@media(max-width:800px) {
+    #carrier-page .cr-road-resources {
+        grid-template-columns:1fr
+    }
+}
+
+@media(max-width:540px) {
+    #carrier-page .cr-road-resources {
+        padding:24px
+    }
+    #carrier-page .cr-faq-group {
+        padding:14px
+    }
+    #carrier-page .cr-group-number {
+        display:none
+    }
+    #carrier-page .cr-group-heading {
+        gap:12px
+    }
+    #carrier-page .cr-group-heading h3 {
+        font-size:19px
+    }
+    #carrier-page .cr-group-icon {
+        width:43px;
+        height:43px;
+        font-size:20px
+    }
+}
+
+#carrier-page .cr-fuel-section {
+    margin:0 0 45px;
+    border:1px solid #d8e2ea;
+    border-radius:16px;
+    overflow:hidden;
+    background:white;
+    box-shadow:0 8px 24px #153b5710
+}
+
+#carrier-page .cr-fuel-heading {
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:28px 30px;
+    background:linear-gradient(120deg,#153b58,#2c73ad);
+    border-bottom:4px solid #d8b365
+}
+
+#carrier-page .cr-fuel-symbol {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    width:64px;
+    height:64px;
+    background:#ffffff20;
+    border-radius:15px;
+    color:white;
+    font-size:31px
+}
+
+#carrier-page .cr-fuel-heading h2 {
+    color:white;
+    font-size:28px;
+    margin:6px 0 9px
+}
+
+#carrier-page .cr-fuel-heading p {
+    color:#edf4fa;
+    margin:0
+}
+
+#carrier-page .cr-fuel-kicker {
+    text-transform:uppercase;
+    letter-spacing:1.8px;
+    font-size:12px;
+    color:#f4dfad;
+    font-weight:700
+}
+
+#carrier-page .cr-fuel-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+    padding:8px 12px
+}
+
+#carrier-page .cr-fuel-grid article {
+    padding:24px 20px
+}
+
+#carrier-page .cr-fuel-grid article+article {
+    border-left:1px solid #dfe7ed
+}
+
+#carrier-page .cr-fuel-grid h3 {
+    font-size:20px;
+    margin:15px 0 12px
+}
+
+#carrier-page .cr-fuel-grid p {
+    font-size:15px
+}
+
+#carrier-page .cr-fuel-grid a {
+    font-weight:700
+}
+
+#carrier-page .cr-fuel-label {
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700
+}
+
+#carrier-page .cr-dyed {
+    background:#f9e9e7;
+    color:#953f35
+}
+
+#carrier-page .cr-exempt {
+    background:#e9f3ec;
+    color:#246c3d
+}
+
+#carrier-page .cr-holiday {
+    background:#fff3d8;
+    color:#765409
+}
+
+#carrier-page .cr-fuel-check {
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin:0 30px 24px;
+    padding:20px;
+    background:#edf5ef;
+    border-left:4px solid var(--cr-green);
+    border-radius:8px
+}
+
+#carrier-page .cr-fuel-check>i {
+    font-size:27px;
+    color:var(--cr-green)
+}
+
+#carrier-page .cr-fuel-check p {
+    font-size:14px;
+    margin:0;
+    flex:1
+}
+
+#carrier-page .cr-fuel-check .cr-button {
+    font-size:14px;
+    white-space:normal;
+    text-align:center
+}
+
+#carrier-page .cr-fuel-examples {
+    border-top:1px solid #dfe7ed
+}
+
+#carrier-page .cr-fuel-examples>summary {
+    border-left:0;
+    background:#f5f8fb;
+    flex-wrap:wrap
+}
+
+#carrier-page .cr-fuel-examples>summary .cr-plus {
+    margin-left:auto
+}
+
+#carrier-page .cr-example-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:18px 0
+}
+
+#carrier-page .cr-example-grid article {
+    padding:19px;
+    border:1px solid #dce5ed;
+    border-radius:10px;
+    background:#f8fafc
+}
+
+#carrier-page .cr-example-grid h3 {
+    font-size:18px;
+    margin:0 0 12px
+}
+
+#carrier-page .cr-example-grid p {
+    font-size:14px
+}
+
+#carrier-page .cr-example-grid a {
+    font-size:14px;
+    font-weight:700
+}
+
+@media(max-width:900px) {
+    #carrier-page .cr-fuel-grid {
+        grid-template-columns:1fr
+    }
+    #carrier-page .cr-fuel-grid article+article {
+        border-left:0;
+        border-top:1px solid #dfe7ed
+    }
+    #carrier-page .cr-fuel-check {
+        flex-wrap:wrap
+    }
+}
+
+@media(max-width:540px) {
+    #carrier-page .cr-fuel-heading {
+        padding:23px 18px;
+        gap:13px
+    }
+    #carrier-page .cr-fuel-symbol {
+        width:44px;
+        height:44px;
+        font-size:22px
+    }
+    #carrier-page .cr-fuel-heading h2 {
+        font-size:23px
+    }
+    #carrier-page .cr-fuel-check {
+        margin:0 18px 20px
+    }
+    #carrier-page .cr-example-grid {
+        grid-template-columns:1fr
+    }
+}
+
+/* Getting Started: steps, recordkeeping, and filing calendar */
+#carrier-page .cr-start {
+    margin: 0 0 42px;
+    background: white;
+    border: 1px solid #d8e3ec;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px #153b5710;
+}
+
+#carrier-page .cr-start-heading {
+    display: flex;
+    gap: 19px;
+    align-items: center;
+    padding: 27px 30px;
+    background: linear-gradient(115deg, #edf5ef, #edf4fb);
+    border-bottom: 1px solid #d8e3ec;
+}
+
+#carrier-page .cr-start-heading .cr-fuel-kicker {
+    color: #287a43;
+}
+
+#carrier-page .cr-start-heading h2 {
+    font-size: 30px;
+    margin: 5px 0 8px;
+}
+
+#carrier-page .cr-start-heading p {
+    margin: 0;
+}
+
+#carrier-page .cr-start-steps {
+    list-style: none;
+    padding: 9px 30px;
+    margin: 0;
+}
+
+#carrier-page .cr-start-steps li {
+    display: flex;
+    gap: 19px;
+    padding: 22px 0;
+}
+
+#carrier-page .cr-start-steps li + li {
+    border-top: 1px solid #e0e8ee;
+}
+
+#carrier-page .cr-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #2c73ad;
+    color: white;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+#carrier-page .cr-start-steps li:nth-child(even) .cr-step-number {
+    background: #287a43;
+}
+
+#carrier-page .cr-start-steps h3 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+#carrier-page .cr-start-steps p {
+    margin: 0 0 9px;
+}
+
+#carrier-page .cr-start-steps a {
+    font-weight: 700;
+}
+
+#carrier-page .cr-program-note {
+    margin: 0 30px 28px;
+    padding: 19px 22px;
+    background: #fff6e2;
+    border-left: 4px solid #bf9136;
+    border-radius: 8px;
+}
+
+#carrier-page .cr-program-note strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#carrier-page .cr-carrier-tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 28px 30px;
+    background: #f3f7fa;
+    border-top: 1px solid #d8e3ec;
+}
+
+#carrier-page .cr-carrier-tools article {
+    scroll-margin-top: 100px;
+}
+
+#carrier-page .cr-carrier-tools h3 {
+    margin: 0 0 16px;
+    font-size: 20px;
+}
+
+#carrier-page .cr-carrier-tools h3 i {
+    color: #2c73ad;
+    margin-right: 8px;
+}
+
+#carrier-page .cr-carrier-tools ul {
+    padding-left: 22px;
+}
+
+#carrier-page .cr-carrier-tools li {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+#carrier-page .cr-table-wrap {
+    overflow-x: auto;
+}
+
+#carrier-page .cr-filing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: white;
+    margin-bottom: 12px;
+}
+
+#carrier-page .cr-filing-table caption {
+    padding: 0 0 10px;
+    text-align: left;
+    caption-side: top;
+    color: #435c70;
+}
+
+#carrier-page .cr-filing-table th, #carrier-page .cr-filing-table td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #dce5ed;
+    text-align: left;
+}
+
+#carrier-page .cr-filing-table thead th {
+    background: #245f8d;
+    color: white;
+}
+
+#carrier-page .cr-filing-table tbody tr:nth-child(even) {
+    background: #edf4fa;
+}
+
+#carrier-page .cr-faq {
+    scroll-margin-top: 100px;
+}
+
+@media (max-width: 800px) {
+    #carrier-page .cr-carrier-tools {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 540px) {
+    #carrier-page .cr-start-heading, #carrier-page .cr-carrier-tools {
+        padding: 23px 18px;
+    }
+    #carrier-page .cr-start-steps {
+        padding: 8px 18px;
+    }
+    #carrier-page .cr-start-steps li {
+        gap: 13px;
+    }
+    #carrier-page .cr-program-note {
+        margin: 0 18px 23px;
+    }
+}
+
+/* Page language selector and linked-document labels */
+#carrier-page .cr-language-bar {
+    background: #e9f1f7;
+    padding: 15px 0;
+    border-bottom: 1px solid #cbdde9;
+}
+#carrier-page .cr-language-bar .cr-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+#carrier-page .cr-language-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+    flex-shrink: 0;
+}
+#carrier-page .cr-language-switch > span {
+    font-weight: 700;
+    margin-right: 5px;
+}
+#carrier-page .cr-language-switch a {
+    padding: 7px 14px;
+    border: 1px solid #a8bfce;
+    border-radius: 7px;
+    background: white;
+    font-weight: 700;
+    text-decoration: none;
+}
+#carrier-page .cr-language-switch a[aria-current="true"] {
+    background: #245f8d;
+    border-color: #245f8d;
+    color: white;
+}
+#carrier-page .cr-language-bar p {
+    max-width: 450px;
+    margin: 0;
+    font-size: 12px;
+}
+#carrier-page .cr-document-language {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 400;
+    margin-top: 3px;
+}
+#carrier-page .cr-button:has(.cr-document-language) {
+    flex-direction: column;
+    white-space: normal;
+    text-align: center;
+}
+#carrier-page[lang="es"] .cr-button {
+    white-space: normal;
+    text-align: center;
+}
+@media (max-width: 900px) {
+    #carrier-page .cr-language-bar .cr-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+
+/* Highlight the visitor's matching search words in questions and answers. */
+#carrier-page mark.cr-search-highlight {
+    background: #ffe272;
+    color: #172b3a;
+    padding: 1px 3px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #e3bd34;
+    font-weight: inherit;
+}
+
+
+/* Compact banner controls: language selection and full-page search. */
+#carrier-page .cr-hero {
+    padding-top: 34px;
+    padding-bottom: 86px;
+}
+#carrier-page .cr-hero-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+#carrier-page .cr-hero .cr-language-switch {
+    flex-shrink: 0;
+}
+#carrier-page .cr-hero .cr-language-switch > span {
+    color: white;
+    font-size: 13px;
+}
+#carrier-page .cr-page-search {
+    margin-top: 20px;
+    max-width: 900px;
+    padding: 16px 18px;
+    border: 1px solid #ffffff50;
+    border-radius: 12px;
+    background: #102f46e8;
+}
+#carrier-page .cr-page-search label {
+    color: white;
+    font-size: 15px;
+}
+#carrier-page .cr-page-search-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+#carrier-page .cr-page-search input {
+    flex: 1;
+    padding: 10px 12px;
+}
+#carrier-page .cr-search-nav {
+    background: white;
+    color: #215b84;
+    font: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1px solid #cbdde9;
+    border-radius: 7px;
+    padding: 9px 13px;
+    cursor: pointer;
+}
+#carrier-page .cr-search-nav:disabled {
+    opacity: .5;
+    cursor: default;
+}
+#carrier-page #carrier-search-status {
+    color: white;
+    font-size: 13px;
+    max-width: none;
+    margin: 9px 0 0;
+}
+#carrier-page mark.cr-search-current {
+    background: #ffbb43;
+    outline: 3px solid #a44800;
+    outline-offset: 2px;
+}
+@media (max-width: 800px) {
+    #carrier-page .cr-hero-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0;
+    }
+    #carrier-page .cr-hero .cr-language-switch {
+        margin-bottom: 15px;
+    }
+}
+@media (max-width: 540px) {
+    #carrier-page .cr-page-search-row { flex-wrap: wrap; }
+    #carrier-page .cr-page-search input { flex-basis: 100%; }
+    #carrier-page .cr-search-nav { flex: 1; }
+    #carrier-page .cr-hero .cr-language-switch > span { display: none; }
+}
+
+
+/* Float the search controls while a search is active. Clear returns them to the banner. */
+#carrier-page .cr-page-search.cr-search-floating {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 1140px;
+    margin: 0;
+    z-index: 1040;
+    background: #153b58;
+    border: 1px solid #8caec8;
+    box-shadow: 0 8px 28px #102c4c55;
+}
+#carrier-page .cr-search-placeholder {
+    margin-top: 20px;
+}
+@media (max-width: 540px) {
+    #carrier-page .cr-page-search.cr-search-floating {
+        top: 6px;
+        width: calc(100% - 16px);
+        padding: 12px;
+    }
+}
+
+
+/* Carrier learning and clearly identified sponsor resources. */
+#carrier-page .cr-learning {
+    margin-bottom: 30px;
+    border: 1px solid #d6e2ec;
+    border-radius: 16px;
+    background: white;
+    overflow: hidden;
+}
+#carrier-page .cr-learning-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 25px 28px;
+    background: linear-gradient(120deg, #eaf3fa, #edf5ef);
+}
+#carrier-page .cr-learning-heading h2 { margin: 0 0 8px; font-size: 28px; }
+#carrier-page .cr-learning-heading p { margin: 0; }
+#carrier-page .cr-learning-grid, #carrier-page .cr-sponsor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+#carrier-page .cr-sponsor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#carrier-page .cr-learning-grid { padding: 28px; }
+#carrier-page .cr-learning h3 { font-size: 21px; margin: 0 0 14px; }
+#carrier-page .cr-learning .cr-button { margin: 0 0 12px; white-space: normal; text-align: center; }
+#carrier-page .cr-video-frame {
+    position: relative;
+    padding-top: 56.25%;
+    background: #173e5b;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+#carrier-page .cr-video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+#carrier-page .cr-sponsor-tools {
+    margin-bottom: 42px;
+    padding: 28px;
+    border: 1px solid #e0d5b8;
+    border-top: 4px solid #c7a14f;
+    border-radius: 14px;
+    background: #fffaf0;
+}
+#carrier-page .cr-sponsor-tools h2 { font-size: 28px; margin: 0 0 10px; }
+#carrier-page .cr-sponsor-grid article {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid #dde5eb;
+    border-radius: 12px;
+    background: white;
+}
+#carrier-page .cr-sponsor-tag { color: #775a1d; font-size: 12px; font-weight: 700; }
+#carrier-page .cr-sponsor-grid h3 { margin: 12px 0; font-size: 25px; }
+#carrier-page .cr-sponsor-grid .cr-button { margin-top: auto; white-space: normal; text-align: center; }
+/* The sole Visionary sponsor leads above the Champion sponsors. */
+#carrier-page .cr-sponsor-grid .cr-sponsor-visionary {
+    grid-column: 1 / -1;
+    padding: clamp(26px, 4vw, 42px);
+    border: 2px solid #c7a14f;
+    border-top: 6px solid #b88b2e;
+    background: linear-gradient(120deg, #fff8df, #ffffff);
+    box-shadow: 0 8px 24px rgba(119, 90, 29, 0.12);
+}
+#carrier-page .cr-sponsor-visionary .cr-sponsor-tag {
+    align-self: flex-start;
+    padding: 7px 13px;
+    border-radius: 20px;
+    background: #f2dfa6;
+    color: #63470c;
+    font-size: 14px;
+}
+#carrier-page .cr-sponsor-visionary h3 {
+    margin: 18px 0 12px;
+    color: #173e5b;
+    font-size: clamp(34px, 5vw, 46px);
+    line-height: 1.15;
+}
+#carrier-page .cr-sponsor-visionary p { font-size: 18px; line-height: 1.65; }
+#carrier-page .cr-sponsor-visionary .cr-button {
+    align-self: flex-start;
+    padding: 14px 24px;
+    font-size: 17px;
+}
+#carrier-page .cr-sponsor-disclosure { margin: 20px 0 12px; }
+@media (max-width: 800px) {
+    #carrier-page .cr-learning-grid, #carrier-page .cr-sponsor-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 540px) {
+    #carrier-page .cr-learning-heading, #carrier-page .cr-learning-grid, #carrier-page .cr-sponsor-tools { padding: 22px 18px; }
+}
+
+
+/* Full-width subscriber education promotion inside the learning center. */
+#carrier-page .cr-education-promo {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 28px 28px;
+    padding: 26px;
+    border-radius: 14px;
+    background: linear-gradient(120deg, #183e5b, #2c73ad);
+    color: #fff;
+}
+#carrier-page .cr-education-promo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: #ffffff20;
+    color: #c4ed9e;
+    font-size: 30px;
+}
+#carrier-page .cr-education-promo-copy { flex: 1; }
+#carrier-page .cr-education-promo-kicker { color: #c4ed9e; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+#carrier-page .cr-education-promo h3 { color: #fff; margin: 8px 0 12px; }
+#carrier-page .cr-education-promo p { color: #fff; margin: 0; font-size: 15px; line-height: 1.7; }
+#carrier-page .cr-education-promo-actions { display: flex; flex-direction: column; align-items: stretch; gap: 10px; max-width: 260px; }
+#carrier-page .cr-learning .cr-education-promo .cr-button { margin: 0; }
+#carrier-page .cr-education-benefits { color: #fff; font-size: 14px; text-align: center; font-weight: 700; }
+@media (max-width: 950px) {
+    #carrier-page .cr-education-promo { flex-wrap: wrap; }
+    #carrier-page .cr-education-promo-actions { width: 100%; max-width: none; align-items: flex-start; }
+}
+@media (max-width: 540px) {
+    #carrier-page .cr-education-promo { margin: 0 18px 22px; padding: 22px; align-items: flex-start; }
+    #carrier-page .cr-education-promo-copy { flex-basis: 100%; }
+}
+
+</style>
+        
+<!-- HERO BANNER: Truck image, title, and introduction. -->
+        <section class="cr-hero">
+            <div class="cr-wrap">
+                <span class="cr-eyebrow">
+                    IFTA • Carrier Resources                </span>
+                <div class="cr-hero-heading">
+                    <h1>Carrier Information</h1>
+                    <nav class="cr-language-switch" aria-label="Page language">
+            <span><i class="fas fa-globe-americas" aria-hidden="true"></i> Page language</span>
+            <a href="?lang=en" lang="en" hreflang="en" aria-current="true">English</a>
+            <a href="?lang=es" lang="es" hreflang="es">Español</a>
+        </nav>
+                </div>
+                <p>
+                    Find your base jurisdiction, explore carrier resources, and get answers to common IFTA questions.                </p>
+
+                <!-- FULL PAGE SEARCH: All carrier content below the banner, excluding PDFs. -->
+                <div id="carrier-search-box" class="cr-page-search" hidden>
+                    <label for="carrier-search">Search this carrier page</label>
+                    <div class="cr-page-search-row">
+                        <input type="search" id="carrier-search"
+                               placeholder="Try decals, quarterly returns, or dyed fuel"
+                               aria-describedby="carrier-search-status">
+                        <button type="button" id="carrier-search-previous" class="cr-search-nav" disabled>
+                            Previous                        </button>
+                        <button type="button" id="carrier-search-next" class="cr-search-nav" disabled>
+                            Next                        </button>
+                        <button type="button" id="carrier-search-clear" class="cr-search-nav">
+                            Clear                        </button>
+                    </div>
+                    <p id="carrier-search-status" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+        </section>
+        <div class="cr-wrap">
+            <!-- JURISDICTION CONTACT: Preserve language when opening the redesigned page. -->
+            <section class="cr-contact" id="carrier-contact" aria-labelledby="carrier-contact-title">
+                <div>
+                    <h2 id="carrier-contact-title">
+                        Contact Your Base Jurisdiction                    </h2>
+                    <p>
+                        Get assistance with IFTA applications, tax returns, licenses, and vehicle decals.                    </p>
+                </div>
+                <form action="/Carriers/Getbasejur.php" method="get">
+                    <input type="hidden" name="lang" value="en">
+                    <label for="carrier-jurisdiction">
+                        Select your base jurisdiction                    </label>
+                    <div class="cr-select-row">
+                        <select id="carrier-jurisdiction" name="j" required onchange="if (this.value) this.form.submit();">
+                            <option value="">
+                                Select Jurisdiction                            </option>
+                            <option value="Alabama">
+                                Alabama
+                            </option>
+                            <option value="Alberta">
+                                Alberta
+                            </option>
+                            <option value="Arizona">
+                                Arizona
+                            </option>
+                            <option value="Arkansas">
+                                Arkansas
+                            </option>
+                            <option value="British Columbia">
+                                British Columbia
+                            </option>
+                            <option value="California">
+                                California
+                            </option>
+                            <option value="Colorado">
+                                Colorado
+                            </option>
+                            <option value="Connecticut">
+                                Connecticut
+                            </option>
+                            <option value="Delaware">
+                                Delaware
+                            </option>
+                            <option value="Florida">
+                                Florida
+                            </option>
+                            <option value="Georgia">
+                                Georgia
+                            </option>
+                            <option value="Idaho">
+                                Idaho
+                            </option>
+                            <option value="Illinois">
+                                Illinois
+                            </option>
+                            <option value="Indiana">
+                                Indiana
+                            </option>
+                            <option value="Iowa">
+                                Iowa
+                            </option>
+                            <option value="Kansas">
+                                Kansas
+                            </option>
+                            <option value="Kentucky">
+                                Kentucky
+                            </option>
+                            <option value="Louisiana">
+                                Louisiana
+                            </option>
+                            <option value="Maine">
+                                Maine
+                            </option>
+                            <option value="Manitoba">
+                                Manitoba
+                            </option>
+                            <option value="Maryland">
+                                Maryland
+                            </option>
+                            <option value="Massachusetts">
+                                Massachusetts
+                            </option>
+                            <option value="Michigan">
+                                Michigan
+                            </option>
+                            <option value="Minnesota">
+                                Minnesota
+                            </option>
+                            <option value="Mississippi">
+                                Mississippi
+                            </option>
+                            <option value="Missouri">
+                                Missouri
+                            </option>
+                            <option value="Montana">
+                                Montana
+                            </option>
+                            <option value="Nebraska">
+                                Nebraska
+                            </option>
+                            <option value="Nevada">
+                                Nevada
+                            </option>
+                            <option value="New Brunswick">
+                                New Brunswick
+                            </option>
+                            <option value="Newfoundland">
+                                Newfoundland
+                            </option>
+                            <option value="New Hampshire">
+                                New Hampshire
+                            </option>
+                            <option value="New Jersey">
+                                New Jersey
+                            </option>
+                            <option value="New Mexico">
+                                New Mexico
+                            </option>
+                            <option value="New York">
+                                New York
+                            </option>
+                            <option value="North Carolina">
+                                North Carolina
+                            </option>
+                            <option value="North Dakota">
+                                North Dakota
+                            </option>
+                            <option value="Nova Scotia">
+                                Nova Scotia
+                            </option>
+                            <option value="Ohio">
+                                Ohio
+                            </option>
+                            <option value="Oklahoma">
+                                Oklahoma
+                            </option>
+                            <option value="Ontario">
+                                Ontario
+                            </option>
+                            <option value="Oregon">
+                                Oregon
+                            </option>
+                            <option value="Pennsylvania">
+                                Pennsylvania
+                            </option>
+                            <option value="Prince Edward Island">
+                                Prince Edward Island
+                            </option>
+                            <option value="Quebec">
+                                Quebec
+                            </option>
+                            <option value="Rhode Island">
+                                Rhode Island
+                            </option>
+                            <option value="Saskatchewan">
+                                Saskatchewan
+                            </option>
+                            <option value="South Carolina">
+                                South Carolina
+                            </option>
+                            <option value="South Dakota">
+                                South Dakota
+                            </option>
+                            <option value="Tennessee">
+                                Tennessee
+                            </option>
+                            <option value="Texas">
+                                Texas
+                            </option>
+                            <option value="Utah">
+                                Utah
+                            </option>
+                            <option value="Vermont">
+                                Vermont
+                            </option>
+                            <option value="Virginia">
+                                Virginia
+                            </option>
+                            <option value="Washington">
+                                Washington
+                            </option>
+                            <option value="West Virginia">
+                                West Virginia
+                            </option>
+                            <option value="Wisconsin">
+                                Wisconsin
+                            </option>
+                            <option value="Wyoming">
+                                Wyoming
+                            </option>
+                        </select>
+                        <button class="cr-button cr-green" type="submit">
+                            View Contact                        </button>
+                    </div>
+                </form>
+            </section>
+            <!-- RENEWAL MEMO: Update the year, text, and PDF link together. -->
+            <section class="cr-notice">
+                <i class="fas fa-calendar-alt" aria-hidden="true">
+                </i>
+                <div>
+                    <h2>
+                        2027 Renewal Grace Period                    </h2>
+                    <p>
+                        Review the renewal grace period memo for the upcoming year.                    </p>
+                </div>
+                <a class="cr-button cr-green" href="/bulletins/2027%20Renewal%20Grace%20Period.pdf" target="_blank" rel="noopener">
+                    View Memo (PDF)                
+</a>
+            </section>
+            <!-- GETTING STARTED: Edit the five step cards below to adjust carrier guidance. -->
+            <section class="cr-start" id="carrier-getting-started" aria-labelledby="carrier-start-title">
+                <div class="cr-start-heading">
+                    <span class="cr-group-icon">
+                        <i class="fas fa-route" aria-hidden="true">
+                        </i>
+                    </span>
+                    <div>
+                        <span class="cr-fuel-kicker">
+                            New to IFTA?                        </span>
+                        <h2 id="carrier-start-title">
+                            Getting Started                        </h2>
+                        <p>
+                            A practical starting point for owner-operators, fleet managers, and new carriers.                        </p>
+                    </div>
+                </div>
+                <ol class="cr-start-steps">
+                    <li>
+                        <span class="cr-step-number" aria-hidden="true">
+                            1
+                        </span>
+                        <div>
+                            <h3>
+                                Check Whether IFTA Applies                            </h3>
+                            <p>
+                                Start with where you operate and your vehicle configuration. IFTA generally applies when a qualified motor vehicle operates in two or more member jurisdictions.                            </p>
+                            <a href="#carrier-qualified-vehicle" data-carrier-open-faq>
+                                Check the vehicle definition →                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="cr-step-number" aria-hidden="true">
+                            2
+                        </span>
+                        <div>
+                            <h3>
+                                Contact Your Base Jurisdiction                            </h3>
+                            <p>
+                                Your base jurisdiction handles the application and your IFTA account. Ask which documents, fees, and application procedures apply to your operation.                            </p>
+                            <a href="#carrier-contact">
+                                Find your jurisdiction contact →                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="cr-step-number" aria-hidden="true">
+                            3
+                        </span>
+                        <div>
+                            <h3>
+                                Obtain Your License &amp; Decals                            </h3>
+                            <p>
+                                After approval, follow your jurisdiction’s instructions for carrying a copy of your IFTA license and displaying the two decals issued for each qualified vehicle.                            </p>
+                            <p class="cr-small">
+                                For occasional travel, ask whether fuel trip permits are an appropriate alternative.                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="cr-step-number" aria-hidden="true">
+                            4
+                        </span>
+                        <div>
+                            <h3>
+                                Keep Records from Your First Trip                            </h3>
+                            <p>
+                                Track vehicle distance by jurisdiction and retain fuel receipts and bulk-fuel records. Keep trip details and summaries that support your quarterly return.                            </p>
+                            <a href="#carrier-records">
+                                See the recordkeeping checklist →                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="cr-step-number" aria-hidden="true">
+                            5
+                        </span>
+                        <div>
+                            <h3>
+                                File Your Quarterly Returns                            </h3>
+                            <p>
+                                File with your base jurisdiction and pay any tax due. A quarterly return is generally required even if you did not operate during that quarter.                            </p>
+                            <a href="#carrier-filing-dates">
+                                Review the filing calendar →                            </a>
+                        </div>
+                    </li>
+                </ol>
+                <div class="cr-program-note">
+                    <strong>
+                        IFTA and IRP serve different purposes.                    </strong>
+                    IFTA covers motor fuel use tax reporting and uses a license and decals. IRP covers apportioned vehicle registration and uses plates and cab cards. Your operation may need both; ask your base jurisdiction about all applicable requirements.                </div>
+                <div class="cr-carrier-tools">
+                    <article id="carrier-records">
+                        <h3>
+                            <i class="fas fa-clipboard-list" aria-hidden="true">
+                            </i>
+                            Your Recordkeeping Checklist                        </h3>
+                        <ul>
+                            <li>
+                                Vehicle identification, trip dates, origin, destination, and route.                            </li>
+                            <li>
+                                Odometer or other acceptable distance records, with distance by jurisdiction.                            </li>
+                            <li>
+                                Fuel purchase dates, quantities, fuel type, seller details, and supporting receipts.                            </li>
+                            <li>
+                                Bulk-fuel purchases and withdrawals, when applicable.                            </li>
+                            <li>
+                                Monthly and quarterly summaries that reconcile with your return.                            </li>
+                            <li>
+                                Supporting records for any exempt distance or temporary relief claimed.                            </li>
+                        </ul>
+                        <p class="cr-small">
+                            <strong>
+                                Retention:                            </strong>
+                            Keep supporting records for at least four years from the return due date or filing date, whichever is later. Audit, waiver, or assessment requirements can extend this period. Confirm the complete requirements with your base jurisdiction.                        </p>
+                    </article>
+                    <article id="carrier-filing-dates">
+                        <h3>
+                            <i class="fas fa-calendar-check" aria-hidden="true">
+                            </i>
+                            Quarterly Filing Calendar                        </h3>
+                        <div class="cr-table-wrap">
+                            <table class="cr-filing-table">
+                                <caption>
+                                    Standard IFTA reporting periods and due dates                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            Quarter                                        </th>
+                                        <th scope="col">
+                                            Reporting Period                                        </th>
+                                        <th scope="col">
+                                            Standard Due Date                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">
+                                            Q1                                        </th>
+                                        <td>
+                                            January–March                                        </td>
+                                        <td>
+                                            April 30                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Q2                                        </th>
+                                        <td>
+                                            April–June                                        </td>
+                                        <td>
+                                            July 31                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Q3                                        </th>
+                                        <td>
+                                            July–September                                        </td>
+                                        <td>
+                                            October 31                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">
+                                            Q4                                        </th>
+                                        <td>
+                                            October–December                                        </td>
+                                        <td>
+                                            January 31 of the following year                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="cr-small">
+                            When the due date falls on a weekend or legal holiday, the next business day applies. Confirm the applicable date and any special relief with your base jurisdiction.                        </p>
+                        <a class="cr-button cr-green" href="#carrier-contact">
+                            Ask About Filing or Renewal                        </a>
+                    </article>
+                </div>
+            </section>
+            
+<!-- LEARNING CENTER: CDTFA filing videos are jurisdiction-specific, not general recordkeeping training. -->
+<section class="cr-learning" aria-labelledby="carrier-learning-title">
+    <div class="cr-learning-heading">
+        <span class="cr-group-icon"><i class="fas fa-play-circle" aria-hidden="true"></i></span>
+        <div>
+            <h2 id="carrier-learning-title">Carrier Learning Center</h2>
+            <p>Build good recordkeeping habits and see how quarterly filing works.</p>
+        </div>
+    </div>
+    <div class="cr-learning-grid">
+        <article>
+            <h3>Recordkeeping: Start with the Essentials</h3>
+            <p>Use our checklist for trip details, distance by jurisdiction, fuel receipts, and supporting records. ProMiles also provides product tutorials covering trip information, fuel-purchase data, and fuel-tax reports.</p>
+            <a class="cr-button cr-green" href="#carrier-records">Review the Recordkeeping Checklist</a>
+            <a class="cr-button" href="https://www.promiles.com/how-to-videos/" target="_blank" rel="noopener">Browse ProMiles Video Tutorials</a>
+            <p class="cr-small">Sponsor product tutorials • English • Features and access depend on the product.</p>
+        </article>
+        <article>
+            <h3>IFTA Quarterly Filing Demonstration</h3>
+            <!-- The selected page language chooses the corresponding official video. -->
+            <div class="cr-video-frame">
+                <iframe
+                    src="https://www.youtube.com/embed/t245ggplsTQ?origin=https%3A%2F%2Fwww.iftach.org&amp;rel=0"
+                    title="IFTA Quarterly Filing Demonstration — CDTFA"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+            </div>
+            <p class="cr-small">Source: California Department of Tax and Fee Administration (CDTFA). This video demonstrates California’s online filing system. Carriers based elsewhere must use their own jurisdiction’s procedures.</p>
+            <p class="cr-small">If the player cannot load, open the video directly on YouTube.</p>
+            <a class="cr-button cr-green" href="https://www.youtube.com/watch?v=t245ggplsTQ" target="_blank" rel="noopener">Watch on YouTube →</a>
+        </article>
+    </div>
+    <!-- Subscriber education callout spans the full learning-center width. -->
+    <aside class="cr-education-promo" aria-labelledby="carrier-education-promo-title">
+        <span class="cr-education-promo-icon" aria-hidden="true"><i class="fas fa-graduation-cap"></i></span>
+        <div class="cr-education-promo-copy">
+            <span class="cr-education-promo-kicker">Keep Learning with IFTA</span>
+            <h3 id="carrier-education-promo-title">Continue Your IFTA Education with TRUedu</h3>
+            <p>Become an IFTA Subscriber and continue building your knowledge with TRUedu lessons through our learning management system. Explore educational resources that help you better understand IFTA.</p>
+        </div>
+        <div class="cr-education-promo-actions">
+            <a class="cr-button cr-green" href="/signup.php">Become an IFTA Subscriber →</a>
+            <a class="cr-education-benefits" href="/IFTA%20Subscribers%20Flyer%2012-23-2025.pdf" target="_blank" rel="noopener">Explore Subscriber Benefits ↗</a>
+        </div>
+    </aside>
+</section>
+<!-- SPONSOR TOOLS: Feature products with direct carrier applications; retain sponsorship labels. -->
+<section class="cr-sponsor-tools" aria-labelledby="carrier-sponsor-tools-title">
+    <h2 id="carrier-sponsor-tools-title">Tools from Our Sponsors</h2>
+    <p>Explore commercial tools that may help with carrier records, reporting, and day-to-day operations.</p>
+    <div class="cr-sponsor-grid">
+        <article class="cr-sponsor-visionary">
+            <span class="cr-sponsor-tag">Visionary Sponsor • Fuel Tax &amp; Routing</span>
+            <h3>ProMiles</h3>
+            <p>FuelTaxOnline helps organize truck and trip data and generate IFTA, mileage, audit-detail, IRP, and MPG reports. ProMiles also offers routing and automated fuel-tax reporting products.</p>
+            <a class="cr-button" href="https://www.promiles.com/fuel-tax-online/" target="_blank" rel="noopener">Explore FuelTaxOnline</a>
+                    </article>
+        <article>
+            <span class="cr-sponsor-tag">Champion Sponsor • Fleet Solutions</span>
+            <h3>Solera Explore</h3>
+            <p>Solera Fleet Solutions brings together technology for fleet operations, including routing and dispatch, transportation management, safety and risk management, compliance, telematics, and asset tracking. Its solutions help fleets improve visibility, efficiency, and operational performance.</p>
+            <a class="cr-button cr-green" href="https://www.solera.com/fleet-solutions/" target="_blank" rel="noopener">Explore Solera Fleet Solutions</a>
+                    </article>
+        <article>
+            <span class="cr-sponsor-tag">Champion Sponsor • Transportation Technology</span>
+            <h3>i3 Verticals</h3>
+            <p>i3 Verticals provides integrated transportation software for government agencies and motor carrier operations, including IFTA administration, IRP registration, licensing, and permitting.</p>
+            <a class="cr-button" href="https://www.i3verticals.com/publicsector/transportation/" target="_blank" rel="noopener">Explore Transportation Solutions</a>
+                    </article>
+    </div>
+    <p class="cr-small cr-sponsor-disclosure">These are external commercial resources from IFTA, Inc. sponsors. Pricing, subscriptions, features, and support are determined by each provider. Using a product does not replace your recordkeeping or filing obligations.</p>
+    <a href="/sponsors/">Meet Our Sponsors →</a>
+</section>
+
+<!-- ROAD RESOURCES: ELD modal and refund links. -->
+            <section class="cr-road-resources" aria-labelledby="carrier-resources-title">
+                <div class="cr-road-copy">
+                    <span class="cr-eyebrow">
+                        Resources for the road                    </span>
+                    <h2 id="carrier-resources-title">
+                        Keep Your Operations Moving                    </h2>
+                    <p>
+                        Find electronic logging information and jurisdiction refund resources.                    </p>
+                </div>
+                <div class="cr-road-actions">
+                    <a class="cr-road-link" href="#carrier-eld" data-toggle="modal" data-target="#carrier-eld">
+                        <i class="fas fa-truck" aria-hidden="true">
+                        </i>
+                        <span>
+                            <strong>
+                                ELD Information                            </strong>
+                            <small>
+                                Disclaimer &amp; guidance download                            </small>
+                        </span>
+                        <span aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+                    <a class="cr-road-link" href="/links.php">
+                        <i class="fas fa-exchange-alt" aria-hidden="true">
+                        </i>
+                        <span>
+                            <strong>
+                                Refunds &amp; Related Sites                            </strong>
+                            <small>
+                                Jurisdiction websites &amp; resources                            </small>
+                        </span>
+                        <span aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+                </div>
+            </section>
+            <!-- DYED FUEL AND RELIEF: Review dated examples when notices change. -->
+            <section class="cr-fuel-section" aria-labelledby="carrier-fuel-title">
+                <div class="cr-fuel-heading">
+                    <span class="cr-fuel-symbol">
+                        <i class="fas fa-gas-pump" aria-hidden="true">
+                        </i>
+                    </span>
+                    <div>
+                        <span class="cr-fuel-kicker">
+                            Fuel use &amp; reporting                        </span>
+                        <h2 id="carrier-fuel-title">
+                            Dyed Fuel, Exemptions &amp; Tax Holidays                        </h2>
+                        <p>
+                            Understand what relief covers before you fuel up or prepare your IFTA return.                        </p>
+                    </div>
+                </div>
+                <div class="cr-fuel-grid">
+                    <article>
+                        <span class="cr-fuel-label cr-dyed">
+                            Dyed diesel                        </span>
+                        <h3>
+                            Check Permission &amp; Tax Treatment                        </h3>
+                        <p>
+                            Dyed diesel is ordinarily designated for nontaxable uses. Temporary relief may change highway-use penalties or payment deadlines, but its conditions must be checked separately from state fuel taxes and IFTA reporting.                        </p>
+                        <p>
+                            <strong>
+                                A penalty waiver is not automatically a tax exemption.                            </strong>
+                            Confirm the fuel, location, dates, and eligible use in the applicable notice.                        </p>
+                    </article>
+                    <article>
+                        <span class="cr-fuel-label cr-exempt">
+                            Exemptions                        </span>
+                        <h3>
+                            Confirm Your Operation Qualifies                        </h3>
+                        <p>
+                            Exemptions vary by jurisdiction and may depend on the vehicle, activity, route, or type of fuel. An exemption for a particular trip does not necessarily cover every mile or all of your operations.                        </p>
+                        <p>
+                            Keep the records required to support your claim and confirm eligibility with the jurisdiction before claiming an exemption.                        </p>
+                        <a href="/exempt/view/Viewexemptions.php">
+                            Review jurisdiction exemptions →                        </a>
+                    </article>
+                    <article>
+                        <span class="cr-fuel-label cr-holiday">
+                            Tax holidays                        </span>
+                        <h3>
+                            Review the Filing Instructions                        </h3>
+                        <p>
+                            A temporary fuel tax reduction or suspension may cover specific fuels and dates. Do not assume a gasoline holiday also applies to diesel, or that tax-free purchases qualify for tax-paid fuel credit.                        </p>
+                        <p>
+                            Follow the notice for reporting total miles, taxable miles, total gallons, and tax-paid gallons.                        </p>
+                        <a href="/important-notices.php">
+                            View fuel tax holiday notices →                        </a>
+                    </article>
+                </div>
+                <div class="cr-fuel-check">
+                    <i class="fas fa-clipboard-check" aria-hidden="true">
+                    </i>
+                    <p>
+                        <strong>
+                            Before claiming relief:                        </strong>
+                        Check the effective dates, fuel type, eligible operation, reporting instructions, and required records. Your base jurisdiction can help you determine how to report the activity.                    </p>
+                    <a class="cr-button cr-green" href="#carrier-contact">
+                        Contact Your Jurisdiction                    </a>
+                </div>
+                <details class="cr-fuel-examples">
+                    <summary>
+                        Examples from official notices                        <span class="cr-small">
+                            Reviewed October 6, 2026                        </span>
+                        <span class="cr-plus" aria-hidden="true">
+                        </span>
+                    </summary>
+                    <div class="cr-answer">
+                        <p class="cr-small">
+                            These dated examples illustrate different types of relief. Review the latest notice and any extensions or replacements before using them for your operations.                        </p>
+                        <div class="cr-example-grid">
+                            <article>
+                                <h3>
+                                    Texas · Dyed Diesel                                </h3>
+                                <p>
+                                    The October 2, 2026 memo explains that the September 28 declaration suspends specified enforcement provisions without changing licensure, reporting obligations, or taxability rules. Tax-free dyed diesel belongs in total gallons for MPG, but not in the Texas purchased-gallons credit field identified by the memo.                                </p>
+                                <a href="/bulletins/TX-Gov%20Abbott%20Proclamation.pdf" target="_blank" rel="noopener">
+                                    Read Texas guidance (PDF) →                                
+</a>
+                            </article>
+                            <article>
+                                <h3>
+                                    Nebraska · Qualifying Trips                                </h3>
+                                <p>
+                                    The notice permits reduced Nebraska taxable miles for qualifying intrastate agricultural-product or livestock hauling from September 24 through December 22, 2026. Detailed supporting records are required; the relief does not cover all diesel taxes.                                </p>
+                                <a href="/bulletins/NE%20-%20Executive%20Order%20No.%2026-21.pdf" target="_blank" rel="noopener">
+                                    Read Nebraska guidance (PDF) →                                
+</a>
+                            </article>
+                            <article>
+                                <h3>
+                                    Indiana · Fuel-Specific Relief                                </h3>
+                                <p>
+                                    The September 4 notice specifies a zero IFTA rate for gasoline and gasohol for third-quarter 2026, excluding diesel. Returns and reporting of miles and fuel purchases remain required. This is a dated reporting example, not a statement that the holiday is still in effect.                                </p>
+                                <a href="/bulletins/Indiana%20Gas%20Tax%20Holiday%20extended%20%26%20tax%20fully%20suspended%20Q32026.pdf" target="_blank" rel="noopener">
+                                    Read Indiana guidance (PDF) →                                
+</a>
+                            </article>
+                            <article>
+                                <h3>
+                                    Federal · Implementation Matters                                </h3>
+                                <p>
+                                    The October 5, 2026 executive order directs Treasury and IRS to implement specified dyed-diesel penalty relief and, where legally authorized, tax-payment deferral for October 5–December 31, 2026. The order requires implementing guidance and separately calls for exploring tax forgiveness. Deferral does not itself eliminate a tax obligation.                                </p>
+                                <a href="https://www.whitehouse.gov/presidential-actions/2026/10/emergency-tax-relief-on-diesel-fuel/" target="_blank" rel="noopener">
+                                    Read the federal order →                                
+</a>
+                            </article>
+                        </div>
+                        <p>
+                            <a href="/important-notices.php">
+                                Check the latest Important Notices and jurisdiction documents →                            </a>
+                        </p>
+                    </div>
+                </details>
+            </section>
+            <!-- FAQS: Each details element contains one question and answer. -->
+            <section aria-labelledby="carrier-faq-title">
+                <div class="cr-faq-top">
+                    <div>
+                        <h2 class="cr-heading" id="carrier-faq-title">
+                            Frequently Asked Questions                        </h2>
+                        <p class="cr-intro">
+                            Select a question to open or close its answer.                        </p>
+                    </div>
+                </div>
+                <div id="carrier-faq-list">
+                    <section class="cr-faq-group">
+                        <div class="cr-group-heading">
+                            <span class="cr-group-icon">
+                                <i class="fas fa-truck-moving" aria-hidden="true">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    IFTA Basics &amp; Eligibility                                </h3>
+                                <p>
+                                    Understand IFTA and find out whether your vehicles qualify.                                </p>
+                            </div>
+                            <span class="cr-group-number" aria-hidden="true">
+                                01
+                            </span>
+                        </div>
+                        <details class="cr-faq">
+                            <summary>
+                                What is IFTA?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    IFTA is the International Fuel Tax Agreement. Through the IFTA, member jurisdictions act cooperatively to administer and collect motor fuel use taxes.                                </p>
+                                <p>
+                                    To learn more about IFTA visit our                                    <a href="/Aboutus.php" >
+                                        About Us                                    </a>
+                                    page, which has The Basics, and a great explanation of How IFTA Works, The Amendment Process, Compliance and much more about the International Fuel Tax Agreement.                                </p>
+                            </div>
+                        </details>
+                        <details class="cr-faq">
+                            <summary>
+                                Which jurisdictions are members of IFTA?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    The 48 contiguous States of the United States and the 10 Canadian Provinces are members of IFTA.                                </p>
+                            </div>
+                        </details>
+                        <details class="cr-faq" id="carrier-license-question">
+                            <summary>
+                                Should I apply for an IFTA license?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    If you are based in a member jurisdiction and operate a qualified motor vehicle in 2 or more member jurisdictions, yes. If you usually operate your vehicles only in one jurisdiction, but make occasional trips outside the base jurisdiction, you may elect to purchase trip permits for that occasional travel. Permitting services can usually be contacted from any major truckstop. Contact a permitting service for rates.                                </p>
+                            </div>
+                        </details>
+                        <details class="cr-faq" id="carrier-qualified-vehicle">
+                            <summary>
+                                What is a qualified motor vehicle?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    A Qualified Motor Vehicle is a motor vehicle used, designed, or maintained for transportation of persons or property and:                                </p>
+                                <p>
+                                    1) has two axles and a gross vehicle weight or registered gross vehicle weight exceeding 26,000 pounds or 11,797 kilograms; or                                </p>
+                                <p>
+                                    2) has three or more axles regardless of weight; or                                </p>
+                                <p>
+                                    3) is used in combination, when the weight of such combination exceeds 26,000 pounds or 11,797 kilograms gross vehicle or registered gross vehicle weight.                                </p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="cr-faq-group">
+                        <div class="cr-group-heading">
+                            <span class="cr-group-icon">
+                                <i class="fas fa-map-marker-alt" aria-hidden="true">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Licensing &amp; Your Base Jurisdiction                                </h3>
+                                <p>
+                                    Know where to apply and who to contact for account assistance.                                </p>
+                            </div>
+                            <span class="cr-group-number" aria-hidden="true">
+                                02
+                            </span>
+                        </div>
+                        <details class="cr-faq">
+                            <summary>
+                                Who can help with my license, returns, or decals?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    <strong>
+                                        For help with an IFTA license application, tax return, additional vehicle credentials, or your IFTA operations, contact your base jurisdiction.                                    </strong>
+                                </p>
+                                <p>
+                                    Your base jurisdiction.                                    <BR>
+                                    <BR>
+                                    The base jurisdiction will be processing the license application. If you qualify as an IFTA licensee, the base jurisdiction will send you an IFTA license which you will be required to copy and place in each of your qualified motor vehicles. The base jurisdiction will also send you two decals for each qualified motor vehicle that you have. Your base jurisdiction will also provide you with all the information you need to comply with the provisions of the IFTA, including the records you will be required to keep.                                </p>
+                                <p class="mb-2">
+                                    The base jurisdiction will provide you with a tax return and all of the tax rates each quarter. The base jurisdiction will also process the quarterly tax returns and will contact you if there are any questions concerning the returns.                                </p>
+                                <p>
+                                    The base jurisdiction may audit your records. It will audit your records on behalf of all member jurisdictions.                                </p>
+                                <p>
+                                    To obtain contact information for your base jurisdiction, use the jurisdiction selector above.                                </p>
+                                <p>
+                                    <a href="https://www.irs.gov/forms-pubs/about-form-2290">
+                                        <b  class="font-weight-bold">
+                                            Form 2290 Heavy Highway Vehicle Use Tax (HVUT) status update.                                        </b>
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="http://www.fmcsa.dot.gov/intl-programs/trucking/Trucking-Program.aspx">
+                                        <b  class="font-weight-bold">
+                                            U.S.-Mexico Cross-Border Trucking Pilot Program - Federal Motor Carrier Safety Administration                                        </b>
+                                    </a>
+                                </p>
+                            </div>
+                        </details>
+                        <details class="cr-faq">
+                            <summary>
+                                How do I contact my base jurisdiction?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    Select your base jurisdiction using the contact tool at the top of this page.                                </p>
+                                <a class="cr-button" href="#carrier-contact">
+                                    Find my jurisdiction                                </a>
+                            </div>
+                        </details>
+                        <details class="cr-faq">
+                            <summary>
+                                Where should I go to apply for an IFTA license?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    You should contact the jurisdiction where you are based. Your base jurisdiction is the jurisdiction where you have your qualified motor vehicles registered, where you have some travel, and where the operational control and operational records are maintained or can be made available.                                </p>
+                            </div>
+                        </details>
+                        <details class="cr-faq">
+                            <summary>
+                                What if I have qualified motor vehicles registered in more than one jurisdiction?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    It is important that you contact one of those jurisdictions. You may be able to consolidate your operations under one license. The jurisdiction you contact will assist you and give you information on how that can be accomplished.                                </p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="cr-faq-group">
+                        <div class="cr-group-heading">
+                            <span class="cr-group-icon">
+                                <i class="fas fa-folder-open" aria-hidden="true">
+                                </i>
+                            </span>
+                            <div>
+                                <h3>
+                                    Additional Resources                                </h3>
+                                <p>
+                                    Explore guidance and answers for your day-to-day operations.                                </p>
+                            </div>
+                            <span class="cr-group-number" aria-hidden="true">
+                                03
+                            </span>
+                        </div>
+                        <details class="cr-faq">
+                            <summary>
+                                Important Information                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    Visit                                    <a href="/important-notices.php">
+                                        Important Notices                                    </a>
+                                    for fuel tax holidays, emergency waivers, executive orders, and other updates.                                </p>
+                                <p>
+                                    <a href="/bulletins/2027%20Renewal%20Grace%20Period.pdf" target="_blank" rel="noopener">
+                                        2027 Renewal Grace Period (PDF)                                    
+</a>
+                                </p>
+                                <button class="cr-button" type="button" data-toggle="modal" data-target="#carrier-eld">
+                                    ELD Information                                </button>
+                            </div>
+                        </details>
+                        <details class="cr-faq">
+                            <summary>
+                                What information found at www.iftach.org might be beneficial to me?                                <span aria-hidden="true" class="cr-plus">
+                                </span>
+                            </summary>
+                            <div class="cr-answer">
+                                <p>
+                                    There are 3                                    <a href="/manual2020.php" >
+                                        <u>
+                                            manuals                                        </u>
+                                        </a>
+                                        that govern the IFTA: the Articles of Agreement, the Procedures Manual and the Audit Manual. All are available for review and may be downloaded. These documents may be changed from time to time, so if you download the document, you should re-visit this website to see if revision pages have been posted. Usually, any changes will be effective in either January or July of each year. There are some exceptions to that rule, so visit this website regularly.                                    </p>
+                                    <p>
+                                        IFTA, Inc. hosts                                        <u>
+                                            meetings                                        </u>
+                                        annually which may be of interest to you. Registration for the meetings hosted by IFTA, Inc. will be available on this website prior to each meeting. The meetings are the IFTA/IRP Audit Workshop (January), the IFTA Attorneys&#039; Section Meeting (April/May), the Annual IFTA Business Meeting (July), and the IFTA Managers&#039; Workshop/Law Enforcement Seminar (September).                                    </p>
+                                    <p>
+                                        The                                        <a href="/taxmatrix4/Taxmatrix.php" >
+                                            <u>
+                                                tax rates                                            </u>
+                                            </a>
+                                            for each jurisdiction are also available. You may also view                                            <a href="/taxmatrix4/TaxChange.php" >
+                                                <u>
+                                                    tax rate changes                                                </u>
+                                                </a>
+                                                that may be reported during a quarter.                                            </p>
+                                            <p>
+                                                Some jurisdictions have posted                                                <a href="/exempt/view/Viewexemptions.php" >
+                                                    <u>
+                                                        exemption                                                    </u>
+                                                    </a>
+                                                    information on the website. Please be aware, however, that it is                                                    <strong>
+                                                        imperative                                                    </strong>
+                                                    that you contact a jurisdiction for which you may want to claim an exemption prior to doing so on an IFTA tax return. The information contained on this website may NOT be the most recent available. To ensure the accuracy of any exemption information,                                                    <strong>
+                                                        you must contact the particular jurisdiction.                                                    </strong>
+                                                </p>
+                                            </div>
+                                        </details>
+                                        <details class="cr-faq">
+                                            <summary>
+                                                Where do I access the Exemption Database?                                                <span aria-hidden="true" class="cr-plus">
+                                                </span>
+                                            </summary>
+                                            <div class="cr-answer">
+                                                <p>
+                                                    For information on Exemptions, visit the                                                    <a href="https://www.iftach.org/exempt/view/Viewexemptions.php" >
+                                                        Exemptions Database.                                                    </a>
+                                                </p>
+                                            </div>
+                                        </details>
+                                        <details class="cr-faq">
+                                            <summary>
+                                                Where can I find information about refunds in my jurisdiction?                                                <span aria-hidden="true" class="cr-plus">
+                                                </span>
+                                            </summary>
+                                            <div class="cr-answer">
+                                                <p>
+                                                    For information on refunds                                                    <a href="/links.php" >
+                                                        IFTA Refunds and Related Sites.                                                    </a>
+                                                </p>
+                                            </div>
+                                        </details>
+                                        <details class="cr-faq">
+                                            <summary>
+                                                Still need help with an issue?                                                <span aria-hidden="true" class="cr-plus">
+                                                </span>
+                                            </summary>
+                                            <div class="cr-answer">
+                                                <p>
+                                                    Click on the                                                    <a href="/helpdesk/index.php" >
+                                                        <b  class="font-weight-bold">
+                                                            IFTA Helpdesk.                                                        </b>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </details>
+                                    </section>
+                                </div>
+                            </section>
+                            <!-- HELP AND SUBSCRIBER BENEFITS. -->
+                            <div class="cr-bottom">
+                                <article class="cr-help-card">
+                                    <span class="cr-bottom-icon">
+                                        <i class="fas fa-headset" aria-hidden="true">
+                                        </i>
+                                    </span>
+                                    <h2>
+                                        Still Need Help?                                    </h2>
+                                    <p>
+                                        Your base jurisdiction is your first contact for questions about your IFTA account. For additional assistance, visit the IFTA Helpdesk.                                    </p>
+                                    <a class="cr-button" href="/helpdesk/index.php">
+                                        Visit the Helpdesk                                    </a>
+                                </article>
+                                <article class="cr-subscriber-card">
+                                    <span class="cr-bottom-icon">
+                                        <i class="fas fa-users" aria-hidden="true">
+                                        </i>
+                                    </span>
+                                    <h2>
+                                        IFTA Subscriber Benefits                                    </h2>
+                                    <p>
+                                        Explore access to jurisdiction contact information, event discounts, meeting materials, and IFTA and IRP online training resources.                                    </p>
+                                    <a class="cr-button" href="/IFTA%20Subscribers%20Flyer%2012-23-2025.pdf" target="_blank" rel="noopener">
+                                        View Benefits (PDF)                                    
+</a>
+                                    <a class="cr-button cr-green" href="/signup.php">
+                                        Sign Up                                    </a>
+                                </article>
+                            </div>
+                        </div>
+                        <!-- ELD MODAL: Preserve disclaimer and required agreement checkbox. -->
+                        <div class="modal fade" id="carrier-eld" tabindex="-1" role="dialog" aria-labelledby="carrier-eld-title" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <form class="modal-content cr-modal" action="/committee/iac/FINAL%20-%202017_04%20HOS%20differences%20and%20similarities.pdf" method="get" target="_blank">
+                                    <div class="modal-header">
+                                        <h2 id="carrier-eld-title">
+                                            ELD Information                                        </h2>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">
+                                                ×
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            <strong>
+                                                Disclaimer:                                            </strong>
+                                            All users of the information contained in this web page understand and agree that IFTA, Inc. is not responsible for the accuracy of the information. IFTA, Inc. does not alter the information reported by the Member Jurisdictions or independently confirm the accuracy of the information reported by the Member Jurisdictions. Each Member Jurisdiction is solely responsible for the information reported to IFTA, Inc. that is posted in this web page. Additionally, each Member Jurisdiction is also solely responsible for updating the information reported by them to assure that it remains accurate. Any inquiries or disputes concerning the accuracy of the information contained in this web page must be directed to the Member Jurisdiction responsible for reporting the information in question.                                        </p>
+                                        <div class="cr-agree">
+                                            <input type="checkbox" id="carrier-eld-agree" required>
+                                            <label for="carrier-eld-agree">
+                                                I agree to the above terms.                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="cr-button cr-green" type="submit">
+                                            Download PDF                                        </button>
+                                        <button class="cr-button" type="button" data-dismiss="modal">
+                                            Close                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <script>
+
+(function () {
+    'use strict';
+
+    var root = document.getElementById('carrier-page');
+    var field = root.querySelector('#carrier-search');
+    var status = root.querySelector('#carrier-search-status');
+    var previous = root.querySelector('#carrier-search-previous');
+    var next = root.querySelector('#carrier-search-next');
+    var clear = root.querySelector('#carrier-search-clear');
+    var messages = {"hint":"Matching words will be highlighted below. Use Next to jump to a result. Linked PDFs are not searched.","count":"{count} matches. Use Previous or Next to move between results.","position":"Match {current} of {count}.","none":"No matches on this page. Try a different word."};
+    var matches = [];
+    var activeIndex = -1;
+    var savedDetails = null;
+    var details = Array.prototype.slice.call(root.querySelectorAll('details'));
+
+    root.querySelector('#carrier-search-box').hidden = false;
+
+    function normalizeSearchText(value) {
+        var text = String(value || '').toLowerCase();
+        if (typeof text.normalize === 'function') {
+            text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+        return text.replace(/\s+/g, ' ').trim();
+    }
+
+    function findHighlightRanges(text, terms) {
+        var folded = '';
+        var positions = [];
+        var offset = 0;
+
+        Array.from(text).forEach(function (character) {
+            var normalized = character.toLowerCase();
+
+            if (typeof normalized.normalize === 'function') {
+                normalized = normalized.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+
+            for (var i = 0; i < normalized.length; i++) {
+                positions.push({ start: offset, end: offset + character.length });
+            }
+
+            folded += normalized;
+            offset += character.length;
+        });
+
+        var ranges = [];
+
+        terms.forEach(function (term) {
+            var from = 0;
+            var found;
+
+            // Use literal matching, so punctuation is never treated as a regex.
+            while (term && (found = folded.indexOf(term, from)) !== -1) {
+                ranges.push({
+                    start: positions[found].start,
+                    end: positions[found + term.length - 1].end
+                });
+                from = found + 1;
+            }
+        });
+
+        ranges.sort(function (a, b) {
+            return a.start - b.start || a.end - b.end;
+        });
+
+        // Merge overlapping matches to avoid nested or duplicate highlights.
+        var merged = [];
+        ranges.forEach(function (range) {
+            var last = merged[merged.length - 1];
+
+            if (last && range.start <= last.end) {
+                last.end = Math.max(last.end, range.end);
+            } else {
+                merged.push({ start: range.start, end: range.end });
+            }
+        });
+        return merged;
+    }
+
+
+
+    function clearHighlights() {
+        Array.prototype.forEach.call(
+            root.querySelectorAll('mark.cr-search-highlight'),
+            function (mark) {
+                var parent = mark.parentNode;
+                parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                parent.normalize();
+            }
+        );
+        matches = [];
+        activeIndex = -1;
+    }
+
+    function restoreDetails() {
+        if (savedDetails !== null) {
+            details.forEach(function (item, index) {
+                item.open = savedDetails[index];
+            });
+        }
+    }
+
+    function highlightPage(terms) {
+        var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        var nodes = [];
+        var node;
+
+        // Search page content, not language/search controls, dropdown options,
+        // hidden icon labels, script/style content, or the ELD dialog.
+        while ((node = walker.nextNode())) {
+            if (node.nodeValue.trim() && !node.parentElement.closest(
+                '.cr-hero, .modal, select, button, script, style, [aria-hidden="true"]'
+            )) {
+                nodes.push(node);
+            }
+        }
+
+        nodes.forEach(function (textNode) {
+            var text = textNode.nodeValue;
+            var ranges = findHighlightRanges(text, terms);
+            if (!ranges.length) {
+                return;
+            }
+
+            var fragment = document.createDocumentFragment();
+            var cursor = 0;
+            ranges.forEach(function (range) {
+                fragment.appendChild(document.createTextNode(text.slice(cursor, range.start)));
+                var mark = document.createElement('mark');
+                mark.className = 'cr-search-highlight';
+                mark.textContent = text.slice(range.start, range.end);
+                fragment.appendChild(mark);
+                matches.push(mark);
+                cursor = range.end;
+            });
+            fragment.appendChild(document.createTextNode(text.slice(cursor)));
+            textNode.parentNode.replaceChild(fragment, textNode);
+        });
+
+        // Reveal results inside FAQs and the official-notice examples.
+        matches.forEach(function (mark) {
+            var container = mark.parentElement;
+            while (container && container !== root) {
+                if (container.tagName === 'DETAILS') {
+                    container.open = true;
+                }
+                container = container.parentElement;
+            }
+        });
+    }
+
+    // Keep a placeholder in the banner so floating controls do not shift the page.
+    var searchBox = root.querySelector('#carrier-search-box');
+    var searchPlaceholder = document.createElement('div');
+    searchPlaceholder.className = 'cr-search-placeholder';
+    searchPlaceholder.hidden = true;
+    searchBox.parentNode.insertBefore(searchPlaceholder, searchBox);
+
+    function updateFloatingSearch(active) {
+        if (active) {
+            searchPlaceholder.hidden = false;
+            if (!searchBox.classList.contains('cr-search-floating')) {
+                searchPlaceholder.style.height = searchBox.offsetHeight + 'px';
+            }
+            searchBox.classList.add('cr-search-floating');
+        } else {
+            searchBox.classList.remove('cr-search-floating');
+            searchPlaceholder.hidden = true;
+            searchPlaceholder.style.height = '';
+        }
+    }
+
+    function runSearch() {
+        clearHighlights();
+        restoreDetails();
+        var query = normalizeSearchText(field.value);
+        updateFloatingSearch(!!query);
+
+        if (!query) {
+            savedDetails = null;
+            status.textContent = messages.hint;
+        } else {
+            if (savedDetails === null) {
+                savedDetails = details.map(function (item) { return item.open; });
+            }
+            // Highlight each distinct word, retaining the full page layout.
+            var terms = query.split(' ').filter(function (term, index, all) {
+                return all.indexOf(term) === index;
+            });
+            highlightPage(terms);
+            status.textContent = matches.length
+                ? messages.count.replace('{count}', matches.length)
+                : messages.none;
+        }
+        previous.disabled = !matches.length;
+        next.disabled = !matches.length;
+    }
+
+    function goToMatch(direction) {
+        if (!matches.length) { return; }
+        if (activeIndex >= 0) {
+            matches[activeIndex].classList.remove('cr-search-current');
+        }
+        activeIndex = activeIndex < 0
+            ? (direction > 0 ? 0 : matches.length - 1)
+            : (activeIndex + direction + matches.length) % matches.length;
+        var mark = matches[activeIndex];
+        mark.classList.add('cr-search-current');
+        var reduceMotion = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        mark.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+        status.textContent = messages.position
+            .replace('{current}', activeIndex + 1)
+            .replace('{count}', matches.length);
+    }
+
+    field.addEventListener('input', runSearch);
+    field.addEventListener('search', runSearch);
+    field.addEventListener('change', runSearch);
+    field.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            goToMatch(event.shiftKey ? -1 : 1);
+        } else if (event.key === 'Escape') {
+            field.value = '';
+            runSearch();
+        }
+    });
+    previous.addEventListener('click', function () { goToMatch(-1); });
+    next.addEventListener('click', function () { goToMatch(1); });
+    clear.addEventListener('click', function () {
+        field.value = '';
+        runSearch();
+        field.focus();
+    });
+
+    // Getting Started links still open the appropriate FAQ directly.
+    function openLinkedQuestion(hash) {
+        var target = document.getElementById(hash.replace(/^#/, ''));
+        if (target && target.classList.contains('cr-faq')) {
+            target.open = true;
+        }
+    }
+    Array.prototype.forEach.call(root.querySelectorAll('[data-carrier-open-faq]'), function (link) {
+        link.addEventListener('click', function () {
+            openLinkedQuestion(link.getAttribute('href'));
+        });
+    });
+    window.addEventListener('hashchange', function () {
+        openLinkedQuestion(window.location.hash);
+    });
+    openLinkedQuestion(window.location.hash);
+    runSearch();
+})();
+
+</script>
+                    </div>
+                </div>
+                	
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="twitter:card" content="summary" ></meta>
+    <!-- Bootstrap CSS -->
+ 
+   <script src="https://www.iftach.org/files/4.3.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="/files/css/footer.css" /> 
+    
+  </head>
+  <body>
+  
+  </body>
+</html>
+ 
+<!-- Footer -->
+ 
+
+<!-- Footer -->
+		<footer class="pt-5 pb-4" id="contact">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-3 col-md-6 col-sm-6 mt-2 mb-4">
+						<h3 class="mb-4 font-weight-bold"> Company</h3>
+
+						<ul class="f-address">
+							<li>
+								<div class="row">
+									<div class="col-1"><i class="fas fa-map-marker"></i></div>
+									<div class="col-10">
+										<h6 class="font-weight-bold mb-0">Address:</h6>
+										<p>PO Box 24195 <BR>Tempe AZ 85285</p>
+										
+									</div>
+								</div>
+							</li>
+		
+							
+							<li>
+								<div class="row">
+									<div class="col-1"><i class="fas fa-phone-volume"></i></div>
+									<div class="col-10">
+										<h6 class="font-weight-bold mb-0">  (833) IFTANOW<BR>(833) 438-2669  </h6>
+										<p></p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+				
+					<div class="col-lg-3 col-md-6 col-sm-6 mt-2 mb-4">
+						<h5 class="mb-4 font-weight-bold">Quick Links</h5>
+						<div class="recent-post">
+						
+						
+						<p class="mb-4 font-weight-bold"><a href="https://www.iftach.org/Carriers/"><b style="
+font-weight: bold; color:#2f9af2" >Help</b></a>  </p>
+						 <p class="mb-4 font-weight-bold"><a href="https://www.iftach.org/privacy.php"><b style="
+font-weight: bold;  color:#2f9af2">Privacy Policy</b></a> </p>
+
+						<p class="mb-4 font-weight-bold"><a href="https://www.iftach.org/sitemap/"><b style="
+font-weight: bold;  color:#2f9af2">Sitemap</b></a>  </p>
+						<p class="mb-4 font-weight-bold"><a href="https://www.iftach.org/suggestions/"><b style="
+font-weight: bold;  color:#2f9af2">Suggestions</b></a> </p>
+							
+						<p class="mb-4 font-weight-bold"><a href="https://www.iftach.org/terms.php"><b style="
+font-weight: bold;  color:#2f9af2">Terms of Service</b></a> </p>
+						
+						</div>
+					</div>
+					<div class="col-lg-3 col-md-6 col-sm-6 mt-2 mb-4">
+						<h5 class="mb-4 font-weight-bold">Search</h5>
+						
+						<div class="input-group">
+							
+							<table border="0"  cellSpacing=0 cellPadding=0><tr>
+								
+ <form method="get" action="/search" class="zoom_searchform">
+<div class="input-group md-form form-sm form-2 pl-0">
+  <input class="form-control my-0 py-1 red-border text-white" type="text" name="zoom_query" placeholder="Search" aria-label="Search">
+  <div class="input-group-append">
+    <button class="input-group-text blue lighten-1" id="basic-text1" alt="IFTA Search" aria-label='IFTA Search'><i class="fas fa-search text-grey" alt="IFTA Search"
+        aria-hidden="true"></i></button>
+  </div>
+</div>
+</form>	</td></tr></table>
+						
+						   
+ 
+						
+ <div class="social-pet mt-4">
+							<a href="https://twitter.com/ifta_inc"  target="_blank" ><img width="54" src="https://www.iftach.org/images3/twitter.png" alt="IFTA Twitter"></a><a  target="_blank" href="https://www.facebook.com/IFTAInc/"><img width="50" src="https://www.iftach.org/images3/fb.png" alt="IFTA Facebook"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- Copyright -->
+ 
+			
+		<section class="copyright">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 ">
+						<div class="text-center text-white">
+							  &copy; Copyright 2026  IFTA, Inc. All Rights Reserved 
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+<script>
+  // Run when page loads
+  document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Load saved mode from localStorage
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      body.classList.add('dark-mode');
+    }
+
+    toggle.addEventListener('click', function() {
+      body.classList.toggle('dark-mode');
+
+      // Save state to localStorage
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    });
+  });
+</script>
+
+ 

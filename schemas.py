@@ -20,7 +20,7 @@ class Claim(BaseModel):
     model_config = ConfigDict(extra="forbid")  # a typo'd key in claims.yaml fails instead of vanishing
 
     id: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
-    type: Literal["price", "product", "feature", "metric", "company", "competitor"]
+    type: Literal["price", "product", "feature", "metric", "deadline", "company", "competitor"]  # deadline: e.g. IFTA due dates
     value: StrictInt | StrictFloat | str  # strict: YAML true/yes must not become the number 1
     unit: str | None = None
     phrasings: list[str]  # empty = record only, never in copy; allowed only for non-numeric product/feature/company

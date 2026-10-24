@@ -97,6 +97,13 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "Customers, lanes and past loads are found in your inbox, drivers come in from a spreadsheet, and your ELD connects so trucks appear on the map" Context: Anything the old system holds that is not in your inbox or a spreadsheet needs an export from that system. `setup-what-comes-across`
 - "For fleets of 31 trucks or more, a named Hemut team moves your data and EDI connections" Context: No fixed published timeline; it depends on your data and EDI partners. `setup-enterprise-team`
 
+## Deadlines
+
+- "The IFTA return for January–March is due April 30, or the next business day when that falls on a weekend or holiday" or "Q1 IFTA returns are due April 30, or the next business day when that falls on a weekend or holiday" Context: Standard due date; the base jurisdiction confirms the applicable date and any special relief. `ifta-q1-due`
+- "The IFTA return for April–June is due July 31, or the next business day when that falls on a weekend or holiday" or "Q2 IFTA returns are due July 31, or the next business day when that falls on a weekend or holiday" Context: Standard due date; the base jurisdiction confirms the applicable date and any special relief. `ifta-q2-due`
+- "The IFTA return for July–September is due October 31, or the next business day when that falls on a weekend or holiday" or "Q3 IFTA returns are due October 31, or the next business day when that falls on a weekend or holiday" Context: Standard due date; the base jurisdiction confirms the applicable date and any special relief. `ifta-q3-due`
+- "The IFTA return for October–December is due January 31 of the following year, or the next business day when that falls on a weekend or holiday" or "Q4 IFTA returns are due January 31 of the following year, or the next business day when that falls on a weekend or holiday" Context: Standard due date; the base jurisdiction confirms the applicable date and any special relief. `ifta-q4-due`
+
 ## Company and customers
 
 - "Hemut is the AI operating system for trucking carriers" or "Its main product, Hemut Command, is a full TMS for asset-based carriers that puts dispatch, live tracking, documents, billing, settlements, IFTA and AI agents in one system" `company-what-is-hemut`

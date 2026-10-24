@@ -1,0 +1,10 @@
+# The due date typed in by hand instead of through the ifta-q3-due claim (and without its qualifier).
+expected_codes: [UNBACKED_NUMBER]
+post:
+  title: "IFTA is due Oct 31"
+  body: |
+    In Command you get {{claim:hemi-desk-settlements-ifta:1}}, so the office checks the return instead of building it.
+  cta_text: Start your free trial
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=social_post&utm_campaign=ifta-q3"
+  claim_ids_used: [hemi-desk-settlements-ifta]
+  requires_approval: false

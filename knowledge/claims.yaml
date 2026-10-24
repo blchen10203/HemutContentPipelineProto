@@ -1007,6 +1007,50 @@
   checked: 2026-10-23
   requires_approval: false
 
+# ---------------------------------------------------------------- Deadlines (IFTA quarterly filing calendar)
+# iftach.org "Quarterly Filing Calendar": standard due dates, and "When the due date falls on a weekend or legal
+# holiday, the next business day applies." Every phrasing keeps that qualifier (Oct 31, 2026 is a Saturday).
+
+- id: ifta-q1-due
+  type: deadline
+  value: "April 30"
+  phrasings: ["The IFTA return for January–March is due April 30, or the next business day when that falls on a weekend or holiday", "Q1 IFTA returns are due April 30, or the next business day when that falls on a weekend or holiday"]
+  context: "Standard due date; the base jurisdiction confirms the applicable date and any special relief."
+  source_url: https://www.iftach.org/Carriers/
+  source_snapshot: knowledge/sources/iftach-carriers_2026-10-24.txt
+  checked: 2026-10-24
+  requires_approval: false
+
+- id: ifta-q2-due
+  type: deadline
+  value: "July 31"
+  phrasings: ["The IFTA return for April–June is due July 31, or the next business day when that falls on a weekend or holiday", "Q2 IFTA returns are due July 31, or the next business day when that falls on a weekend or holiday"]
+  context: "Standard due date; the base jurisdiction confirms the applicable date and any special relief."
+  source_url: https://www.iftach.org/Carriers/
+  source_snapshot: knowledge/sources/iftach-carriers_2026-10-24.txt
+  checked: 2026-10-24
+  requires_approval: false
+
+- id: ifta-q3-due
+  type: deadline
+  value: "October 31"
+  phrasings: ["The IFTA return for July–September is due October 31, or the next business day when that falls on a weekend or holiday", "Q3 IFTA returns are due October 31, or the next business day when that falls on a weekend or holiday"]
+  context: "Standard due date; the base jurisdiction confirms the applicable date and any special relief."
+  source_url: https://www.iftach.org/Carriers/
+  source_snapshot: knowledge/sources/iftach-carriers_2026-10-24.txt
+  checked: 2026-10-24
+  requires_approval: false
+
+- id: ifta-q4-due
+  type: deadline
+  value: "January 31"
+  phrasings: ["The IFTA return for October–December is due January 31 of the following year, or the next business day when that falls on a weekend or holiday", "Q4 IFTA returns are due January 31 of the following year, or the next business day when that falls on a weekend or holiday"]
+  context: "Standard due date; the base jurisdiction confirms the applicable date and any special relief."
+  source_url: https://www.iftach.org/Carriers/
+  source_snapshot: knowledge/sources/iftach-carriers_2026-10-24.txt
+  checked: 2026-10-24
+  requires_approval: false
+
 # ---------------------------------------------------------------- Customers (all require approval)
 
 - id: customer-meiborg-brothers

@@ -13,6 +13,7 @@ HEADINGS = {
     "product": "Products",
     "feature": "Features",
     "metric": "Metrics",
+    "deadline": "Deadlines",
     "company": "Company and customers",
     "competitor": "Competitors",
 }

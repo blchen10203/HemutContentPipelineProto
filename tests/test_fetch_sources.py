@@ -21,3 +21,14 @@ def test_refuses_to_overwrite_todays_snapshot(tmp_path, monkeypatch):
     with pytest.raises(SystemExit):
         fetch_sources.main()
     assert snapshot.read_text() == "cited"
+
+
+def test_named_sources_only(tmp_path, monkeypatch):
+    monkeypatch.setattr(fetch_sources, "OUT", tmp_path)
+    with pytest.raises(SystemExit, match="Unknown source"):
+        fetch_sources.main(["no-such-page"])
+    snapshot = tmp_path / f"iftach-carriers_{datetime.date.today().isoformat()}.txt"
+    snapshot.write_text("cited")
+    with pytest.raises(SystemExit, match="iftach-carriers"):
+        fetch_sources.main(["iftach-carriers"])
+    assert snapshot.read_text() == "cited"
