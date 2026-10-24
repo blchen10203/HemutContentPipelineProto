@@ -3,14 +3,14 @@
 
 # Hemut fact sheet
 
-Use only the quoted wordings below, with their context kept attached. Anything not here does not go in copy.
+Use only the quoted wordings below. "Context" is background for the writer, not copy: never restate it in a post. Anything not in a quoted wording does not go in copy.
 Claims under "Approval required" need human sign-off before a post may use them.
 
 ## Prices
 
 - "Command starts at $99 a month with 3 trucks included" or "$99 a month, which includes your first 3 trucks" Context: Includes the first 3 trucks only; per-truck band rates apply after that. Fleets of 31+ trucks are Enterprise. `command-base-price`
-- "Command Pro: $248 a month with 3 trucks included" Context: Includes the first 3 trucks only; per-truck band rates apply after that. `command-pro-base-price`
-- "Command All-in: $298 a month with 3 trucks included" Context: Includes the first 3 trucks only; per-truck band rates apply after that. `command-all-in-base-price`
+- "Command Pro starts at $248 a month with 3 trucks included" Context: Includes the first 3 trucks only; per-truck band rates apply after that. `command-pro-base-price`
+- "Command All-in starts at $298 a month with 3 trucks included" Context: Includes the first 3 trucks only; per-truck band rates apply after that. `command-all-in-base-price`
 - "$29 a month per truck for trucks 4–15 on Command" Context: Applies only to trucks 4–15. Bands work like tax brackets: each rate applies only to the trucks inside its own band. `command-band-4-15`
 - "$24 a month per truck for trucks 16–30 on Command" Context: Applies only to trucks 16–30. Fleets of 31+ trucks are Enterprise. `command-band-16-30`
 - "$39 a month per truck for trucks 4–15 on Command Pro" Context: Applies only to trucks 4–15, like a tax bracket. `command-pro-band-4-15`
@@ -50,14 +50,14 @@ Claims under "Approval required" need human sign-off before a post may use them.
 
 ## Products
 
-- "Command: run the fleet day to day — loads, dispatch and live tracking in one place" Context: Base plan. Fuel tools = IFTA mileage, fuel card sync and fuel surcharge. `plan-command-includes`
-- "Command Pro: everything in Command, plus the tools that price freight and win it" `plan-command-pro-includes`
-- "Command All-in: everything in Pro, plus the reporting, planning and automation layer" `plan-command-all-in-includes`
+- "Command runs the fleet day to day, with loads, dispatch and live tracking in one place" Context: Base plan. Fuel tools = IFTA mileage, fuel card sync and fuel surcharge. `plan-command-includes`
+- "Command Pro has everything in Command, plus the tools that price freight and win it" `plan-command-pro-includes`
+- "Command All-in has everything in Pro, plus the reporting, planning and automation layer" `plan-command-all-in-includes`
 - "Command is a full trucking TMS built as an AI operating system: dispatch, live tracking, documents, billing, settlements and IFTA, with AI agents built in" Context: The product most carriers run on; the other products extend it. `product-command`
-- "Control: Hemi, the freight assistant inside Command. Ask in plain words or by voice to find loads, track trucks, check rates and dispatch, and turn your SOPs into agents." `product-control`
-- "Forge: RFP and bid automation for carriers — build lane bids with your own pricing method and answer RFPs in a fraction of the time" Context: 'a fraction of the time' is the source's wording; no number is published, so never put one on it. `product-forge`
-- "Custom: a custom system for an operation no platform fits, delivered in phases" Context: Part of an Enterprise engagement. `product-custom`
-- "Hemut Diesel: a fuel card with fleet discounts and nationwide coverage, with software and support included" Context: No discount amount is published; never state one. `product-hemut-diesel`
+- "Control is Hemi, the freight assistant inside Command: you ask in plain words or by voice to find loads, track trucks, check rates and dispatch, and turn your SOPs into agents" `product-control`
+- "Forge is RFP and bid automation for carriers, so you build lane bids with your own pricing method and answer RFPs in a fraction of the time" Context: 'a fraction of the time' is the source's wording; no number is published, so never put one on it. `product-forge`
+- "Custom is a custom system for an operation no platform fits, delivered in phases" Context: Part of an Enterprise engagement. `product-custom`
+- "Hemut Diesel is a fuel card with fleet discounts and nationwide coverage, with software and support included" Context: No discount amount is published; never state one. `product-hemut-diesel`
 - "A free USDOT and MC carrier lookup" or "Plain guides to UCR, MCS-150, IFTA, BOC-3 and DOT inspections" `product-free-carrier-tools`
 - "Hemi is the personal assistant built into Hemut. It turns rate cons into loads, keeps customers updated, chases PODs, sends invoices and works out driver pay." or "Your team only handles what Hemi flags" Context: Desks vary by plan (see hemi-desk-* entries). `product-hemi`
 

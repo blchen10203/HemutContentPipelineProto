@@ -1,11 +1,21 @@
 Write one post for the brief and angle below.
 
-Format rules:
-- reddit_post: a title like a post a carrier would click, then a body of a few short paragraphs or a short list. Conversational, useful first, product second.
-- social_post: a short title and a body of two to four sentences.
-- short_ad: a title of a few words and a body of one or two sentences.
-- stat_card: set stat_card to one numeric claim id and a short label with no numbers in it; the number is filled in from the claim. Keep the body short.
+Format and length (the body word counts are a ceiling, not a target):
+- reddit_post: a title like a post a carrier would click, then a body of at most 170 words: two or three short paragraphs, or one short paragraph and one short list. Conversational, useful first, product second. Use at most four claims.
+- social_post: a short title and a body of two to four sentences, at most 60 words. Use at most two claims.
+- short_ad: a title of at most six words and a body of one or two sentences, at most 30 words. Use one or two claims.
+- stat_card: set stat_card to one numeric claim id and a label of at most six words with no numbers in it; the number is filled in from the claim. The body is one sentence, at most 25 words.
 Leave stat_card empty for every format except stat_card.
+
+Say each thing once. Use each claim at most once, use only one wording per claim, and do not restate a claim's point in your own words elsewhere in the post. Two claims that say nearly the same thing count as one point: pick one. Pick the claims that serve this angle best and leave the rest out.
+
+Build each sentence around the wording, so the wording reads as part of the sentence:
+- Good: "Run it on your own loads for {{claim:trial-loads-per-truck}}."
+- Bad: a lead-in that ends in a colon, then the wording alone on its own line or as a fragment ("Here's what it covers:", "For context:", "This is not a separate purchase:").
+- A wording whose first word is a capitalized ordinary word ("A", "Free", "Every", "No", "Your") starts its sentence or list item; never put it after "with", "and" or other words mid-sentence. Names and acronyms (Command, Hemi, IFTA, ELD) can go anywhere.
+- If no wording of a claim fits the sentence you want, write a different sentence or leave the claim out. Never bend the sentence so it reads awkwardly around the wording.
+
+The fact sheet's "Context" notes are background for you, the writer. They tell you how a wording may be used. They are not copy: do not restate, paraphrase or summarize them, and do not take any fact from them (a feature, a plan detail, a limit, a price) into the post. If a fact is not in a quoted wording you insert with a placeholder, it is not in the post.
 
 Fill claim_ids_used with exactly the claim ids your placeholders use, plus the stat card's claim id if there is one.
 

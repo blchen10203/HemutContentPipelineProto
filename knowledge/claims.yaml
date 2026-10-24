@@ -26,7 +26,7 @@
   type: price
   value: 248
   unit: USD/month
-  phrasings: ["Command Pro: $248 a month with 3 trucks included"]
+  phrasings: ["Command Pro starts at $248 a month with 3 trucks included"]
   context: "Includes the first 3 trucks only; per-truck band rates apply after that."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
@@ -37,7 +37,7 @@
   type: price
   value: 298
   unit: USD/month
-  phrasings: ["Command All-in: $298 a month with 3 trucks included"]
+  phrasings: ["Command All-in starts at $298 a month with 3 trucks included"]
   context: "Includes the first 3 trucks only; per-truck band rates apply after that."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
@@ -467,7 +467,7 @@
 - id: plan-command-includes
   type: product
   value: "Loads, dispatch and live tracking; Overview and Tasks; document storage; compliance expiry reminders; fuel tools; IFTA quarterly reports; usage analytics (Lite); 5 starter playbooks"
-  phrasings: ["Command: run the fleet day to day — loads, dispatch and live tracking in one place"]
+  phrasings: ["Command runs the fleet day to day, with loads, dispatch and live tracking in one place"]
   context: "Base plan. Fuel tools = IFTA mileage, fuel card sync and fuel surcharge."
   source_url: https://hemut.com/pricing
   source_snapshot: knowledge/sources/pricing_2026-10-23.txt
@@ -477,7 +477,7 @@
 - id: plan-command-pro-includes
   type: product
   value: "Everything in Command, plus auto-bid, rate intelligence, toll estimation, email quoting, RFP, driver ranking, Find Loads, lane routes, maintenance, DVIR, repair shops, trailer and tractor pools, trailer cargo state, safety scorecards, fault and idle analytics, reefer monitoring, claims, parts inventory, CARB"
-  phrasings: ["Command Pro: everything in Command, plus the tools that price freight and win it"]
+  phrasings: ["Command Pro has everything in Command, plus the tools that price freight and win it"]
   source_url: https://hemut.com/pricing
   source_snapshot: knowledge/sources/pricing_2026-10-23.txt
   checked: 2026-10-23
@@ -486,7 +486,7 @@
 - id: plan-command-all-in-includes
   type: product
   value: "Everything in Pro, plus detention alerts, detailed shipper tracking links, custom reports and dashboards, financial planning, AI insights, usage analytics Pro, the full Playbooks library and builder, priority support"
-  phrasings: ["Command All-in: everything in Pro, plus the reporting, planning and automation layer"]
+  phrasings: ["Command All-in has everything in Pro, plus the reporting, planning and automation layer"]
   source_url: https://hemut.com/pricing
   source_snapshot: knowledge/sources/pricing_2026-10-23.txt
   checked: 2026-10-23
@@ -547,7 +547,7 @@
 - id: product-control
   type: product
   value: "Control: Hemi, the freight assistant inside Command"
-  phrasings: ["Control: Hemi, the freight assistant inside Command. Ask in plain words or by voice to find loads, track trucks, check rates and dispatch, and turn your SOPs into agents."]
+  phrasings: ["Control is Hemi, the freight assistant inside Command: you ask in plain words or by voice to find loads, track trucks, check rates and dispatch, and turn your SOPs into agents"]
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
   checked: 2026-10-23
@@ -556,7 +556,7 @@
 - id: product-forge
   type: product
   value: "Forge: RFP and bid automation for carriers"
-  phrasings: ["Forge: RFP and bid automation for carriers — build lane bids with your own pricing method and answer RFPs in a fraction of the time"]
+  phrasings: ["Forge is RFP and bid automation for carriers, so you build lane bids with your own pricing method and answer RFPs in a fraction of the time"]
   context: "'a fraction of the time' is the source's wording; no number is published, so never put one on it."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
@@ -566,7 +566,7 @@
 - id: product-custom
   type: product
   value: "Custom: a custom system for an operation no platform fits"
-  phrasings: ["Custom: a custom system for an operation no platform fits, delivered in phases"]
+  phrasings: ["Custom is a custom system for an operation no platform fits, delivered in phases"]
   context: "Part of an Enterprise engagement."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
@@ -576,7 +576,7 @@
 - id: product-hemut-diesel
   type: product
   value: "Hemut Diesel: a fuel card with fleet discounts and nationwide coverage"
-  phrasings: ["Hemut Diesel: a fuel card with fleet discounts and nationwide coverage, with software and support included"]
+  phrasings: ["Hemut Diesel is a fuel card with fleet discounts and nationwide coverage, with software and support included"]
   context: "No discount amount is published; never state one."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt

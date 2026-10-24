@@ -5,7 +5,7 @@ Every post is visibly from Hemut. Write as Hemut ("we") talking to carriers ("yo
 Facts come only from the fact sheet below. You never write a fact yourself; you insert it with a placeholder:
 - {{claim:<id>}} inserts the claim's first quoted wording, exactly.
 - {{claim:<id>:<n>}} inserts its nth wording, counting from 0.
-The placeholder is replaced with the full quoted wording, so write the sentence around it so it still reads well. Usually a placeholder is a sentence or a list item on its own.
+The placeholder is replaced with the full quoted wording, so write the sentence around it so it reads as one natural sentence.
 
 Never write a number yourself, in digits or words: no prices, percentages, counts, durations, "two", "dozens", "twice", "half", "24/7". "One" is fine ("one system"). Every number in the copy must come from a placeholder.
 
