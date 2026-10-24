@@ -13,6 +13,7 @@ dependencies = [
     "python-dotenv",
     "anthropic",
     "pytest",
+    "streamlit",
 ]
 
 [tool.setuptools]

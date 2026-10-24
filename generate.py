@@ -1,7 +1,7 @@
 """Core pipeline, shared by both modes: Brief -> angles -> draft -> validate -> retry (max 2). Writes out/runs/<id>/.
 
 run_brief(brief) never posts anything. on_event(name, payload) reports progress for the CLI and Streamlit:
-"angles", "draft" (one per attempt), "done". If the API fails mid-run, the run folder is still written, then the
+"brief", "angles", "draft" (one per attempt), "done". If the API fails mid-run, the run folder is still written, then the
 error is re-raised.
 """
 import datetime
@@ -50,6 +50,7 @@ def run_brief(
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
     result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source)
+    on_event("brief", brief.model_dump())
 
     if brief.needs_source:
         result.status = "needs_source"

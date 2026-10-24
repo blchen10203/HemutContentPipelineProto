@@ -1,0 +1,6 @@
+# Local only (CLAUDE.md): Streamlit listens on every interface by default, which lets anyone on the network spend API credit.
+[server]
+address = "localhost"
+
+[browser]
+gatherUsageStats = false

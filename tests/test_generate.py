@@ -46,7 +46,7 @@ def test_good_first_try(tmp_path):
     assert result.status == "ok"
     assert [len(d) for d in result.drafts] == [1] * N_ANGLES
     assert "IFTA" in result.drafts[0][0].rendered_text and "{{" not in result.drafts[0][0].rendered_text
-    assert events == ["angles"] + ["draft"] * N_ANGLES + ["done"]
+    assert events == ["brief", "angles"] + ["draft"] * N_ANGLES + ["done"]
     assert len(client.calls) == 1 + N_ANGLES
     meta = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))
     assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt", "normalize.txt"}
@@ -91,7 +91,7 @@ def test_needs_source_and_sensitive_make_no_calls(tmp_path):
     ]:
         client = FakeClient(ANGLES)
         result, events = run(client, tmp_path, brief)
-        assert result.status == status and client.calls == [] and events == ["done"]
+        assert result.status == status and client.calls == [] and events == ["brief", "done"]
         assert (Path(result.run_dir) / "meta.json").is_file()
 
 
