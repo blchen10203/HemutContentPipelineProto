@@ -10,21 +10,20 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 uv venv
 uv pip install --python .venv/Scripts/python.exe -e .   # macOS/Linux: .venv/bin/python
 cp .env.example .env                                   # then set ANTHROPIC_API_KEY=sk-ant-...
-.venv\Scripts\activate                                 # macOS/Linux: source .venv/bin/activate
-pytest -q                                              # all tests pass, no network
-streamlit run app.py                                   # opens http://localhost:8501
+.venv/Scripts/pytest -q                                # all tests pass, no network
+.venv/Scripts/streamlit run app.py                     # opens http://localhost:8501
 ```
 
-The CLI commands below assume the venv is active.
+Every command calls the venv's own tools, so there is no activate step (PowerShell blocks `Activate.ps1` by default). On macOS/Linux use `.venv/bin/` instead of `.venv/Scripts/`.
 
 ## Morning of: pre-run everything (fallback)
 
 A request takes about 70 seconds and "Draft all" runs five briefs back to back (about 5 minutes). Run every demo item once in the morning, in the app or with the CLI:
 
 ```sh
-python cli.py request "Reddit-style ad about IFTA automation for 5-15 truck fleets"
-python cli.py request "Post about Hemut's new fuel card with 50% off in November"
-python cli.py week --date 2026-10-31
+.venv/Scripts/python cli.py request "Reddit-style ad about IFTA automation for 5-15 truck fleets"
+.venv/Scripts/python cli.py request "Post about Hemut's new fuel card with 50% off in November"
+.venv/Scripts/python cli.py week --date 2026-10-31
 ```
 
 Each run prints its run folder. Keep those folders open in a file browser or editor. If the API is slow or down during the demo, show the pre-run `draft-*.md` and `meta.json` files instead of running live.
