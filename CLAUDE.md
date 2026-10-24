@@ -41,7 +41,7 @@ generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retr
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
 prompts/         versioned prompt files, not inline strings
 modes/           request.py (Mode A)   scheduled.py (Mode B)
-brief_sources/   seasonal.py   trends/ (base.py, rss.py, federal_register.py, reddit.py, trxckwrld.py, instagram.py, tiktok.py, x.py)
+brief_sources/   seasonal.py   trends/ (base.py, fixture.py, rss.py, federal_register.py, reddit.py, trxckwrld.py, instagram.py, tiktok.py, x.py)
 planner.py       weekly mix: pillar targets + active seasons + top trend cards, avoids repeated angles
 export/          trxckwrld.py (adapter, later)
 cli.py           entry points for both modes + review

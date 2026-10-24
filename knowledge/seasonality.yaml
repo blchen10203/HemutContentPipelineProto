@@ -1,0 +1,61 @@
+# Recurring windows that boost a matching Hemut topic. Loaded into schemas.SeasonWindow by knowledge/loader.py.
+# A window is active from (start - lead_days) through end; start after end means it wraps past Dec 31.
+# Every date here comes from the source_url page. verified_by stays null until a human checks it.
+#
+# Left out because no official page gives a recurring date (2026-10-24):
+# - UCR renewal: plan.ucr.gov says the 2027 portal opens October 1, 2026, but no official page fetched states the deadline.
+# - CVSA International Roadcheck, Operation Safe Driver Week, Brake Safety Week: dates are set each year, not fixed.
+# - Peak season, produce season: no official source defines the dates.
+
+# IFTA: "IFTA returns are filed quarterly and due the last day of the month following the quarter."
+# The window is that filing month; lead_days starts it in the last week of the quarter, while receipts can still be gathered.
+- id: ifta-q1
+  name: IFTA Q1 return (January-March)
+  pain: Building the Q1 IFTA return from miles and fuel receipts before the April 30 deadline
+  start: "04-01"
+  end: "04-30"
+  lead_days: 7
+  source_url: https://www.iftach.org/Carriers/
+  checked: 2026-10-24
+  verified_by: null
+
+- id: ifta-q2
+  name: IFTA Q2 return (April-June)
+  pain: Building the Q2 IFTA return from miles and fuel receipts before the July 31 deadline
+  start: "07-01"
+  end: "07-31"
+  lead_days: 7
+  source_url: https://www.iftach.org/Carriers/
+  checked: 2026-10-24
+  verified_by: null
+
+- id: ifta-q3
+  name: IFTA Q3 return (July-September)
+  pain: Building the Q3 IFTA return from miles and fuel receipts before the October 31 deadline
+  start: "10-01"
+  end: "10-31"
+  lead_days: 7
+  source_url: https://www.iftach.org/Carriers/
+  checked: 2026-10-24
+  verified_by: null
+
+- id: ifta-q4
+  name: IFTA Q4 return (October-December)
+  pain: Building the Q4 IFTA return from miles and fuel receipts before the January 31 deadline
+  start: "01-01"
+  end: "01-31"
+  lead_days: 7
+  source_url: https://www.iftach.org/Carriers/
+  checked: 2026-10-24
+  verified_by: null
+
+# NOAA: "meteorological winter includes December, January, and February." 02-28 also covers leap years but one day.
+- id: winter-weather
+  name: Winter weather (meteorological winter)
+  pain: Weather delays push loads late and customers call for updates
+  start: "12-01"
+  end: "02-28"
+  lead_days: 14
+  source_url: https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons
+  checked: 2026-10-24
+  verified_by: null

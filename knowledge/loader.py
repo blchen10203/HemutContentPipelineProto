@@ -1,10 +1,10 @@
-"""Load knowledge/claims.yaml and knowledge/voice.yaml into schemas models. Raises ValueError on anything malformed."""
+"""Load knowledge/*.yaml (claims, voice, seasonality, bridge map) into schemas models. Raises ValueError on anything malformed."""
 from pathlib import Path
 
 import yaml
 from pydantic import ValidationError
 
-from schemas import Claim, VoiceRules
+from schemas import BridgeEntry, Claim, SeasonWindow, VoiceRules
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -56,5 +56,23 @@ def load_claims(path: Path = ROOT / "knowledge" / "claims.yaml", root: Path = RO
 def load_voice(path: Path = ROOT / "knowledge" / "voice.yaml") -> VoiceRules:
     try:
         return VoiceRules.model_validate(_read_yaml(path))
+    except ValidationError as e:
+        raise ValueError(f"{path}: {e}") from e
+
+
+def load_seasons(path: Path = ROOT / "knowledge" / "seasonality.yaml") -> list[SeasonWindow]:
+    return _load_list(path, SeasonWindow)
+
+
+def load_bridges(path: Path = ROOT / "knowledge" / "bridge_map.yaml") -> list[BridgeEntry]:
+    return _load_list(path, BridgeEntry)
+
+
+def _load_list(path: Path, model):
+    raw = _read_yaml(path) or []
+    if not isinstance(raw, list):
+        raise ValueError(f"{path}: expected a list, got {type(raw).__name__}")
+    try:
+        return [model.model_validate(item) for item in raw]
     except ValidationError as e:
         raise ValueError(f"{path}: {e}") from e
