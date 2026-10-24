@@ -1,0 +1,8 @@
+# Invented customer count and speed claim written as plural number words.
+post:
+  title: Dispatch twice as fast
+  body: Trusted by thousands of fleets, saving hundreds of hours every quarter.
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+expected_codes: [UNBACKED_NUMBER]

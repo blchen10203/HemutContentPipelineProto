@@ -1,0 +1,10 @@
+# Title and body both end in "Hemut Command"; the next part starts with a capital. Not an unknown product.
+post:
+  title: IFTA, handled by Hemut Command
+  body: |
+    Your miles and fuel become the return. {{claim:hemi-desk-settlements-ifta:1}}.
+
+    Switch to Hemut Command
+  cta_text: Start your free trial
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=ifta-q4"
+  claim_ids_used: [hemi-desk-settlements-ifta]

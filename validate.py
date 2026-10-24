@@ -14,12 +14,14 @@ from schemas import Claim, PlaceholderError, TrxckwrldPost, Violation, VoiceRule
 _NUMBER_WORDS = (
     "two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|"
     "seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|"
-    "million|billion|dozen|half"
+    "million|billion|dozen|half|halves|twice"
 )  # bare "one" is allowed: "one place", "one system"
-NUMBER = re.compile(
-    rf"\$?\d(?:[\d,.]*\d)?%?|[$%]|\b(?:{_NUMBER_WORDS})(?:[-\s]+(?:{_NUMBER_WORDS}))*\b", re.IGNORECASE
+NUMBER = re.compile(  # s? so "thousands of fleets" counts too
+    rf"\$?\d(?:[\d,.]*\d)?%?|[$%]|\b(?:{_NUMBER_WORDS})s?(?:[-\s]+(?:{_NUMBER_WORDS})s?)*\b", re.IGNORECASE
 )
-PRODUCT_MENTION = re.compile(r"\b(?=((Hemut|Command)\s+([A-Z][\w-]*)))")  # lookahead: "Hemut Command Pro" yields both pairs
+# [ \t]+, not \s+: render_post joins title, body and CTA with blank lines, and "Command\n\nStart" is not a product.
+# Lookahead so "Hemut Command Pro" yields both pairs.
+PRODUCT_MENTION = re.compile(r"\b(?=((Hemut|Command)[ \t]+([A-Z][\w-]*)))")
 
 QUOTE = re.compile(r'["“]([^"“”\n]+)["”]')
 FIRST_PERSON = re.compile(
