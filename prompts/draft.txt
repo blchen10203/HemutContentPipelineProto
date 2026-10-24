@@ -1,1 +1,16 @@
-Placeholder: writes a TrxckwrldPost draft for one angle.
+Write one post for the brief and angle below.
+
+Format rules:
+- reddit_post: a title like a post a carrier would click, then a body of a few short paragraphs or a short list. Conversational, useful first, product second.
+- social_post: a short title and a body of two to four sentences.
+- short_ad: a title of a few words and a body of one or two sentences.
+- stat_card: set stat_card to one numeric claim id and a short label with no numbers in it; the number is filled in from the claim. Keep the body short.
+Leave stat_card empty for every format except stat_card.
+
+Fill claim_ids_used with exactly the claim ids your placeholders use, plus the stat card's claim id if there is one.
+
+Brief:
+{brief}
+
+Angle:
+{angle}

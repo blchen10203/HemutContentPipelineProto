@@ -1,1 +1,10 @@
-Placeholder: proposes content angles for a structured Brief.
+Propose {n} distinct angles for the brief below. Each angle is a different way into the same pain, so the drafts written from them do not read alike.
+
+For each angle give:
+- hook: the opening line, written for this audience. No numbers.
+- pain: the specific problem this angle leads with.
+- feature: the Hemut capability that solves it, in plain words.
+- claim_ids: ids from the fact sheet that back the angle. Start from the brief's claim_ids and add others only if they fit.
+
+Brief:
+{brief}
