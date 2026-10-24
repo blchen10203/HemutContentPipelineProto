@@ -32,6 +32,8 @@ A weekly planner mixes seasonal + trend + evergreen Briefs into a content plan.
 ## Layout
 ```
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
+                 loader.py (loads + checks claims.yaml / voice.yaml)
+fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
 schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, SeasonWindow, TrendItem, TrendCard
 validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM, expired claims, source similarity)
 generate.py      core: Brief -> angles -> draft -> validate -> retry

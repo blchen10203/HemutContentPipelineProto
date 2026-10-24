@@ -766,7 +766,7 @@
   source_url: https://hemut.com/pricing
   source_snapshot: knowledge/sources/pricing_2026-10-23.txt
   checked: 2026-10-23
-  requires_approval: false
+  requires_approval: true
 
 - id: feature-back-office-in-plans
   type: feature
