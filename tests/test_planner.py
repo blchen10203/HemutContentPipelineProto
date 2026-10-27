@@ -59,8 +59,10 @@ def test_unverified_season_still_briefs_but_says_so():
 def test_demo_week_plan():
     skipped = []
     plan = plan_week(D(2026, 10, 31), skipped=skipped)
-    assert tags(plan) == ["ifta-q3", "detention", "evergreen-pricing", "evergreen-rate-cons", "evergreen-switching"]
-    assert [p.brief.origin for p in plan[:2]] == ["seasonal", "trend"]  # active season first: the boost
+    assert tags(plan) == ["ifta-q3", "hurricane-season", "detention", "evergreen-pricing", "evergreen-rate-cons"]
+    assert [p.brief.origin for p in plan[:3]] == ["seasonal", "seasonal", "trend"]  # active seasons first: the boost
+    assert all("dates verified by" in p.reason for p in plan[:2])
+    assert "evergreen-switching: no slot left this week" in skipped
     assert any(s.startswith("Trend check-call-overload: expired") for s in skipped)
     assert any(s.startswith("Trend truck-parking: no bridge") for s in skipped)
     assert any(s.startswith("Trend english-proficiency-enforcement: sensitive") for s in skipped)
@@ -74,6 +76,14 @@ def test_sensitive_card_never_briefs_even_with_a_bridge():
 def test_fixture_cards_reference_real_items():
     items, cards = FixtureSource().fetch()
     assert {c.sensitivity for c in cards} == {"low", "high"} and len(cards) == 4 and items
+
+
+def test_every_new_trend_tag_becomes_a_brief():
+    fixture = FixtureSource(Path(__file__).parent / "fixtures" / "trends_bridges_2026-10-26.yaml")
+    _, cards = fixture.fetch()
+    plan = plan_week(D(2026, 10, 31), seasons=[], trends=fixture, slots=len(cards))
+    assert sorted(tags(plan)) == sorted(c.tag for c in cards)
+    assert {p.brief.origin for p in plan} == {"trend"}
 
 
 def test_repeated_angle_skipped_and_tag_rotates():

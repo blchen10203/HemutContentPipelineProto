@@ -34,6 +34,9 @@ research/ holds secondary research. It is never loaded into prompts and is never
 A fact from research/ enters claims.yaml only after its primary source is snapshotted into
 knowledge/sources/. If it can't be snapshotted, it stays out. Persona and bridge text drawn from
 research/ must contain no numbers, no dates and no first-person or quoted speech.
+Bryan Chen fact-checked research/hemut_market_brief_2026-10.md against its primary sources on 2026-10-26. Entries built
+from it get verified_by: Bryan Chen (season windows) and checked: 2026-10-26 (claims). This does
+not remove the need for a snapshot in knowledge/sources/ and does not change requires_approval.
 
 ## Layout
 ```

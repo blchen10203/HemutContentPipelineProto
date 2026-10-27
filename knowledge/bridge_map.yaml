@@ -49,6 +49,16 @@
   hemut_feature: Hours of service shown on the dispatch board when a load is assigned
   claim_ids: [feature-hos-at-assignment, feature-dispatch-board]
 
+# Hurricane season shares the winter-weather angles and claims.
+- tag: hurricane-season
+  pain: Storm delays push loads late and customers call the office for updates
+  hemut_feature: Customers warned before a load runs late, with live ETAs
+  claim_ids: [hemi-desk-check-calls-tracking, feature-tracking]
+- tag: hurricane-season
+  pain: Replanning loads after a storm delay without running drivers out of hours
+  hemut_feature: Hours of service shown on the dispatch board when a load is assigned
+  claim_ids: [feature-hos-at-assignment, feature-dispatch-board]
+
 # ---------------------------------------------------------------- Trends (tags from TrendCard.tag)
 
 - tag: detention
@@ -59,6 +69,40 @@
   pain: Dispatchers spend the day on check calls and status emails
   hemut_feature: Customers updated before they call, and an agent for the calls that remain
   claim_ids: [hemi-desk-check-calls-tracking, voice-agent-does]
+# Only product-hemut-diesel backs fuel, so one angle; its claim publishes no discount amount.
+- tag: diesel-prices
+  pain: Fuel eats into every load when diesel prices climb
+  hemut_feature: Hemut Diesel, a fuel card with fleet discounts and nationwide coverage
+  claim_ids: [product-hemut-diesel]
+# Collections and short-pay surfacing only: Hemut makes no fraud-prevention claim.
+- tag: short-pays-collections
+  pain: Short pays and deductions go unnoticed until the money is gone
+  hemut_feature: Overdue invoices chased, with short pays and deductions surfaced
+  claim_ids: [hemi-desk-payments-collections]
+- tag: short-pays-collections
+  pain: Invoices go out late because the POD never came back
+  hemut_feature: PODs chased until they are in, and delivered loads become invoices
+  claim_ids: [hemi-desk-pod-paperwork, hemi-desk-billing]
+- tag: peak-season
+  pain: Peak volume buries the office in check calls and status emails
+  hemut_feature: Customers warned before a load runs late, and a voice agent for the calls that remain
+  claim_ids: [hemi-desk-check-calls-tracking, voice-agent-does]
+- tag: peak-season
+  pain: More loads means more PODs to chase and more invoices to send
+  hemut_feature: PODs chased until they are in, and delivered loads become invoices
+  claim_ids: [hemi-desk-pod-paperwork, hemi-desk-billing]
+- tag: tight-capacity
+  pain: Every truck counts and the wrong assignment costs a load
+  hemut_feature: On Command Pro, drivers ranked for each load with hours of service in view
+  claim_ids: [hemi-desk-dispatch, feature-driver-ranking, feature-hos-at-assignment]
+- tag: expiring-documents
+  pain: A medical card or permit lapses and nobody noticed
+  hemut_feature: Expiring documents turn into a renewal task before they lapse
+  claim_ids: [feature-compliance-expiry, hemi-desk-pod-paperwork]
+- tag: empty-miles
+  pain: Trucks sit or run empty waiting for the next load
+  hemut_feature: On Command Pro, backhauls found before a truck sits
+  claim_ids: [hemi-desk-dispatch]
 
 # ---------------------------------------------------------------- Evergreen pillars
 

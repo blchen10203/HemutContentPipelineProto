@@ -6,6 +6,11 @@
 # - UCR renewal: plan.ucr.gov says the 2027 portal opens October 1, 2026, but no official page fetched states the deadline.
 # - CVSA International Roadcheck, Operation Safe Driver Week, Brake Safety Week: dates are set each year, not fixed.
 # - Peak season, produce season: no official source defines the dates.
+# Left out (2026-10-26), from research/hemut_market_brief_2026-10.md section 5:
+# - UCR renewal: plan.ucr.gov answered 403, so still no official page states the deadline.
+# - Form 2290 (heavy vehicle use tax): the IRS pages fetched state no due date, and no claim backs a bridge for it.
+# - MATS, Manifest, TIA Capital Ideas, ATRI Top Issues: events whose dates are set each year.
+# - Eastern Pacific hurricane season (May 15): only the Atlantic window is used.
 
 # IFTA: quarterly filing calendar on the source page: April 30, July 31, October 31, January 31 of the following year.
 # "When the due date falls on a weekend or legal holiday, the next business day applies." (Oct 31, 2026 is a Saturday.)
@@ -59,4 +64,15 @@
   lead_days: 14
   source_url: https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons
   checked: 2026-10-24
+  verified_by: Bryan Chen
+
+# NHC: "The official hurricane season for the Atlantic basin is from June 1 to November 30" (knowledge/sources/nhc-climo_2026-10-26.txt).
+- id: hurricane-season
+  name: Atlantic hurricane season
+  pain: Storm delays push loads late and customers call for updates
+  start: "06-01"
+  end: "11-30"
+  lead_days: 7
+  source_url: https://www.nhc.noaa.gov/climo/
+  checked: 2026-10-26
   verified_by: Bryan Chen

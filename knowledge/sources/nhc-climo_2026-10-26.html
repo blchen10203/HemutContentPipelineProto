@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tropical Cyclone Climatology</title>
+  <meta charset="utf-8">
+  <script async="" src="/assets/js/uswds-init.min.js"></script>
+  <link rel="preload" as="style" href="/assets/css/uswds-styles-22f6e7a4a2.min.css" />
+  <link rel="stylesheet" href="/assets/css/uswds-styles-22f6e7a4a2.min.css" type="text/css" />
+  
+  </head>
+  <body>
+    <div class="skipheader">
+      <a href="#contents"><img height="1" alt="Skip Navigation Links" src="/css/images/skipgraphic.gif" width="1" border="0"></a>
+    </div>
+    
+    <!-- Top Menu Navigation Section -->
+<div class="altformatcenter">
+  <div class="altformatcontent">
+    <script src="https://www.weather.gov/source/nws/govshutdown.js" defer></script>
+    <div class="altformat">
+      <div class="format-type">
+        <a href="/index.shtml">Home</a>
+      </div>
+      <div class="format-type">
+        <a href="/mobile">Mobile Site</a>
+      </div>
+      <div class="format-type">
+        <a href="?text">Text Version</a>
+      </div>
+      <div class="format-type">
+        <a href="/aboutrss.shtml">RSS</a>
+      </div>
+
+      <div class="local-forecast">
+        <form name="getForecast" id="getForecast" action="https://forecast.weather.gov/zipcity.php" method="get">
+    <!--    <label for="inputstring">Local forecast by "City, St" or ZIP code</label> -->
+        <input id="inputstring" name="inputstring" type="text" size="8" value="Enter City,St or ZIP code" onclick="this.value=''">
+        <input name="btnSearch" id="btnSearch" type="submit" value="Go">
+        </form>
+      </div>
+      <div class="forecast-description">
+        <a href="https://www.weather.gov">Local Forecast</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+<!-- Header Section -->
+<div class="header">
+  <div class="header-content">
+    <a href="http://www.noaa.gov"><img class="header-noaa-icon" src="/assets/images/NOAA_noText_logo.svg" alt="National Oceanic and Atmospheric Administration logo" role="img" style="height: 68px; margin-top: 5px;"></a>
+    <a href="http://www.weather.gov"><img class="header-nws-icon" src="/assets/images/NWS_logo.svg" alt="National Weather Service logo" role="img" style="height: 68px; margin-top: 5px;"></a>
+    <a href="http://www.commerce.gov" class="header-doc"><img src="/assets/images/DOC_logo.svg" alt="United States Department of Commerce" role="img" style="height: 68px; margin-top: 5px; margin-right: 6px;"></a>
+    <div class="header-center-text"><a class="header-center-text" href="/index.php" style="height:auto;">NATIONAL HURRICANE CENTER and<br>CENTRAL PACIFIC HURRICANE CENTER</a></div>
+    <div class="header-noaa-text"><a class="header-noaa-text">National Oceanic and Atmospheric Administration</a></div>
+  </div>
+</div>
+<div class="header-shadow"><div class="header-shadow-content"></div></div>
+
+    <div class="center">
+      <div class="content">
+    <div class="usa-overlay"></div>
+<header class="usa-header nhc-header">
+  <div class="usa-nav-container">
+    <nav id="nhc-main-nav" aria-label="Primary navigation" class="usa-nav bg-white border-bottom-1px border-base-lighter">      
+      <ul class="usa-nav__primary usa-accordion margin-0 padding-0 display-flex flex-wrap">
+
+        <!-- Forecast Links -->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-forecast-menu"
+          >
+            <span>Analysis & Forecasts</span>
+          </button>
+          <ul id="nav-forecast-menu" class="usa-nav__submenu bg-white" hidden>
+            <li><a class="usa-link" href="/cyclones">Tropical Cyclone Products</a></li>
+            <li><a class="usa-link" href="/gtwo.php">Tropical Weather Outlooks</a></li>
+            <li><a class="usa-link" href="/marine">Marine Products</a></li>
+            <li><a class="usa-link" href="/rip-currents/map.html">Rip Currents Map</a></li>
+            <li><a class="usa-link" href="/aboutrss.shtml">RSS Feeds</a></li>
+            <li><a class="usa-link" href="/gis/">GIS Products</a></li>
+            <li><a class="usa-link" href="/aboutalternate.shtml">Alternate Formats</a></li>
+            <li><a class="usa-link" href="/aboutnhcprod.shtml">Tropical Cyclone Product Descriptions</a></li>
+            <li><a class="usa-link" href="/productexamples/">Tropical Cyclone Product Examples</a></li>
+            <li><a class="usa-link" href="/abouttafbprod.shtml">Marine Product Descriptions</a></li>
+          </ul>
+        </li>
+        
+        <!-- Data & Tools -->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-data-menu"
+          >
+            <span>Data & Tools</span>
+          </button>
+          <ul id="nav-data-menu" class="usa-nav__submenu bg-white" hidden>
+            <li><a class="usa-link" href="/satellite.php">Satellite Imagery</a></li>
+            <li><a class="usa-link" href="/radar.php">Radar Imagery</a></li>
+            <li><a class="usa-link" href="/recon.php">Aircraft Reconnaissance</a></li>
+            <li><a class="usa-link" href="/analysis_tools.php">Tropical Analysis Tools</a></li>
+            <li><a class="usa-link" href="/experimental/">Experimental Products</a></li>
+            <li><a class="usa-link" href="/gccalc.shtml">Lat/Lon Distance Calculator</a></li>
+            <li><a class="usa-link" href="/tracking_charts.shtml">Blank Tracking Maps</a></li>
+          </ul>
+        </li>
+
+        <!-- Outreach & Education-->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-education-menu"
+          >
+            <span>Educational Resources</span>
+          </button>
+          <ul id="nav-education-menu" class="usa-nav__submenu bg-white" hidden>
+            <li>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.weather.gov/wrn/hurricane-preparedness"
+                target="_blank"
+              >
+                Be Prepared!<br>NWS Hurricane Prep Week
+              </a>
+            </li>
+            <li><a class="usa-link" href="/outreach">Outreach Documents</a></li>
+            <li><a class="usa-link" href="/TCvideos.shtml">TC Videos</a></li>
+            <li><a class="usa-link" href="/rip-currents/">Rip Currents</a></li>
+            <li><a class="usa-link" href="/surge/">Storm Surge</a></li>
+            <li><a class="usa-link" href="/breakpoints/">Watch/Warning Breakpoints</a></li>
+            <li><a class="usa-link" href="/climo/">Climatology</a></li>
+            <li><a class="usa-link" href="/aboutnames.shtml">Tropical Cyclone Names</a></li>
+            <li><a class="usa-link" href="/aboutsshws.php">Wind Scale</a></li>
+            <li><a class="usa-link" href="/dcmi.shtml">Records and Facts</a></li>
+            <li><a class="usa-link" href="/outreach/history">Historical Hurricane Summaries</a></li>
+            <li><a class="usa-link" href="/modelsummary.shtml">Forecast Models</a></li>
+            <li><a class="usa-link" href="/aboutpubs.shtml">NHC Publications</a></li>
+            <li><a class="usa-link" href="/aboutgloss.shtml">NHC Glossary</a></li>
+            <li><a class="usa-link" href="/acronyms.shtml">Acronyms</a></li>
+            <li><a class="usa-link" href="/faq.shtml">Frequent Questions</a></li>
+          </ul>
+        </li>
+
+        <!-- Archives -->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-archive-menu"
+          >
+            <span>Archives</span>
+          </button>
+          <ul id="nav-archive-menu" class="usa-nav__submenu bg-white" hidden>
+            <li><a class="usa-link" href="/archive/2026/">Tropical Cyclone Advisories</a></li>
+            <li><a class="usa-link" href="/archive/xgtwo/gtwo_archive.php">Tropical Weather Outlooks</a></li>
+            <li><a class="usa-link" href="/data/tcr/index.php">Tropical Cyclone Reports and Season Summaries</a></li>
+            <li><a class="usa-link" href="/verification/">Tropical Cyclone Forecast Verification</a></li> 
+            <li><a class="usa-link" href="/newsarchive.shtml">NHC News Archive</a></li>
+            <li><a class="usa-link" href="/data/">Other Archives: HURDAT, Track Maps, Marine Products, and more</a></li>
+          </ul>
+        </li>
+
+        <!-- About NHC/CPHC -->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-about-menu"
+          >
+            <span>About</span>
+          </button>
+          <ul id="nav-about-menu" class="usa-nav__submenu bg-white" hidden>
+            <li><a class="usa-link" href="/aboutintro.shtml">National Hurricane Center</a></li>
+            <li><a class="usa-link" href="/aboutcphc.php">Central Pacific Hurricane Center</a></li>
+            <li><a class="usa-link" href="/aboutlibrary.php">Library</a></li>
+            <li><a class="usa-link" href="/contact.shtml">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Search -->
+        <li class="usa-nav__primary-item">
+          <button
+            type="button"
+            class="usa-accordion__button usa-nav__link"
+            aria-expanded="false"
+            aria-controls="nav-search-menu"
+          >
+            <span>Search</span>
+          </button>
+          <ul id="nav-search-menu" class="usa-nav__submenu bg-white" hidden>
+            <li>
+              <form id="search-form" method="get" action="https://search.usa.gov/search" class="usa-search usa-search--small padding-1" role="search">
+                <fieldset class="usa-fieldset">
+                  <legend class="usa-legend usa-legend">Search for</legend>
+                  <input type="hidden" name="v:project" value="firstgov">
+                  <input type="hidden" name="affiliate" value="nws.noaa.gov">
+                  <label class="usa-sr-only" for="search-field-en-small">Search</label>
+                  <input
+                    class="usa-input width-auto"
+                    id="search-field-en-small"
+                    type="search"
+                    name="query"
+                  />
+                  <button class="usa-button" type="submit">
+                    <img
+                      src="/assets/img/usa-icons-bg/search--white.svg"
+                      class="usa-search__submit-icon"
+                      alt="Search"
+                    />
+                  </button>
+                </fieldset>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul>
+  
+    </nav>
+  </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the sub-menu that contains the search form
+  const searchMenuContainer = document.querySelector('#nav-search-menu');
+
+  if (searchMenuContainer) {
+    // Prevent the 'click' event from bubbling up to the document.
+    // This stops the USWDS script from closing the menu when you
+    // interact with the form inside it.
+    searchMenuContainer.addEventListener('click', function(event) {
+      event.stopPropagation();
+    });
+  }
+});
+</script>
+
+    <!-- BEGIN Google Analytics code -->
+<!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
+<script src="//dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA" id="_fed_an_ua_tag"></script>
+<!-- END Google Analytics code -->
+
+    <a name="contents" id="contents"></a><br>
+    <!-- START OF CONTENT -->
+    <h2 align="center" style="width: 100%;">Tropical Cyclone Climatology</h2>
+    <hr width="100%" align="left">
+<!-- Content here -->
+
+<!-- This partial page created by nhcWeb -->
+<!-- This _public page copied by nhcWeb -->
+<style type="text/css">
+.currentPage {
+ color: gray;
+}
+</style>
+
+<div class="tiny" style="margin-top: 0; text-align:center; font-weight:bold;">
+<span class="currentPage">Climatology</span> | <a href="/aboutnames.shtml">Names</a> | <a href="/aboutsshws.php">Wind Scale</a> | <a href="/dcmi.shtml">Extremes</a> | <a href="/modelsummary.shtml">Models</a> | <a href="/breakpoints/">Breakpoints</a></div>
+<hr noshade align="left" width="100%" />
+
+<h5>Contents</h5>
+<ul>
+ <li><a href="#overview">Overview</a></li>
+ <li><a href="#bac">Atlantic & Eastern Pacific</a></li>
+ <li><a href="#stca">Seasonal Tropical Cyclone Activity</a></li>
+ <li><a href="#ori10">Origins by 10-day Period</a></li>
+ <li><a href="#ori">Origins &amp; Tracks by Month</a></li>
+ <li><a href="#hrhm">High Resolution History Maps</a></li>
+ <li><a href="#ncy">Named Cyclones by Year</a></li>
+ <li><a href="#returns">U.S. Hurricane Return Periods</a></li>
+ <li><a href="#uss">CONUS Hurricane Strikes</a></li>
+ <li><a href="#cpac">Central Pacific Climatology</a></li>
+</ul>
+
+<br>
+<hr>
+
+
+<a name="overview"></a>
+<h3>Overview</h3>
+
+<p>A tropical cyclone is a rotating, organized system of clouds and thunderstorms that originates over tropical or subtropical waters and has a closed low-level circulation. Tropical cyclones rotate counterclockwise in the Northern Hemisphere. They are classified as follows:</br>
+<ul>
+<li><span style="color:maroon; font-weight:bold;">Tropical Depression:</span> A tropical cyclone with maximum sustained winds of 38 mph (33 knots) or less.</li>
+<li><span style="color:maroon; font-weight:bold;">Tropical Storm:</span> A tropical cyclone with maximum sustained winds of 39 to 73 mph (34 to 63 knots).</li>
+<li><span style="color:maroon; font-weight:bold;">Hurricane:</span> A tropical cyclone with maximum sustained winds of 74 mph (64 knots) or higher. In the western North Pacific, hurricanes are called typhoons; similar storms in the Indian Ocean and South Pacific Ocean are
+called cyclones.</li>
+<li><span style="color:maroon; font-weight:bold;">Major Hurricane:</span> A tropical cyclone with maximum sustained winds of 111 mph (96 knots) or higher, corresponding to a Category 3, 4 or 5 on the Saffir-Simpson Hurricane Wind Scale.</li>
+</ul>
+</p>
+
+<p>Tropical cyclones forming between 5 and 30 degrees North latitude typically move toward the west. Sometimes the winds in the middle and upper levels of the atmosphere change and steer the cyclone toward the north and northwest. When tropical cyclones reach latitudes near 30 degrees North, they often move northeast.</p>
+
+<p style="text-align:center;">
+<a href="https://www.weather.gov/jetstream/tc"><img src="images/tcformation.png" /></a><br>
+Tropical Cyclone formation regions with mean tracks (courtesy of the <a href="https://www.weather.gov/jetstream/tc">NWS JetStream Online School</a>)
+</p>
+
+<p>&nbsp;</p>
+<a name="bac"></a>
+<h3>Atlantic and Eastern Pacific Hurricane Season Normal Activity</h3>
+<p class="reg"> 
+The Atlantic hurricane season runs from June 1 to November 30. The Atlantic basin includes the Atlantic
+Ocean, Caribbean Sea, and Gulf of America. Based on a 30-year climate period from 1991 to 2020, an
+average Atlantic hurricane season has 14 named storms, 7 hurricanes, and 3 major hurricanes (Category
+3, 4, or 5 on the Saffir-Simpson Hurricane Wind Scale). The first named storm typically forms in mid to
+late June, the first hurricane tends to form in early to mid-August, and the first major hurricane forms in
+late August or early September.
+</p>
+<p class="reg">
+The eastern Pacific hurricane season runs from May 15 to November 30. The eastern Pacific basin
+extends from Mexico and Central America westward to 140°W. Based on a 30-year climate period from
+1991 to 2020, an average eastern Pacific hurricane season has 15 named storms, 8 hurricanes, and 4
+major hurricanes. The first named storm typically forms in early to mid-June, the first hurricane tends to
+form in late June, and the first major hurricane forms in mid-July.
+</p>
+<p class="reg">
+The following tables <!-- MJO commented out temporarily 2021-10-13: figures and --> describe the progress of typical hurricane seasons in the Atlantic and eastern Pacific
+basins by showing benchmark dates when a given number of named storms, hurricanes, and major
+hurricanes typically forms. <b>It is important to note, however, that formation dates in individual
+hurricane seasons could vary considerably from these average dates.</b>
+</p>
+
+<!-- MJO commented out temporarily 2021-10-07:
+
+<p class="reg">
+In the figures, curves represent the average cumulative production of
+all named tropical systems, all hurricanes, and those hurricanes which
+were <a href="/aboutsshws.shtml">Category 3</a> or stronger in those
+basins.</p>
+
+<p class="reg">
+For example, by the beginning of September in an average year we would
+expect to have had four named systems, two of which would be
+hurricanes and one of which would be of category 3 or greater in
+strength.</p>
+
+-->
+
+<p class="reg">
+
+<!-- Commented out temporarily until new figures are ready: MJO 2021-10-07
+
+<table><tr valign="top">
+
+<td><a href="images/cum-average_Atl_1966-2009.gif"><img src="images/cum-average_Atl_1966-2009_sm.gif" width="250" height="146" alt="[graph of average cumulative number of Atlantic basin systems per year]"></a>
+<br />The average cumulative number of Atlantic systems per year, 1966-2009</td>
+<td><a href="images/cum-average_Pac_1971-2009.gif"><img src="images/cum-average_Pac_1971-2009_sm.gif" width="250" height="146" alt="[graph of average cumulative number of Eastern Pacific basin systems per year]"></a>
+<br />The average cumulative number of Eastern Pacific systems per year, 1971-2009
+</td></tr></table>
+
+-->
+
+<br>
+<br>
+<p class="reg">
+<center>
+<table border="3" cellpadding="3" cellspacing="3" width="75%">
+<caption align="top"><b>Table 1.</b> Progress of the average Atlantic season 
+(1991-2020). Date upon which the following number of events 
+would normally have occurred.</caption>
+<tr align="center">
+<th id="a1">Number</th>
+<th id="a2">Named systems</th>
+<th id="a3">Hurricanes</th>
+<th id="a4">Major Hurricanes</th>
+<tr align="center"><td headers="a1">1</td><td headers="a2">Jun 20 </td><td headers="a3">Aug 11</td><td headers="a4">Sep 1 </td>
+<tr align="center"><td headers="a1">2</td><td headers="a2">Jul 17 </td><td headers="a3">Aug 26</td><td headers="a4">Sep 19</td>
+<tr align="center"><td headers="a1">3</td><td headers="a2">Aug 3  </td><td headers="a3">Sep 7 </td><td headers="a4">Oct 28</td>
+<tr align="center"><td headers="a1">4</td><td headers="a2">Aug 15 </td><td headers="a3">Sep 16</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">5</td><td headers="a2">Aug 22 </td><td headers="a3">Sep 28</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">6</td><td headers="a2">Aug 29 </td><td headers="a3">Oct 15</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">7</td><td headers="a2">Sep 3  </td><td headers="a3">Nov 15</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">8</td><td headers="a2">Sep 9  </td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">9</td><td headers="a2">Sep 16 </td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">10</td><td headers="a2">Sep 22</td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">11</td><td headers="a2">Oct 2 </td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">12</td><td headers="a2">Oct 11</td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">13</td><td headers="a2">Oct 25</td><td headers="a3">-</td><td headers="a4">-</td>
+<tr align="center"><td headers="a1">14</td><td headers="a2">Nov 19</td><td headers="a3">-</td><td headers="a4">-</td>
+</table>
+</center>
+</p>
+
+<p class="reg">
+<center>
+<table border="3" cellpadding="3" cellspacing="3" width="75%">
+<caption align="top"><b>Table 2.</b> Progress of the average eastern Pacific season 
+(1991-2020). Date upon which the following number of events 
+would normally have occurred.</caption>
+<tr align="center">
+<th id="b1">Number</th>
+<th id="b2">Named systems</th>
+<th id="b3">Hurricanes</th>
+<th id="b4">Major Hurricanes</th>
+<tr align="center"><td headers="b1">1 </td><td headers="b2">Jun 10</td><td headers="b3">Jun 26</td><td headers="b4">Jul 15</td>
+<tr align="center"><td headers="b1">2 </td><td headers="b2">Jun 24</td><td headers="b3">Jul 15</td><td headers="b4">Aug 15</td>
+<tr align="center"><td headers="b1">3 </td><td headers="b2">Jul 6 </td><td headers="b3">Jul 31</td><td headers="b4">Sep 13</td>
+<tr align="center"><td headers="b1">4 </td><td headers="b2">Jul 15</td><td headers="b3">Aug 16</td><td headers="b4">Oct 22</td>
+<tr align="center"><td headers="b1">5 </td><td headers="b2">Jul 23</td><td headers="b3">Aug 31</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">6 </td><td headers="b2">Aug 3 </td><td headers="b3">Sep 15</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">7 </td><td headers="b2">Aug 11</td><td headers="b3">Sep 28</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">8 </td><td headers="b2">Aug 21</td><td headers="b3">Oct 23</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">9 </td><td headers="b2">Aug 28</td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">10</td><td headers="b2">Sep 4 </td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">11</td><td headers="b2">Sep 14</td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">12</td><td headers="b2">Sep 21</td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">13</td><td headers="b2">Oct 2 </td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">14</td><td headers="b2">Oct 15</td><td headers="b3">-</td><td headers="b4">-</td>
+<tr align="center"><td headers="b1">15</td><td headers="b2">Nov 5 </td><td headers="b3">-</td><td headers="b4">-</td>
+</table>
+</center>
+</p>
+
+<br>
+
+<a name="stca"></a>
+<h4>Seasonal Tropical Cyclone Activity</h4>
+<p align="center"><a href="images/2021climo/AtlanticCampfire.png"><img src="images/2021climo/AtlanticCampfire_sm.png" alt="Atlantic Peak Of Season"></a></p>
+<p align="center"><a href="images/2021climo/PacificCampfire.png"><img src="images/2021climo/PacificCampfire_sm.png" alt="Pacific Peak Of Season"></a></p>
+
+<p class="reg">
+These charts show the amount of tropical cyclone activity, in terms of named storms and hurricanes, that occurs in the Atlantic and east Pacific basins on each calendar day between May 1 and December 31.  Specifically, they show the number of hurricanes (yellow area), and combined named storms and hurricanes (red area) that occur on each calendar day over a 100-year period.  The data have been smoothed using a 5-day running average centered on each calendar day.
+For the Atlantic basin (the Atlantic Ocean, the Caribbean Sea, and the Gulf of America), the chart is based on data from the 77-year period from 1944 to 2020 (starting at the beginning of the aircraft reconnaissance era) but normalized to 100 years.  The official hurricane season for the Atlantic basin is from June 1 to November 30, but tropical cyclone activity sometimes occurs before and after these dates, respectively.  The peak of the Atlantic hurricane season is September 10, with most activity occurring between mid-August and mid-October.
+For the eastern Pacific basin, the analyses are based on data from the 50-year period from 1971 to 2020 (starting when there was reliable satellite imagery) but also normalized to 100 years.  The official hurricane season for the eastern Pacific basin is from May 15 to November 30, but tropical cyclones occasionally occur before and after these dates, respectively.  A peak in activity is noted in late August, but this peak is less pronounced than the peak in Atlantic activity.  Relatively high levels of activity in the eastern Pacific tend to be spread out over a longer portion of the season than in the Atlantic, with most tropical cyclones occurring between late June and early October.
+<br>
+</p>
+<br>
+
+<a name="ori10"></a>
+<h4>Points of Origin by 10-Day Period</h4>
+
+<p class="reg">
+The figures below show the points of tropical cyclone genesis by 10-day periods during the hurricane season. The source years include 1851-2025 for the Atlantic and 1949-2025 for the Eastern Pacific 
+from <a href="/data#hurdat">the HURDAT database</a>.</p>
+
+<p align="center"><a href="images/jan_1_10.png"><img src="images/jan_1_10_sm.png" border=1 style="border-color: #000000;" alt=" January 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jan_11_20.png"><img src="images/jan_11_20_sm.png" border=1 style="border-color: #000000;" alt=" January 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/feb_1_10.png"><img src="images/feb_1_10_sm.png" border=1 style="border-color: #000000;" alt=" February 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/mar_1_10.png"><img src="images/mar_1_10_sm.png" border=1 style="border-color: #000000;" alt=" March 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/apr_1_10.png"><img src="images/apr_1_10_sm.png" border=1 style="border-color: #000000;" alt=" April 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/apr_11_20.png"><img src="images/apr_11_20_sm.png" border=1 style="border-color: #000000;" alt=" April 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/apr_21_30.png"><img src="images/apr_21_30_sm.png" border=1 style="border-color: #000000;" alt=" April 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/may_1_10.png"><img src="images/may_1_10_sm.png" border=1 style="border-color: #000000;" alt=" May 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/may_11_20.png"><img src="images/may_11_20_sm.png" border=1 style="border-color: #000000;" alt=" May 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/may_21_31.png"><img src="images/may_21_31_sm.png" border=1 style="border-color: #000000;" alt=" May 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jun_1_10.png"><img src="images/jun_1_10_sm.png" border=1 style="border-color: #000000;" alt=" June 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jun_11_20.png"><img src="images/jun_11_20_sm.png" border=1 style="border-color: #000000;" alt=" June 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jun_21_30.png"><img src="images/jun_21_30_sm.png" border=1 style="border-color: #000000;" alt=" June 21-30 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jul_1_10.png"><img src="images/jul_1_10_sm.png" border=1 style="border-color: #000000;" alt=" July 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jul_11_20.png"><img src="images/jul_11_20_sm.png" border=1 style="border-color: #000000;" alt=" July 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/jul_21_31.png"><img src="images/jul_21_31_sm.png" border=1 style="border-color: #000000;" alt=" July 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/aug_1_10.png"><img src="images/aug_1_10_sm.png" border=1 style="border-color: #000000;" alt=" August 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/aug_11_20.png"><img src="images/aug_11_20_sm.png" border=1 style="border-color: #000000;" alt=" August 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/aug_21_31.png"><img src="images/aug_21_31_sm.png" border=1 style="border-color: #000000;" alt=" August 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/sep_1_10.png"><img src="images/sep_1_10_sm.png" border=1 style="border-color: #000000;" alt=" September 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/sep_11_20.png"><img src="images/sep_11_20_sm.png" border=1 style="border-color: #000000;" alt=" September 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/sep_21_30.png"><img src="images/sep_21_30_sm.png" border=1 style="border-color: #000000;" alt=" September 21-30 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/oct_1_10.png"><img src="images/oct_1_10_sm.png" border=1 style="border-color: #000000;" alt=" October 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/oct_11_20.png"><img src="images/oct_11_20_sm.png" border=1 style="border-color: #000000;" alt=" October 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/oct_21_31.png"><img src="images/oct_21_31_sm.png" border=1 style="border-color: #000000;" alt=" October 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/nov_1_10.png"><img src="images/nov_1_10_sm.png" border=1 style="border-color: #000000;" alt=" November 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/nov_11_20.png"><img src="images/nov_11_20_sm.png" border=1 style="border-color: #000000;" alt=" November 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/nov_21_30.png"><img src="images/nov_21_30_sm.png" border=1 style="border-color: #000000;" alt=" November 21-30 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/dec_1_10.png"><img src="images/dec_1_10_sm.png" border=1 style="border-color: #000000;" alt=" December 1-10 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/dec_11_20.png"><img src="images/dec_11_20_sm.png" border=1 style="border-color: #000000;" alt=" December 11-20 Tropical Cyclone Genesis Climatology"></a></p>
+<p align="center"><a href="images/dec_21_31.png"><img src="images/dec_21_31_sm.png" border=1 style="border-color: #000000;" alt=" December 21-31 Tropical Cyclone Genesis Climatology"></a></p>
+
+<br>
+
+<a name="ori"></a>
+<h4>Typical Tropical Cyclone Occurrence Areas by Month</h4>
+
+<p class="reg">
+These maps show where tropical cyclones (named storms and hurricanes) tend to occur
+during each month of the hurricane season. The data are shown as the number of named
+storms or hurricanes whose centers pass within 150 nautical miles of a point on the map
+during a 100-year period. For the Atlantic basin, the analyses are based on data from the
+77-year period from 1944 to 2020 (starting at the beginning of the aircraft reconnaissance
+era) but normalized to 100 years. For the eastern and central Pacific basins, the analyses
+are based on data from the 50-year period from 1971 to 2020 (starting when there was
+reliable satellite imagery) but also normalized to 100 years. Please note that the map
+legends vary from basin to basin and between named storms and hurricanes (but not
+between months) in order to make climatological patterns more apparent.</p>
+<br>
+
+<center>
+<table>
+<tr>
+    <td align="center">
+        <h3>Atlantic Named Storms</h3>
+    </td><td align="center">
+        <h3>Atlantic Hurricanes</h3>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_jun.jpg"><img src="images/2021climo/atl_climo_ns_jun_sm.jpg" alt="June TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_jun.jpg"><img src="images/2021climo/atl_climo_hurr_jun_sm.jpg" alt="June Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_jul.jpg"><img src="images/2021climo/atl_climo_ns_jul_sm.jpg" alt="July TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_jul.jpg"><img src="images/2021climo/atl_climo_hurr_jul_sm.jpg" alt="July Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_aug.jpg"><img src="images/2021climo/atl_climo_ns_aug_sm.jpg" alt="August TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_aug.jpg"><img src="images/2021climo/atl_climo_hurr_aug_sm.jpg" alt="August Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_sep.jpg"><img src="images/2021climo/atl_climo_ns_sep_sm.jpg" alt="September TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_sep.jpg"><img src="images/2021climo/atl_climo_hurr_sep_sm.jpg" alt="September Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_oct.jpg"><img src="images/2021climo/atl_climo_ns_oct_sm.jpg" alt="October TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_oct.jpg"><img src="images/2021climo/atl_climo_hurr_oct_sm.jpg" alt="October Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/atl_climo_ns_nov.jpg"><img src="images/2021climo/atl_climo_ns_nov_sm.jpg" alt="November TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/atl_climo_hurr_nov.jpg"><img src="images/2021climo/atl_climo_hurr_nov_sm.jpg" alt="November Hurricane Climatology"></a></p>
+    </td>
+</tr>
+</table>
+
+<br><br><br><br>
+
+<table>
+<tr>
+    <td align="center">
+        <h3>Eastern and Central Pacific Named Storms</h3>
+    </td><td align="center">
+        <h3>Eastern and Central Pacific Hurricanes</h3>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_jun.jpg"><img src="images/2021climo/epa_climo_ns_jun_sm.jpg" alt="June TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_jun.jpg"><img src="images/2021climo/epa_climo_hurr_jun_sm.jpg" alt="June Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_jul.jpg"><img src="images/2021climo/epa_climo_ns_jul_sm.jpg" alt="July TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_jul.jpg"><img src="images/2021climo/epa_climo_hurr_jul_sm.jpg" alt="July Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_aug.jpg"><img src="images/2021climo/epa_climo_ns_aug_sm.jpg" alt="August TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_aug.jpg"><img src="images/2021climo/epa_climo_hurr_aug_sm.jpg" alt="August Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_sep.jpg"><img src="images/2021climo/epa_climo_ns_sep_sm.jpg" alt="September TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_sep.jpg"><img src="images/2021climo/epa_climo_hurr_sep_sm.jpg" alt="September Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_oct.jpg"><img src="images/2021climo/epa_climo_ns_oct_sm.jpg" alt="October TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_oct.jpg"><img src="images/2021climo/epa_climo_hurr_oct_sm.jpg" alt="October Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/epa_climo_ns_nov.jpg"><img src="images/2021climo/epa_climo_ns_nov_sm.jpg" alt="November TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/epa_climo_hurr_nov.jpg"><img src="images/2021climo/epa_climo_hurr_nov_sm.jpg" alt="November Hurricane Climatology"></a></p>
+    </td>
+</tr>
+</table>
+
+<br><br><br><br>
+
+<table>
+<tr>
+    <td align="center">
+        <h3>Central Pacific Named Storms</h3>
+    </td><td align="center">
+        <h3>Central Pacific Hurricanes</h3>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_jun.jpg"><img src="images/2021climo/haw_climo_ns_jun_sm.jpg" alt="June TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_jun.jpg"><img src="images/2021climo/haw_climo_hurr_jun_sm.jpg" alt="June Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_jul.jpg"><img src="images/2021climo/haw_climo_ns_jul_sm.jpg" alt="July TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_jul.jpg"><img src="images/2021climo/haw_climo_hurr_jul_sm.jpg" alt="July Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_aug.jpg"><img src="images/2021climo/haw_climo_ns_aug_sm.jpg" alt="August TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_aug.jpg"><img src="images/2021climo/haw_climo_hurr_aug_sm.jpg" alt="August Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_sep.jpg"><img src="images/2021climo/haw_climo_ns_sep_sm.jpg" alt="September TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_sep.jpg"><img src="images/2021climo/haw_climo_hurr_sep_sm.jpg" alt="September Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_oct.jpg"><img src="images/2021climo/haw_climo_ns_oct_sm.jpg" alt="October TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_oct.jpg"><img src="images/2021climo/haw_climo_hurr_oct_sm.jpg" alt="October Hurricane Climatology"></a></p>
+    </td>
+</tr><tr>
+    <td>
+        <p align="center"><a href="images/2021climo/haw_climo_ns_nov.jpg"><img src="images/2021climo/haw_climo_ns_nov_sm.jpg" alt="November TC Climatology"></a></p>
+    </td><td>
+        <p align="center"><a href="images/2021climo/haw_climo_hurr_nov.jpg"><img src="images/2021climo/haw_climo_hurr_nov_sm.jpg" alt="November Hurricane Climatology"></a></p>
+    </td>
+</tr>
+</table>
+
+</center>
+
+<h5><a href="/gis/TC_Occurrence_kmz.zip">GIS files for Tropical Cyclone Occurrence Areas (KMZ format)</a></h5>
+
+</p>
+<br>
+<br>
+
+<a name="hrhm"></a>
+<h4>High Resolution History Maps</h4>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/1851_2017_allstorms.jpg">
+<img src="images/1851_2017_allstorms_sm.jpg" alt="[Tropical Cyclone History Map for Atlantic and Eastern Pacific]"></a>
+<br />All North Atlantic and Eastern North Pacific tropical cyclones<br>
+</center>
+</p>
+<br>
+
+<a name="ncy"></a>
+<h4>Named Cyclones by Year</h4>
+<br>
+<p class="reg">
+<center>
+<a href="images/Atlantic_Storm_Count.jpg">
+<img src="images/Atlantic_Storm_Count.jpg" width="600" alt="[Graph of Tropical Cyclone Activity in the Atlantic Basin]"></a>
+<br />Bars depict number of named systems (yellow), 
+hurricanes (red), and category 3 or greater (purple), 1850-2024 <br>
+<a href="images/Atlantic_Storm_Count.jpg">Download hires image</a> <br>
+<a href="images/AtlanticStormTotalsTable.pdf">Download table of data (PDF)</a>
+</center>
+</p>
+<br>
+
+<a name="returns"></a>
+<h4>Hurricane Return Periods</h4>
+<p class="reg">
+Hurricane return periods are the frequency at which a certain intensity of hurricane 
+can be expected within a given distance of a given location (for the below images 50 
+nm or 58 statute miles). In simpler terms, a return period of 20 years for a major 
+hurricane means that <i>on average</i> during the previous 100 years, a Category 3 or 
+greater hurricane passed within 50 nm (58 miles) of that location about five times. 
+We would then expect, <i>on average</i>, an additional five Category 3 or greater hurricanes 
+within that radius over the next 100 years.
+</p>
+<p class="reg">More information on return periods can be found from 
+<a href="/pdf/NWS-NHC-1987-38.pdf">NOAA Technical Memorandum NWS NHC 38 (pdf)</a> on the NHC Risk Analysis Program (HURISK)</a>.<p>
+<p>Note: <i>The information on return period is generated with the 1987 HURISK program, but uses data through 2010</i>. </p>
+<p>&nbsp;</p>
+<p class="reg">
+<center>
+<a href="images/return_hurr.jpg"><img src="images/return_hurr_sm.jpg" width="450" height="283" alt="[Map of return period in years for hurricanes passing within 50 nautical miles]"></a><br />
+Estimated return period in years for hurricanes passing <br />within 50 nautical miles of various locations on the U.S. Coast
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/return_mjrhurr.jpg"><img src="images/return_mjrhurr_sm.jpg" width="450" height="283" alt="[Map of return period in years for major hurricanes passing within 50 nautical miles]"></a><br />
+Estimated return period in years for major hurricanes passing <br />within 50 nautical miles of various locations on the U.S. Coast
+</center>
+</p>
+
+<!--
+<p>
+This data is produced by the National Hurricane Center Risk Analysis Program (HURISK) by Charles Neumann. 
+The basic idea is that a population of tropical cyclones falling within the 65 nm (75 miles) circle is 
+obtained from the best-track file. For that set of storms, the maximum wind within the circle is found. 
+Then, a count is conducted to find how many systems had winds of 30-34 kt, 35-39 kt etc. Once the count 
+is known, a function is used to "fit" the distribution. Since there are only a few intense tropical 
+cyclones typically in the 100-year record for a particular site, the mathematical function helps to 
+smooth this out and "fill in the holes" so to speak. The smooth function is then used to estimate the 
+number of systems that would occur over a longer time period. We would expect that if we actually had a 
+much longer historical record (several centuries) that the number of extreme events (i.e., category 5 
+hurricanes) observed would roughly match our estimates based on the shorter period of record.
+</p>
+-->
+<br>
+
+<a name="usl"></a>
+<a name="uss"></a>
+<h4>CONUS Hurricane Strikes</h4>
+<br>
+<p class="reg">
+<center>
+<a href="images/conus_strikes.png">
+<img src="images/conus_strikes_sm.png" alt="[Map of 1950-2021 CONUS Hurricane Strikes]"></a>
+<br />1950-2023 CONUS Hurricane Strikes (Courtesy of <a href="https://www.ncei.noaa.gov/pub/data/images/US_Hurricane_Strikes/Continental_US_Hurricane_Strikes_1950-2023_Poster.pdf">NCEI</a>)
+</center>
+</p>
+<br>
+
+<h4>CONUS Hurricane Strike Density (county maps)</h4>
+<br>
+<p class="reg">
+<center>
+<a href="images/strikes_us.jpg">
+<img src="images/strikes_us_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Hurricane Strikes by U.S. counties/parishes]"></a>
+<br />1900-2010 U.S. Hurricane Strikes <!-- <a href="/pdf/strikes_us.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_wgulf.jpg">
+<img src="images/strikes_wgulf_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Hurricane Strikes by U.S. counties/parishes (West Gulf)]"></a>
+<br />1900-2010 U.S. Hurricane Strikes - West Gulf <!-- <a href="/pdf/strikes_wgulf.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_egulf.jpg">
+<img src="images/strikes_egulf_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Hurricane Strikes by U.S. counties/parishes (East Gulf)]"></a>
+<br />1900-2010 U.S. Hurricane Strikes - East Gulf <!-- <a href="/pdf/strikes_egulf.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_se.jpg">
+<img src="images/strikes_se_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Hurricane Strikes by U.S. counties/parishes (Southeast)]"></a>
+<br />1900-2010 U.S. Hurricane Strikes - Southeast <!-- <a href="/pdf/strikes_se.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_ne.jpg">
+<img src="images/strikes_ne_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Hurricane Strikes by U.S. counties/parishes (Northeast)]"></a>
+<br />1900-2010 U.S. Hurricane Strikes - Northeast <!-- <a href="/pdf/strikes_ne.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_us_mjr.jpg">
+<img src="images/strikes_us_mjr_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Major Hurricane Strikes by U.S. counties/parishes]"></a>
+<br />1900-2010 U.S. Major Hurricane Strikes <!-- <a href="/pdf/strikes_us.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_wgulf_mjr.jpg">
+<img src="images/strikes_wgulf_mjr_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Major Hurricane Strikes by U.S. counties/parishes (West Gulf)]"></a>
+<br />1900-2010 U.S. Major Hurricane Strikes - West Gulf <!-- <a href="/pdf/strikes_wgulf.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_egulf_mjr.jpg">
+<img src="images/strikes_egulf_mjr_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Major Hurricane Strikes by U.S. counties/parishes (East Gulf)]"></a>
+<br />1900-2010 U.S. Major Hurricane Strikes - East Gulf <!-- <a href="/pdf/strikes_egulf.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_se_mjr.jpg">
+<img src="images/strikes_se_mjr_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Major Hurricane Strikes by U.S. counties/parishes (Southeast)]"></a>
+<br />1900-2010 U.S. Major Hurricane Strikes - Southeast <!-- <a href="/pdf/strikes_se.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<p class="reg">
+<center>
+<a href="images/strikes_ne_mjr.jpg">
+<img src="images/strikes_ne_mjr_sm.jpg" width="450" height="348" alt="[Map of 1900-2010 Major Hurricane Strikes by U.S. counties/parishes (Northeast)]"></a>
+<br />1900-2010 U.S. Major Hurricane Strikes - Northeast <!-- <a href="/pdf/strikes_ne.pdf">&nbsp;(pdf)</a> -->
+</center>
+</p>
+<br>
+
+<a name="cpac"></a>
+<h3>Central Pacific Climatology</h3>
+<p class="reg">
+The following graphs and charts describe some of the climatology of tropical cyclone activity in the area served by the Central Pacific Hurricane Center, 
+between 140 degrees West longitude and the International Date Line and north of the equator.</p>
+
+<p class="reg">
+Many factors affect the level of tropical cyclone activity from year to year. Among them are the state of the El Nino Southern Oscillation in the Pacific. 
+Moderate to strong El Nino years are correlated with increased tropical cyclone activity in the Central Pacific and the occurrence of late season storms.</p>
+
+<p class="reg">
+Continuous satellite coverage has been available in the Central Pacific since 1971 so many climatologies start with that date.Earlier accounts of tropical 
+cyclone activity are based on land, ship, and aircraft observations as well as some non-continuous satellite data.</p>
+
+<div class="hdr">Hurricane Season Climatology Central Pacific (1971-2008)</div>
+<br>
+<center>
+      <table border="1" cellspacing="0" cellpadding="0" width="595">
+       <tr>
+        <th width="175" valign="top" align="center">&nbsp;</th>
+        <th width="96" valign="top" align="center">Hurricanes</th>
+        <th width="108" valign="top" align="center">Tropical Storms</th>
+        <th width="120" valign="top" align="center">Tropical Depressions</th>
+        <th width="96" valign="top" align="center">Total</th>
+       </tr>
+       <tr>
+        <td width="175" valign="top" align="center" class="btext">Total Number</td>
+        <td width="96" valign="top" align="center" class="text">58</td>
+        <td width="108" valign="top" align="center" class="text">46</td>
+        <td width="120" valign="top" align="center" class="text">59</td>
+        <td width="96" valign="top" align="center" class="text">163</td>
+       </tr>
+       <tr>
+        <td width="175" valign="top" align="center" class="btext">Percent of All Systems</td>
+        <td width="96" valign="top" align="center" class="text">36%</td>
+        <td width="108" valign="top" align="center" class="text">28%</td>
+        <td width="120" valign="top" align="center" class="text">36%</td>
+        <td width="96" valign="top" align="center" class="text">&nbsp;</td>
+       </tr>
+      </table>
+</center>
+<br>
+<div class="hdr">Tropical Cyclones in the Central Pacific By Year</div>
+<br>
+<center>
+<a href="images/cpac_TC_By_Year_2013.png">
+<img src="images/cpac_TC_By_Year_2013.png" alt="Central Pacific Tropical Cyclones per year from 1971 to 2013"></a>
+</center>
+<br>
+<div class="hdr">Tropical Cyclones in the Central Pacific By Month</div>
+<br>
+<center>
+<a href="images/cpac_TC_By_Month_2013.png">
+<img src="images/cpac_TC_By_Month_2013.png" alt="Central Pacific Tropical Cyclones per month from 1971 to 2013"></a>
+</center>
+<br>
+<p class="reg">The following charts show the storms that have come within 200 miles and 75 miles of Hawaii. 
+Storms that do not make landfall in Hawaii can still cause considerable damage, mostly from winds and surf.</p>
+<center>
+<a href="images/cpac_tracks_200.jpg">
+<img src="images/cpac_tracks_200.jpg" alt="Tropical Storms and Hurricanes Passing within 200 Miles of Hawaii since 1950"></a>
+</center>
+<br>
+<center>
+<a href="images/cpac_tracks_075.jpg">
+<img src="images/cpac_tracks_075.jpg" alt="Tropical Storms and Hurricanes Passing within 75 Miles of Hawaii since 1950"></a>
+</center>
+<br>
+
+
+
+
+
+
+
+<p><hr /></p>
+
+<p class="std">Learn more about climate impacts from the <a href="http://www.cpc.ncep.noaa.gov">NWS Climate Prediction Center</a>.
+
+<!-- End content -->
+
+            <br><br>
+        <div class="footer">
+          <div class="footer-content">
+            <div class='footer-header'>
+               Quick Links and Additional Resources<br>
+            </div>
+            <div class='footer-column'>
+              <a class='footer-column-head' href='/cyclones/'>Tropical Cyclone Forecasts</a><br>
+              <a class="usa-link" href='/cyclones'>Tropical Cyclone Advisories</a><br>
+              <a class="usa-link" href='/gtwo.php'>Tropical Weather Outlook</a><br>
+              <a class="usa-link" href='/audio'>Audio/Podcasts</a><br>
+              <a class="usa-link" href='/aboutnhcprod.shtml'>About Advisories</a><br>
+              <br>
+              <a class='footer-column-head' href='/marine'>Marine Forecasts</a><br>
+              <a class="usa-link" href='/marine/offshores.php'>Offshore Waters Forecasts</a><br>
+              <a class="usa-link" href='/marine/grids.php'>Gridded Forecasts</a><br>
+              <a class="usa-link" href='/marine/graphicast.php'>Graphicast</a><br>
+              <a class="usa-link" href='/abouttafbprod.shtml'>About Marine</a><br>
+            </div>
+            <div class='footer-column'>
+              <a class='footer-column-head' href='/socialmedia'>Social Media</a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://www.facebook.com/NWSNHC"
+              >
+                <img src="/css/images/f_logo.png" alt="Follow the National Hurricane Center on Facebook" width="15" height="15"> &nbsp; NHC on Facebook
+              </a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/x.php"
+              >
+                <img src="/css/images/x-logo.png" alt="Follow the National Hurricane Center on X" height="13" width="15"> &nbsp; NHC on X
+              </a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://www.youtube.com/user/NWSNHC"
+              >
+                <img src="/css/images/youtube_logo.png" alt="Subscribe the National Hurricane Center on YouTube" height="12" width="15"> &nbsp; NHC on YouTube
+              </a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://noaanhc.wordpress.com/"
+              >
+                <img src="/css/images/w_logo.png" alt="Read the National Hurricane Center Inside the Eye blog on WordPress" height="15" width="15"> &nbsp; NHC Blog:<br>&nbsp; &nbsp; &nbsp; "Inside the Eye"
+              </a><br>
+              <br>
+              <a class='footer-column-head' href="/prepare">Hurricane Preparedness</a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="https://www.weather.gov/safety/hurricane-plan"
+              >
+                Preparedness Guide
+              </a><br>
+              <a class="usa-link" href="/prepare/hazards.php">Hurricane Hazards</a><br>
+              <a
+                class="usa-link usa-link--external" 
+                rel="noreferrer"
+                href="https://www.weather.gov/safety/hurricane-ww"
+              >
+                Watches and Warnings
+              </a><br>
+              <a class="usa-link" href="/prepare/marine.php">Marine Safety</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.ready.gov/hurricanes"
+              >
+                Ready.gov Hurricanes
+              </a><br>
+              <a class="usa-link" href="https://www.weather.gov/wrn/force">Weather-Ready Nation</a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.fema.gov/emergency-management-agencies"
+              >
+                Emergency Management Offices
+              </a><br>
+            </div>
+            <div class='footer-column'>
+              <a class='footer-column-head' href='/aboutresearch.shtml'>Research and Development</a><br>
+              <a 
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.aoml.noaa.gov/hrd/"
+              >
+                NOAA Hurricane Research Division
+              </a><br>
+              <a class="usa-link" href="/hot/">Hurricane and Ocean Testbed</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://www.hfip.org"
+              >
+                Hurricane Forecast Improvement Program
+              </a><br>
+              <br>
+              <a class='footer-column-head' href='/aboutintro.shtml'>Other Resources</a><br>
+              <a class="usa-link" href="/qa/">Q & A with NHC</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.aoml.noaa.gov/general/lib/lib1/nhclib/"
+              >
+                NHC/AOML Library Branch
+              </a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.aoml.noaa.gov/hrd/tcfaq/tcfaqHED.html"
+              >
+                NOAA: Hurricane FAQs
+              </a><br>
+              <a class="usa-link" href="/nhop">National Hurricane Operations Plan</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://www.wx4nhc.org"
+              >
+                WX4NHC Amateur Radio
+              </a><br>
+            </div>
+            <div class='footer-column'>
+              <a class='footer-column-head' href="http://www.ncep.noaa.gov">NWS Forecast Offices</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.wpc.ncep.noaa.gov"
+              >
+                Weather Prediction Center
+              </a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.spc.noaa.gov"
+              >
+                Storm Prediction Center
+              </a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="https://ocean.weather.gov"
+              >
+                Ocean Prediction Center
+              </a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="http://www.weather.gov"
+              >
+                Local Forecast Offices
+              </a><br>
+              <br>
+              <a class='footer-column-head' href="/aboutrsmc.shtml">Worldwide Tropical Cyclone Centers</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=https://www.canada.ca/hurricanes"
+              >
+                Canadian Hurricane Centre
+              </a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=https://www.metoc.navy.mil/jtwc/jtwc.html"
+              >
+                Joint Typhoon Warning Center
+              </a><br>
+              <a class="usa-link" href="/aboutrsmc.shtml">Other Tropical Cyclone Centers</a><br>
+              <a
+                class="usa-link usa-link--external"
+                rel="noreferrer"
+                href="/nhcexit.php?outurl=http://severe.worldweather.org"
+              >
+                WMO Severe Weather Info Centre
+              </a>
+            </div>
+          </div>
+        </div>
+        
+
+    <!-- legal footer area -->
+<div class="footer-legal">
+  <div class="footer-legal-content">
+    <div class="footer-legal-gov">
+      <a href="http://www.usa.gov"><img src="/css/images/usa_gov.png" alt="usa.gov" width="110" height="30"></a>
+    </div> 
+    <div class="footer-legal-column" style="width:200px;">
+      <p> 
+          <a 
+            class="usa-link usa-link--external"
+            rel="noreferrer"
+            href="http://www.commerce.gov"
+          >
+            US Dept of Commerce
+          </a><br>
+          <a 
+            class="usa-link usa-link--external"
+            rel="noreferrer"
+            href="http://www.noaa.gov"
+          >
+            National Oceanic and Atmospheric Administration
+          </a><br>
+          National Hurricane Center<br>
+          11691 SW 17th Street<br>
+          Miami, FL, 33165<br>
+          <a href='mailto:nhcwebmaster@noaa.gov'>nhcwebmaster@noaa.gov</a>
+      </p>
+    </div>
+
+    <div class="footer-legal-column" style="width:200px;">
+      <p>
+          Central Pacific Hurricane Center<br>
+          2525 Correa Rd<br>
+          Suite 250<br>
+          Honolulu, HI 96822<br>
+          <a href='mailto:W-HFO.webmaster@noaa.gov'>W-HFO.webmaster@noaa.gov</a>
+      </p>
+    </div>
+
+    <div class="footer-legal-column2">
+      <p>
+        <a href="http://www.weather.gov/disclaimer">Disclaimer</a><br>
+        <a href="http://www.cio.noaa.gov/Policy_Programs/info_quality.html">Information Quality</a><br>
+        <a href="http://www.weather.gov/help">Help</a><br>
+        <a href="http://www.weather.gov/glossary">Glossary</a>
+      </p>
+    </div>
+
+    <div class="footer-legal-column3">
+      <p>
+        <a href="http://www.weather.gov/privacy">Privacy Policy</a><br>
+        <a href="http://www.rdc.noaa.gov/~foia">Freedom of Information Act (FOIA)</a><br>
+        <a href="http://www.weather.gov/about">About Us</a><br>
+        <a href="http://www.weather.gov/careers">Career Opportunities</a>
+      </p>
+    </div>
+  </div>
+</div><!-- end of <div class="footer-legal"> -->
+      </div><!-- End of content div -->
+    </div><!-- End of center div -->
+    <div id="wrap"> </div>
+        <script async src="/assets/js/uswds.min.js"></script>
+    
+  </body>
+</html>

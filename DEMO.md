@@ -61,15 +61,17 @@ Click **Run**. One call, a few seconds. Result: **Needs a source before anything
 
 Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default). Click **Plan**. This makes no API calls. Each item is headed by the problem it addresses. Walk through the plan:
 
-1. **"The office rebuilds the IFTA return by hand…"** (Seasonal, Reddit post): the IFTA Q3 return is due Oct 31. The reason line names who checked the season dates against the source. Season windows count even when unverified, but then the reason says so. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
-2. **"Trucks wait at the dock for hours…"** (Trend, Social post): the detention trend, from the frozen trend fixture. The reason shows how many items back it and when the trend card expires.
-3. to 5. **Evergreen** (Short ads): published pricing, rate confirmations retyped by hand, and switching TMS.
+1. **"The office rebuilds the IFTA return by hand…"** (Seasonal, Reddit post): the IFTA Q3 return is due Oct 31. The reason line names who checked the season dates against the source. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
+2. **"Storm delays push loads late…"** (Seasonal): Atlantic hurricane season runs through Nov 30 (source: NOAA's hurricane center). Like IFTA, its reason line names who checked the dates.
+3. **"Trucks wait at the dock for hours…"** (Trend, Social post): the detention trend, from the frozen trend fixture. The reason shows how many items back it and when the trend card expires.
+4. and 5. **Evergreen** (Short ads): published pricing and rate confirmations retyped by hand.
 
 Then the **Left out** list, one line per thing the planner refused:
 
 - `check-call-overload`: the trend card **expired** Oct 28. An expired trend never becomes a Brief.
 - `english-proficiency-enforcement`: **sensitive**. Never auto-briefed; a human decides.
 - `truck-parking`: **no bridge**. A trend reaches a Brief only through `bridge_map.yaml` (trend to pain to Hemut feature). No bridge, no Brief.
+- `evergreen-switching`: **no slot left this week**. Five slots, and active seasons and trends come first.
 
 Click **Draft all**. Results appear one brief at a time (about 5 minutes total). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
 

@@ -17,6 +17,7 @@ URLS = {
     "pricing": "https://hemut.com/pricing",
     "roi-case-studies": "https://hemut.com/roi-case-studies",
     "iftach-carriers": "https://www.iftach.org/Carriers/",  # IFTA quarterly due dates
+    "nhc-climo": "https://www.nhc.noaa.gov/climo/",  # official Atlantic hurricane season dates
 }
 OUT = Path(__file__).parent / "knowledge" / "sources"
 SKIP = {"script", "style", "noscript", "template", "svg"}
