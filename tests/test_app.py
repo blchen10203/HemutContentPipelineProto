@@ -31,7 +31,7 @@ def drafts_shown(at):
 
 
 def test_app_runs_both_modes_and_keeps_results(monkeypatch):
-    monkeypatch.delenv("SHOW_API_USE", raising=False)
+    monkeypatch.setenv("SHOW_API_USE", "0")  # set, not deleted: the app's load_dotenv() would refill a missing one from .env
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
     monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([RESULT]))
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
