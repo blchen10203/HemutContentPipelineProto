@@ -29,7 +29,7 @@ VALID: list[tuple[type[BaseModel], dict]] = [
     (DraftAttempt, {"attempt": 1, "raw_post": POST, "rendered_text": "...", "violations": []}),
     (RunResult, {"run_id": "r1", "run_dir": "out/runs/r1", "status": "needs_source", "needs_source": ["a deal"]}),
     (SeasonWindow, {
-        "id": "ifta-q4", "name": "IFTA Q4 filing", "pain": "quarterly IFTA return", "start": "01-01",
+        "id": "ifta-q4", "name": "IFTA Q4 filing", "start": "01-01",
         "end": "01-31", "lead_days": 14, "source_url": "https://example.com/ifta", "checked": "2026-10-23",
     }),
     (BridgeEntry, {"tag": "ifta-q4", "pain": "quarterly IFTA return", "hemut_feature": "IFTA reports", "claim_ids": []}),

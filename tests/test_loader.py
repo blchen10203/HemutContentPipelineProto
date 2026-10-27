@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from knowledge.loader import load_audiences, load_claims, load_voice
+from knowledge.loader import load_audiences, load_bridges, load_claims, load_voice
 
 
 def claim(**overrides):
@@ -116,6 +116,14 @@ def test_persona_text_with_numbers_dates_quotes_or_first_person_fails(tmp_path, 
     path.write_text(yaml.safe_dump([{**PERSONA, field: text}]), encoding="utf-8")
     with pytest.raises(ValueError, match="persona 'dispatcher'"):
         load_audiences(path)
+
+
+@pytest.mark.parametrize("pain", ["Busy in November", "Customers call us all day", "Detention runs past two hours on 4 loads"])
+def test_bridge_text_follows_the_same_rule(tmp_path, pain):
+    path = tmp_path / "bridge_map.yaml"
+    path.write_text(yaml.safe_dump([{"tag": "detention", "pain": pain, "hemut_feature": "f", "claim_ids": []}]), encoding="utf-8")
+    with pytest.raises(ValueError, match="bridge 'detention'"):
+        load_bridges(path)
 
 
 def test_duplicate_persona_id_fails(tmp_path):

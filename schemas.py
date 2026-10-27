@@ -48,13 +48,21 @@ class VoiceRules(BaseModel):
     vocabulary: list[str]
 
 
-# Persona text is writer guidance, never copy: no numbers, dates, quotes or first-person speech can leak from it.
-_PERSONA_BANNED = [
+# Persona and bridge text (CLAUDE.md research/ rule) guides the writer and is never copy: no numbers, dates, quotes
+# or first-person speech can leak from it.
+_GUIDANCE_BANNED = [
     (re.compile(r"\d"), "a digit"),
     (re.compile('["“”]'), "a quotation mark"),
     (re.compile(r"\b(?:I|[Mm]e|[Mm]y|[Mm]ine|[Ww]e|[Oo]urs?|[Uu]s)\b"), "first-person text"),
     (re.compile(r"\b(?:" + "|".join(calendar.month_name[1:]) + r")\b"), "a month name"),
 ]
+
+
+def _guidance_only(owner: str, texts: list[str]) -> None:
+    for text in texts:
+        for pattern, what in _GUIDANCE_BANNED:
+            if pattern.search(text):
+                raise ValueError(f"{owner}: {what} in {text!r}; this text has no numbers, dates or quoted/first-person speech")
 
 
 class AudienceProfile(BaseModel):
@@ -69,10 +77,7 @@ class AudienceProfile(BaseModel):
 
     @model_validator(mode="after")
     def _writer_guidance_only(self):
-        for text in [self.label, self.role, *self.pains, *self.objections, *self.tone_notes]:
-            for pattern, what in _PERSONA_BANNED:
-                if pattern.search(text):
-                    raise ValueError(f"persona {self.id!r}: {what} in {text!r}; persona text has no numbers, dates or quoted/first-person speech")
+        _guidance_only(f"persona {self.id!r}", [self.label, self.role, *self.pains, *self.objections, *self.tone_notes])
         return self
 
 
@@ -200,7 +205,6 @@ class SeasonWindow(BaseModel):
 
     id: str
     name: str
-    pain: str
     start: str = Field(pattern=r"^\d{2}-\d{2}$")  # MM-DD; start after end means the window wraps past Dec 31
     end: str = Field(pattern=r"^\d{2}-\d{2}$")
     lead_days: int = Field(ge=0)  # how many days before start to begin advertising
@@ -226,6 +230,11 @@ class BridgeEntry(BaseModel):
     hemut_feature: str
     claim_ids: list[str]
     audiences: list[str] = []  # AudienceProfile ids this angle fits; empty means any
+
+    @model_validator(mode="after")
+    def _writer_guidance_only(self):  # pain and hemut_feature reach the draft model as part of the Brief
+        _guidance_only(f"bridge {self.tag!r}", [self.pain, self.hemut_feature])
+        return self
 
 
 class TrendItem(BaseModel):

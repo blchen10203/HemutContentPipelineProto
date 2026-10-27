@@ -1,7 +1,7 @@
 """Weekly content plan for Mode B: active seasons first (the boost), then live trend cards, then evergreen pillars.
 
-One angle per tag per week. An angle (tag + pain) used in the previous plan is skipped, so a tag with two bridge
-entries rotates between them week to week. Two tags never sell the same hemut_feature in one week. Trends need a bridge, an unexpired card and low sensitivity.
+One angle per tag per week. A tag with several bridge entries rotates through them by week number, so consecutive
+weeks lead with different angles without any stored history. Two tags never sell the same hemut_feature in one week. Trends need a bridge, an unexpired card and low sensitivity.
 Once the slots are filled, each gets a reader persona from its bridge's audiences, spread so a week repeats one as little as it can.
 """
 import datetime
@@ -22,7 +22,6 @@ def plan_week(
     bridges: list[BridgeEntry] | None = None,
     audiences: dict[str, AudienceProfile] | None = None,
     trends: TrendSource | None = None,
-    previous: list[PlanItem] = (),
     slots: int = SLOTS,
     skipped: list[str] | None = None,  # if given, gets one plain-English line per thing left out, for a human
 ) -> list[PlanItem]:
@@ -48,13 +47,16 @@ def plan_week(
     candidates += [(b, "evergreen", f"Evergreen pillar: {b.tag.removeprefix('evergreen-')}")
                    for b in bridges if b.tag.startswith("evergreen-")]
 
-    used = {(p.brief.origin_ref, p.brief.pain) for p in previous}
+    week = (today.toordinal() - 1) // 7  # weeks since a Monday, unbroken across years (ISO week 53 would repeat)
+    by_tag: dict[str, list] = {}
+    for c in candidates:
+        by_tag.setdefault(c[0].tag, []).append(c)
+    candidates = [c for group in by_tag.values() for c in group[week % len(group):] + group[:week % len(group)]]
+
     picked, tags, features = [], set(), set()
     for bridge, origin, reason in candidates:
         tag = bridge.tag
-        if (tag, bridge.pain) in used:
-            skipped.append(f"{tag}: angle used last week ({bridge.pain})")
-        elif tag in tags:
+        if tag in tags:
             continue  # this tag's other angle is already in the plan
         elif bridge.hemut_feature in features:
             skipped.append(f"{tag}: same feature already in this week's plan ({bridge.hemut_feature})")

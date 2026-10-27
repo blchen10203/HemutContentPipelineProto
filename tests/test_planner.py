@@ -17,7 +17,7 @@ D = datetime.date
 
 
 def season(id_, start, end, lead_days=0, verified_by=None):
-    return SeasonWindow(id=id_, name=id_, pain="p", start=start, end=end, lead_days=lead_days,
+    return SeasonWindow(id=id_, name=id_, start=start, end=end, lead_days=lead_days,
                         source_url="https://example.com", checked=D(2026, 10, 24), verified_by=verified_by)
 
 
@@ -86,14 +86,10 @@ def test_every_new_trend_tag_becomes_a_brief():
     assert {p.brief.origin for p in plan} == {"trend"}
 
 
-def test_repeated_angle_skipped_and_tag_rotates():
-    last_week = plan_week(D(2026, 10, 24))
-    skipped = []
-    this_week = plan_week(D(2026, 10, 31), previous=last_week, skipped=skipped)
-    ifta = [p for p in this_week if p.brief.origin_ref == "ifta-q3"]
-    assert len(ifta) == 1 and ifta[0].brief.pain != last_week[0].brief.pain  # IFTA's second angle this week
-    assert "detention" not in tags(this_week)  # only one angle, used last week
-    assert any(s.startswith("detention: angle used last week") for s in skipped)
+def test_consecutive_weeks_rotate_angles():
+    pains = [{p.brief.origin_ref: p.brief.pain for p in plan_week(D(2026, 10, 17) + datetime.timedelta(weeks=n))} for n in range(3)]
+    for tag in ("ifta-q3", "hurricane-season"):  # two angles each: they alternate week to week
+        assert pains[0][tag] != pains[1][tag] and pains[0][tag] == pains[2][tag]
 
 
 def test_run_week_runs_each_brief(tmp_path):
@@ -128,9 +124,9 @@ def test_demo_week_personas():
 
 
 def test_personas_spread_across_slots():
-    one_option = BridgeEntry(tag="evergreen-a", pain="p1", hemut_feature="f1", claim_ids=[], audiences=["dispatcher"])
-    two_options = BridgeEntry(tag="evergreen-b", pain="p2", hemut_feature="f2", claim_ids=[], audiences=["dispatcher", "back-office"])
-    any_persona = BridgeEntry(tag="evergreen-c", pain="p3", hemut_feature="f3", claim_ids=[])
+    one_option = BridgeEntry(tag="evergreen-a", pain="pa", hemut_feature="fa", claim_ids=[], audiences=["dispatcher"])
+    two_options = BridgeEntry(tag="evergreen-b", pain="pb", hemut_feature="fb", claim_ids=[], audiences=["dispatcher", "back-office"])
+    any_persona = BridgeEntry(tag="evergreen-c", pain="pc", hemut_feature="fc", claim_ids=[])
     plan = plan_week(D(2026, 10, 31), seasons=[], bridges=[two_options, one_option, any_persona])
     # the single-option slot picks first, so the two-option slot moves aside, and the open slot takes an unused persona
     assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner"]

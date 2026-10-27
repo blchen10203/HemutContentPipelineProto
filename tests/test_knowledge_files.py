@@ -1,6 +1,7 @@
 """The real knowledge/ files load, fit together, and fact_sheet.md is exactly what claims.yaml renders to."""
 from knowledge.build_fact_sheet import OUT, render
 from knowledge.loader import load_audiences, load_bridges, load_claims, load_seasons, load_voice
+from validate import _banned_words
 
 
 def test_real_claims_load():
@@ -31,11 +32,11 @@ def test_every_season_has_a_bridge_and_a_unique_id():
     assert not {s.id for s in seasons} - tags, "a season with no bridge can never become a Brief"
 
 
-def test_bridge_text_has_no_digits_or_quotes():
-    # research/ rule: bridge text carries no numbers and no quoted speech; facts live in claim_ids
-    bad = [(b.tag, field, text) for b in load_bridges() for field, text in (("pain", b.pain), ("hemut_feature", b.hemut_feature))
-           if any(c.isdigit() or c in '"“”' for c in text)]
-    assert not bad, f"bridge_map.yaml text with a digit or quotation mark: {bad}"
+def test_no_claim_wording_contains_a_banned_word():
+    # validate() checks claim wordings too, so one banned word here would fail every draft that uses the claim
+    voice = load_voice()
+    bad = {(c.id, v.span) for c in load_claims().values() for p in c.phrasings for v in _banned_words(p, voice)}
+    assert not bad, f"claims.yaml wordings with a banned word from voice.yaml: {sorted(bad)}"
 
 
 def test_every_bridge_persona_exists():

@@ -17,7 +17,6 @@
 # The window is that filing month; lead_days starts it in the last week of the quarter, while receipts can still be gathered.
 - id: ifta-q1
   name: IFTA Q1 return (January-March)
-  pain: Building the Q1 IFTA return from miles and fuel receipts before the April 30 deadline
   start: "04-01"
   end: "04-30"
   lead_days: 7
@@ -27,7 +26,6 @@
 
 - id: ifta-q2
   name: IFTA Q2 return (April-June)
-  pain: Building the Q2 IFTA return from miles and fuel receipts before the July 31 deadline
   start: "07-01"
   end: "07-31"
   lead_days: 7
@@ -37,7 +35,6 @@
 
 - id: ifta-q3
   name: IFTA Q3 return (July-September)
-  pain: Building the Q3 IFTA return from miles and fuel receipts before the October 31 deadline
   start: "10-01"
   end: "10-31"
   lead_days: 7
@@ -47,7 +44,6 @@
 
 - id: ifta-q4
   name: IFTA Q4 return (October-December)
-  pain: Building the Q4 IFTA return from miles and fuel receipts before the January 31 deadline
   start: "01-01"
   end: "01-31"
   lead_days: 7
@@ -58,7 +54,6 @@
 # NOAA: "meteorological winter includes December, January, and February." 02-28 also covers leap years but one day.
 - id: winter-weather
   name: Winter weather (meteorological winter)
-  pain: Weather delays push loads late and customers call for updates
   start: "12-01"
   end: "02-28"
   lead_days: 14
@@ -69,7 +64,6 @@
 # NHC: "The official hurricane season for the Atlantic basin is from June 1 to November 30" (knowledge/sources/nhc-climo_2026-10-26.txt).
 - id: hurricane-season
   name: Atlantic hurricane season
-  pain: Storm delays push loads late and customers call for updates
   start: "06-01"
   end: "11-30"
   lead_days: 7
