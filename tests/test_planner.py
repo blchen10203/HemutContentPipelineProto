@@ -113,6 +113,14 @@ def test_week_failure_keeps_earlier_results(tmp_path):
         next(week)
 
 
+def test_overlapping_seasons_never_repeat_a_feature():
+    skipped = []
+    plan = plan_week(D(2026, 11, 21), skipped=skipped)  # winter's lead overlaps the end of hurricane season
+    assert {"winter-weather", "hurricane-season"} <= set(tags(plan))
+    assert len({p.brief.hemut_feature for p in plan}) == len(plan)
+    assert any(s.startswith("hurricane-season: same feature already in this week's plan") for s in skipped)
+
+
 def test_overflow_is_reported_not_silent():
     skipped = []
     plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 3 pillars: 5 tags for 4 slots

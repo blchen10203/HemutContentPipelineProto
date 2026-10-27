@@ -1,7 +1,7 @@
 """Weekly content plan for Mode B: active seasons first (the boost), then live trend cards, then evergreen pillars.
 
 One angle per tag per week. An angle (tag + pain) used in the previous plan is skipped, so a tag with two bridge
-entries rotates between them week to week. Trends need a bridge, an unexpired card and low sensitivity.
+entries rotates between them week to week. Two tags never sell the same hemut_feature in one week. Trends need a bridge, an unexpired card and low sensitivity.
 """
 import datetime
 
@@ -48,18 +48,21 @@ def plan_week(
     ]
 
     used = {_angle(p) for p in previous}
-    plan, tags = [], set()
+    plan, tags, features = [], set(), set()
     for item in candidates:
         tag = item.brief.origin_ref
         if _angle(item) in used:
             skipped.append(f"{tag}: angle used last week ({item.brief.pain})")
         elif tag in tags:
             continue  # this tag's other angle is already in the plan
+        elif item.brief.hemut_feature in features:
+            skipped.append(f"{tag}: same feature already in this week's plan ({item.brief.hemut_feature})")
         elif len(plan) >= slots:
             skipped.append(f"{tag}: no slot left this week")
         else:
             plan.append(item)
             tags.add(tag)
+            features.add(item.brief.hemut_feature)
     return plan
 
 

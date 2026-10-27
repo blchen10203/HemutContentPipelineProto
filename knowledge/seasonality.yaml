@@ -3,11 +3,11 @@
 # Every date here comes from the source_url page. verified_by stays null until a human checks it.
 #
 # Left out because no official page gives a recurring date (2026-10-24):
-# - UCR renewal: plan.ucr.gov says the 2027 portal opens October 1, 2026, but no official page fetched states the deadline.
+# - UCR renewal: plan.ucr.gov says the 2027 portal opens October 1, 2026, but no official page fetched states the deadline
+#   (plan.ucr.gov answered 403 on 2026-10-26).
 # - CVSA International Roadcheck, Operation Safe Driver Week, Brake Safety Week: dates are set each year, not fixed.
 # - Peak season, produce season: no official source defines the dates.
 # Left out (2026-10-26), from research/hemut_market_brief_2026-10.md section 5:
-# - UCR renewal: plan.ucr.gov answered 403, so still no official page states the deadline.
 # - Form 2290 (heavy vehicle use tax): the IRS pages fetched state no due date, and no claim backs a bridge for it.
 # - MATS, Manifest, TIA Capital Ideas, ATRI Top Issues: events whose dates are set each year.
 # - Eastern Pacific hurricane season (May 15): only the Atlantic window is used.
