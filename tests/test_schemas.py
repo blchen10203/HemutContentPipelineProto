@@ -4,7 +4,7 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 from schemas import (
-    Angle, BridgeEntry, Brief, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
+    Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
     SeasonWindow, SourceAttachment, StatCard, TrendCard, TrendItem, TrxckwrldPost, Violation,
     render_post, used_claim_ids,
 )
@@ -39,6 +39,7 @@ VALID: list[tuple[type[BaseModel], dict]] = [
     }),
     (TrendCard, {"id": "c1", "tag": "fuel-prices", "items": ["t1"], "sensitivity": "low", "expires_at": "2026-11-15"}),
     (PlanItem, {"brief": BRIEF, "reason": "IFTA Q4 deadline Jan 31 is 12 days out"}),
+    (CallUsage, {"step": "draft", "model": "claude-opus-5-5", "input_tokens": 120, "output_tokens": 900, "thinking_tokens": 600}),
 ]
 IDS = [m.__name__ for m, _ in VALID]
 

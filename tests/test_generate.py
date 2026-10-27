@@ -7,8 +7,8 @@ import yaml
 
 import pytest
 
-from generate import N_ANGLES, Refused, run_brief
-from schemas import Brief
+from generate import N_ANGLES, Refused, run_brief, usage_total
+from schemas import Brief, CallUsage
 
 GOLDEN = Path(__file__).parent / "golden"
 GOOD = json.dumps(yaml.safe_load((GOLDEN / "good" / "reddit_ifta.yaml").read_text(encoding="utf-8"))["post"])
@@ -21,6 +21,11 @@ BRIEF = Brief(origin="request", audience="small fleets", audience_id="back-offic
               format="reddit_post", claim_ids=["hemi-desk-settlements-ifta"])
 
 
+# Every fake call: 100 uncached input, 6,700 read from cache, 500 output of which 300 thinking.
+USAGE = SimpleNamespace(input_tokens=100, output_tokens=500, cache_read_input_tokens=6700, cache_creation_input_tokens=0,
+                        output_tokens_details=SimpleNamespace(thinking_tokens=300))
+
+
 class FakeClient:
     def __init__(self, *replies, stop_reason="end_turn"):
         self.replies, self.calls, self.stop_reason = list(replies), [], stop_reason
@@ -31,7 +36,8 @@ class FakeClient:
         reply = self.replies.pop(0) if len(self.replies) > 1 else self.replies[0]
         if isinstance(reply, BaseException):
             raise reply
-        return SimpleNamespace(stop_reason=self.stop_reason, content=[SimpleNamespace(type="text", text=reply)])
+        return SimpleNamespace(stop_reason=self.stop_reason, content=[SimpleNamespace(type="text", text=reply)],
+                               model="claude-opus-5-5", usage=USAGE)
 
 
 def run(client, tmp_path, brief=BRIEF):
@@ -117,6 +123,7 @@ def test_refused_angles_call_writes_run_folder_and_raises(tmp_path):
     (run_dir,) = run_dirs(tmp_path)
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     assert meta["status"] == "error" and "refusal" in meta["error"] and meta["validator"] == []
+    assert [c["step"] for c in meta["usage"]["calls"]] == ["angles"]  # a refused call is still billed, so still logged
 
 
 def test_interrupt_mid_run_still_writes_meta(tmp_path):
@@ -144,3 +151,22 @@ def test_unknown_persona_is_an_error_run(tmp_path):
         run(FakeClient(ANGLES, GOOD), tmp_path, brief=BRIEF.model_copy(update={"audience_id": "nobody"}))
     (run_dir,) = tmp_path.iterdir()
     assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["status"] == "error"
+
+
+def test_usage_logged_per_call_with_total_and_cost(tmp_path):
+    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path)
+    usage = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))["usage"]
+    assert [c["step"] for c in usage["calls"]] == ["angles"] + ["draft"] * N_ANGLES
+    assert usage["calls"][0] == {"step": "angles", "model": "claude-opus-5-5", "input_tokens": 100, "output_tokens": 500,
+                                 "thinking_tokens": 300, "cache_read_input_tokens": 6700, "cache_creation_input_tokens": 0}
+    n = 1 + N_ANGLES
+    # per call: (100 x $4 + 500 x $20 + 6,700 x $0.20) / 1M = $0.01174
+    assert usage["total"] == {"calls": n, "input_tokens": 100 * n, "output_tokens": 500 * n, "thinking_tokens": 300 * n,
+                              "cache_read_input_tokens": 6700 * n, "cache_creation_input_tokens": 0,
+                              "usd_estimate": round(0.01174 * n, 4)}
+    assert result.usage[0].step == "angles"  # the UI reads it from the result, not from the file
+
+
+def test_unpriced_model_has_no_cost_estimate():
+    calls = [CallUsage(step="draft", model="some-other-model", input_tokens=1, output_tokens=1)]
+    assert usage_total(calls)["usd_estimate"] is None

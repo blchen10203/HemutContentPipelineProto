@@ -16,7 +16,7 @@ from pydantic import BaseModel
 
 from knowledge.build_fact_sheet import render as render_fact_sheet
 from knowledge.loader import ROOT, load_audiences, load_claims, load_voice
-from schemas import Angle, AudienceProfile, Brief, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
+from schemas import Angle, AudienceProfile, Brief, CallUsage, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
 MODEL = "claude-opus-5-5"  # no server-side fallback, so this is always the model that answered
@@ -26,6 +26,8 @@ MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
 RUN_ID = "%Y%m%d-%H%M%S-%f"
+# USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
+PRICES = {"claude-opus-5-5": {"input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write": 5.00}}
 
 
 class _Angles(BaseModel):  # response shape for the angles call only
@@ -44,12 +46,14 @@ def run_brief(
     client: anthropic.Anthropic | None = None,
     on_event: Callable[[str, dict], None] = lambda name, payload: None,
     out_root: Path = OUT,
+    usage: list[CallUsage] | None = None,  # calls made before the Brief existed (Mode A's normalize step)
 ) -> RunResult:
     claims = load_claims() if claims is None else claims  # the knowledge base is always loaded
     voice = load_voice() if voice is None else voice
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
-    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source)
+    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source,
+                       usage=usage or [])
     on_event("brief", brief.model_dump())
 
     if brief.needs_source:
@@ -68,11 +72,12 @@ def run_brief(
     return result
 
 
-def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT) -> None:
+def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT, usage: list[CallUsage] = ()) -> None:
     """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
-    _write_error(run_dir, RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="error"), claims, now, error)
+    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="error", usage=list(usage))
+    _write_error(run_dir, result, claims, now, error)
 
 
 def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: BaseException) -> None:
@@ -87,23 +92,24 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
     if not (audience := load_audiences().get(brief.audience_id)):
         raise ValueError(f"Brief audience_id {brief.audience_id!r} is not in knowledge/audiences.yaml")
     persona = render_persona(audience)
-    reply = ask(client, system, [_user(load_prompt("angles.txt", n=str(N_ANGLES), persona=persona, brief=brief_json))], _Angles)
+    reply = ask(client, system, [_user(load_prompt("angles.txt", n=str(N_ANGLES), persona=persona, brief=brief_json))], _Angles,
+                step="angles", usage=result.usage)
     result.angles = _Angles.model_validate_json(reply).angles
     on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
     for i, angle in enumerate(result.angles):
         attempts: list[DraftAttempt] = []
         result.drafts.append(attempts)  # filled in place, so an API error keeps the attempts made so far
         first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
-        _draft(client, system, first, claims, voice, attempts, lambda a: on_event("draft", {"angle": i, **a}))
+        _draft(client, system, first, claims, voice, attempts, lambda a: on_event("draft", {"angle": i, **a}), result.usage)
     if not any(attempts and attempts[-1].violations == [] for attempts in result.drafts):
         result.status = "failed_validation"
 
 
-def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAttempt], on_attempt) -> None:
+def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAttempt], on_attempt, usage: list[CallUsage]) -> None:
     messages = [_user(first_prompt)]
     for n in range(1 + MAX_RETRIES):
         try:
-            reply = ask(client, system, messages, TrxckwrldPost)
+            reply = ask(client, system, messages, TrxckwrldPost, step="draft", usage=usage)
         except Refused as e:  # retrying the same request will not help
             attempts.append(DraftAttempt(attempt=n, violations=[Violation(code="PARSE_ERROR", message=str(e))]))
             on_attempt({"attempt": n, "violations": [v.model_dump() for v in attempts[-1].violations]})
@@ -129,8 +135,9 @@ def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAtte
         ]
 
 
-def ask(client, system: str, messages: list, shape: type[BaseModel]) -> str:
-    """One structured-output call; returns the JSON text. Raises Refused if the model gave no usable answer."""
+def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: str, usage: list[CallUsage]) -> str:
+    """One structured-output call; returns the JSON text and appends its token use to usage.
+    Raises Refused if the model gave no usable answer."""
     response = client.messages.create(
         model=MODEL,
         max_tokens=16000,
@@ -138,9 +145,29 @@ def ask(client, system: str, messages: list, shape: type[BaseModel]) -> str:
         messages=messages,
         output_config={"effort": EFFORT, "format": {"type": "json_schema", "schema": anthropic.transform_schema(shape)}},
     )
+    u = response.usage
+    usage.append(CallUsage(  # before the refusal check: a refused call is still billed
+        step=step, model=response.model, input_tokens=u.input_tokens, output_tokens=u.output_tokens,
+        thinking_tokens=getattr(u.output_tokens_details, "thinking_tokens", None),
+        cache_read_input_tokens=u.cache_read_input_tokens or 0, cache_creation_input_tokens=u.cache_creation_input_tokens or 0,
+    ))
     if response.stop_reason in ("refusal", "max_tokens"):
         raise Refused(f"model stopped with {response.stop_reason}")
     return next(b.text for b in response.content if b.type == "text")
+
+
+def usage_total(calls: list[CallUsage]) -> dict:
+    """Token sums over calls and a USD estimate from PRICES; usd_estimate is None if a call's model has no price."""
+    fields = ["input_tokens", "output_tokens", "thinking_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"]
+    total = {"calls": len(calls)} | {f: sum(getattr(c, f) or 0 for c in calls) for f in fields}
+    total["usd_estimate"] = None if any(c.model not in PRICES for c in calls) else round(sum(map(_usd, calls)), 4)
+    return total
+
+
+def _usd(c: CallUsage) -> float:
+    p = PRICES[c.model]
+    return (c.input_tokens * p["input"] + c.output_tokens * p["output"] + c.cache_read_input_tokens * p["cache_read"]
+            + c.cache_creation_input_tokens * p["cache_write"]) / 1_000_000
 
 
 def _user(text: str) -> dict:
@@ -188,6 +215,7 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
         "prompt_versions": {p: hashlib.sha256(load_prompt(p).encode()).hexdigest()[:12] for p in used},
         "knowledge_checked": sorted({c.checked.isoformat() for c in claims.values()}),
         "validator": [[{"attempt": a.attempt, "violations": [v.model_dump() for v in a.violations]} for a in d] for d in result.drafts],
+        "usage": {"calls": [c.model_dump() for c in result.usage], "total": usage_total(result.usage)},
     }
     (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     (run_dir / "result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")

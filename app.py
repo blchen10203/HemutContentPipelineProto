@@ -8,6 +8,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
+from generate import usage_total
 from knowledge.loader import load_claims, load_seasons
 from modes.request import run_request
 from modes.scheduled import run_week
@@ -54,6 +55,16 @@ def show_ad(text: str, needs_approval: bool) -> None:
             st.markdown(md(f"**[{cta_text} →]({url})**"))
 
 
+def usage_caption(results: list[RunResult]) -> None:
+    """API use of the shown run(s), for the operator, not the reviewers."""
+    t = usage_total([c for r in results for c in r.usage])
+    if t["calls"]:
+        cost = "no price for this model" if t["usd_estimate"] is None else f"≈ ${t['usd_estimate']:.2f}"
+        st.caption(md(f"API use: {t['calls']} calls · {t['input_tokens'] + t['cache_read_input_tokens'] + t['cache_creation_input_tokens']:,}"
+                      f" input tokens ({t['cache_read_input_tokens']:,} from cache) · {t['output_tokens']:,} output"
+                      f" ({t['thinking_tokens']:,} thinking) · {cost}"))
+
+
 def show_result(result: RunResult) -> None:
     if result.needs_source:
         st.warning(md("**Needs a source before anything is drafted.** Nothing in the knowledge base covers:\n\n"
@@ -97,6 +108,7 @@ with request_tab:
     # session_state: any click reruns the whole script, and results would vanish from the other tab
     if st.session_state.get("request_result"):
         show_result(st.session_state.request_result)
+        usage_caption([st.session_state.request_result])
 
 with week_tab:
     day = st.date_input("Week of", value=datetime.date(2026, 10, 31))
@@ -128,6 +140,7 @@ with week_tab:
             for result in st.session_state.get("week_results", []):
                 st.subheader(md(result.brief.pain))
                 show_result(result)
+        usage_caption(st.session_state.get("week_results", []))
 
 with knowledge_tab:
     st.subheader("Seasons")

@@ -44,7 +44,7 @@ knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader 
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
                  pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
-schemas.py       Pydantic v2: Claim, VoiceRules, AudienceProfile, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
+schemas.py       Pydantic v2: Claim, VoiceRules, AudienceProfile, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, CallUsage, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
 validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM)
 generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retry, with an on_event progress callback
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
@@ -63,7 +63,7 @@ research/        secondary research, never loaded into prompts (see research/ ru
 - Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework.
 - One Streamlit app (app.py) as a thin shell. It only calls functions in generate.py, modes/, planner.py, and knowledge/. No business logic, validation, or prompt text in app.py. Local only, no auth, never posts.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
-- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature or effort, validator results.
+- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature or effort, validator results, and token usage per API call with a run total and $ estimate (prices in generate.PRICES).
 - Every trend source implements one interface (`brief_sources/trends/base.py`), so adding or swapping a platform touches one file.
 - Schemas are the contract between modules. Don't change them without updating tests.
 

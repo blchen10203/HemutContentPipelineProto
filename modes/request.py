@@ -10,12 +10,13 @@ from pydantic import create_model
 
 from generate import OUT, ask, load_prompt, run_brief, system_prompt, write_failed_request
 from knowledge.loader import load_audiences, load_claims, load_voice
-from schemas import AudienceProfile, Brief, Claim, Request, RunResult, VoiceRules
+from schemas import AudienceProfile, Brief, CallUsage, Claim, Request, RunResult, VoiceRules
 
 
 def request_to_brief(
     request: Request, claims: dict[str, Claim], *, voice: VoiceRules | None = None,
     audiences: dict[str, AudienceProfile] | None = None, client: anthropic.Anthropic | None = None,
+    usage: list[CallUsage] | None = None,  # gets this call's token use
 ) -> Brief:
     # TODO(cut list #3): turn request.sources into pending claims (requires_approval: true). Until then an attached
     # source does not cover anything: its items stay in needs_source, and the source text never reaches the model.
@@ -24,7 +25,8 @@ def request_to_brief(
     prompt = load_prompt("normalize.txt", personas=personas, request=request.text, notes=request.notes or "(none)")
     # The response schema only allows real persona ids, so the model cannot return one that does not exist.
     shape = create_model("RequestBrief", __base__=Brief, audience_id=(Literal[tuple(audiences)], ...))
-    reply = ask(client or anthropic.Anthropic(), system_prompt(claims, voice or load_voice()), [{"role": "user", "content": prompt}], shape)
+    reply = ask(client or anthropic.Anthropic(), system_prompt(claims, voice or load_voice()), [{"role": "user", "content": prompt}], shape,
+                step="normalize", usage=[] if usage is None else usage)
     brief = Brief.model_validate_json(reply).model_copy(update={"origin": "request", "origin_ref": None})
     # An id the model made up means it thinks something is covered that is not: that is a gap, not a typo to drop.
     unknown = [i for i in brief.claim_ids if i not in claims]
@@ -45,9 +47,10 @@ def run_request(
     claims = load_claims() if claims is None else claims
     voice = load_voice() if voice is None else voice
     client = client or anthropic.Anthropic()
+    usage: list[CallUsage] = []
     try:
-        brief = request_to_brief(request, claims, voice=voice, client=client)
+        brief = request_to_brief(request, claims, voice=voice, client=client, usage=usage)
     except BaseException as e:  # same as run_brief: an aborted run still leaves its folder
-        write_failed_request(e, claims, run_kwargs.get("out_root", OUT))
+        write_failed_request(e, claims, run_kwargs.get("out_root", OUT), usage)
         raise
-    return run_brief(brief, claims=claims, voice=voice, client=client, **run_kwargs)
+    return run_brief(brief, claims=claims, voice=voice, client=client, usage=usage, **run_kwargs)

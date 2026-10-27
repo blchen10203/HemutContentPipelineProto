@@ -6,14 +6,20 @@ import modes.request
 import modes.scheduled
 from streamlit.testing.v1 import AppTest
 
-from schemas import Angle, Brief, DraftAttempt, RunResult, Violation
+from schemas import Angle, Brief, CallUsage, DraftAttempt, RunResult, Violation
 
 AD = ("CANNED DRAFT\n\nCommand starts at $99 a month.\n\n"
       "Start free https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=short_ad&utm_campaign=x")
 BRIEF = Brief(origin="request", audience="a", audience_id="fleet-owner", pain="p", hemut_feature="f", format="short_ad", claim_ids=[])
 RESULT = RunResult(run_id="x", run_dir="out/runs/x", status="ok", brief=BRIEF,
                    angles=[Angle(hook="hook", pain="p", feature="f", claim_ids=[])],
-                   drafts=[[DraftAttempt(attempt=0, rendered_text=AD, violations=[])]])
+                   drafts=[[DraftAttempt(attempt=0, rendered_text=AD, violations=[])]],
+                   usage=[CallUsage(step="draft", model="claude-opus-5-5", input_tokens=1000, output_tokens=5000,
+                                    thinking_tokens=4000, cache_read_input_tokens=6700)])  # $0.10534
+
+
+def usage_captions(at):
+    return [c.value for c in at.caption if c.value.startswith("API use:")]
 
 
 def click(at, label):
@@ -34,7 +40,9 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     assert at.error and drafts_shown(at) == 0  # blank request is rejected by Request, not drafted
     at.text_area[0].input("Social post about detention").run()
     assert drafts_shown(click(at, "Run")) == 1
+    assert usage_captions(at) == [r"API use: 1 calls · 7,700 input tokens (6,700 from cache) · 5,000 output (4,000 thinking) · ≈ \$0.11"]
     assert drafts_shown(click(at, "Draft all")) == 2
+    assert len(usage_captions(at)) == 2  # one under the request, one under the week
     click(at, "Plan")  # a rerun must not wipe either tab's results
     assert drafts_shown(at) == 2 and any(m.value.startswith("**1. The office rebuilds the IFTA return") for m in at.markdown)
 

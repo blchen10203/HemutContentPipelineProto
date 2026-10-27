@@ -2,7 +2,7 @@
 
 Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), AudienceProfile (audiences.yaml).
 Mode A input:   SourceAttachment, Request.
-Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, RunResult.
+Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, CallUsage, RunResult.
 Mode B:         SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem.
 
 Copy never contains free numbers or claim text. It references claims as {{claim:<id>}} (first phrasing)
@@ -186,6 +186,19 @@ class DraftAttempt(BaseModel):
     violations: list[Violation]
 
 
+class CallUsage(BaseModel):
+    """Token use of one API call, as response.usage reported it."""
+    model_config = ConfigDict(extra="forbid")
+
+    step: Literal["normalize", "angles", "draft"]
+    model: str
+    input_tokens: int  # uncached input only
+    output_tokens: int  # includes thinking
+    thinking_tokens: int | None = None  # the part of output_tokens spent thinking; None if the API did not report it
+    cache_read_input_tokens: int = 0
+    cache_creation_input_tokens: int = 0
+
+
 class RunResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -196,6 +209,7 @@ class RunResult(BaseModel):
     angles: list[Angle] = []
     drafts: list[list[DraftAttempt]] = []  # one attempt list per angle
     needs_source: list[str] = []
+    usage: list[CallUsage] = []  # every API call of the run, in order, refused ones included
 
 
 # ---------------------------------------------------------------- Mode B

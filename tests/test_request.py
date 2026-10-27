@@ -60,6 +60,7 @@ def test_covered_request_runs_the_core(tmp_path):
     result = run_request(Request(text="Reddit-style post about IFTA automation"), client=client, out_root=tmp_path)
     assert result.status == "ok" and len(client.calls) == 2 + N_ANGLES
     assert client.calls[0]["system"] == client.calls[1]["system"]  # normalize shares the cached system prompt
+    assert [c.step for c in result.usage] == ["normalize", "angles"] + ["draft"] * N_ANGLES
 
 
 def test_failed_request_call_still_writes_run_folder(tmp_path):
