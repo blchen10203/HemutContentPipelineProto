@@ -157,9 +157,11 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
 
 
 def usage_total(calls: list[CallUsage]) -> dict:
-    """Token sums over calls and a USD estimate from PRICES; usd_estimate is None if a call's model has no price."""
-    fields = ["input_tokens", "output_tokens", "thinking_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"]
-    total = {"calls": len(calls)} | {f: sum(getattr(c, f) or 0 for c in calls) for f in fields}
+    """Token sums over calls and a USD estimate from PRICES. usd_estimate is None if a call's model has no price,
+    thinking_tokens is None if any call did not report it (unknown, not zero)."""
+    fields = ["input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"]
+    total = {"calls": len(calls)} | {f: sum(getattr(c, f) for c in calls) for f in fields}
+    total["thinking_tokens"] = None if any(c.thinking_tokens is None for c in calls) else sum(c.thinking_tokens for c in calls)
     total["usd_estimate"] = None if any(c.model not in PRICES for c in calls) else round(sum(map(_usd, calls)), 4)
     return total
 

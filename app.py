@@ -60,9 +60,9 @@ def usage_caption(results: list[RunResult]) -> None:
     t = usage_total([c for r in results for c in r.usage])
     if t["calls"]:
         cost = "no price for this model" if t["usd_estimate"] is None else f"≈ ${t['usd_estimate']:.2f}"
+        thinking = "thinking not reported" if t["thinking_tokens"] is None else f"{t['thinking_tokens']:,} thinking"
         st.caption(md(f"API use: {t['calls']} calls · {t['input_tokens'] + t['cache_read_input_tokens'] + t['cache_creation_input_tokens']:,}"
-                      f" input tokens ({t['cache_read_input_tokens']:,} from cache) · {t['output_tokens']:,} output"
-                      f" ({t['thinking_tokens']:,} thinking) · {cost}"))
+                      f" input tokens ({t['cache_read_input_tokens']:,} from cache) · {t['output_tokens']:,} output ({thinking}) · {cost}"))
 
 
 def show_result(result: RunResult) -> None:

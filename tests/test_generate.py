@@ -167,6 +167,9 @@ def test_usage_logged_per_call_with_total_and_cost(tmp_path):
     assert result.usage[0].step == "angles"  # the UI reads it from the result, not from the file
 
 
-def test_unpriced_model_has_no_cost_estimate():
-    calls = [CallUsage(step="draft", model="some-other-model", input_tokens=1, output_tokens=1)]
-    assert usage_total(calls)["usd_estimate"] is None
+def test_unpriced_model_and_unreported_thinking_stay_unknown():
+    reported = CallUsage(step="angles", model="claude-opus-5-5", input_tokens=1, output_tokens=5, thinking_tokens=3)
+    unreported = CallUsage(step="draft", model="some-other-model", input_tokens=1, output_tokens=1)  # thinking_tokens None
+    total = usage_total([reported, unreported])
+    assert total["usd_estimate"] is None and total["thinking_tokens"] is None  # unknown, never summed as zero
+    assert usage_total([reported])["thinking_tokens"] == 3
