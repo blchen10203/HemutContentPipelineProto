@@ -40,7 +40,7 @@ Tab **Request (Mode A)**. Type:
 
 Click **Run**. While it runs (about 70s), the status box shows the Brief, then the three angles, then "Draft N ready" as each draft passes. When it finishes, the box folds away and only the finished ads show. Drafts that never pass the checks are not shown. Talk over it:
 
-- The request becomes a Brief (audience, pain, Hemut feature, format, the claim ids that cover it).
+- The request becomes a Brief (audience in the requester's words, the closest reader persona, pain, Hemut feature, format, the claim ids that cover it). The persona's pains, objections and tone go into the angle and draft prompts.
 - Three angles, one draft each. Every draft goes through the deterministic validator. A draft with a violation is sent back with the violations, at most twice.
 
 When it finishes, point at one draft:
@@ -65,6 +65,8 @@ Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default). Click **Plan
 2. **"Storm delays push loads late…"** (Seasonal): Atlantic hurricane season runs through Nov 30 (source: NOAA's hurricane center). Like IFTA, its reason line names who checked the dates.
 3. **"Trucks wait at the dock for hours…"** (Trend, Social post): the detention trend, from the frozen trend fixture. The reason shows how many items back it and when the trend card expires.
 4. and 5. **Evergreen** (Short ads): published pricing and rate confirmations retyped by hand.
+
+Each _Why_ line ends with the reader the item is written for (from `knowledge/audiences.yaml`). Readers rotate so a week repeats one as little as it can. This week only three of the four personas fit these angles, so two repeat.
 
 Then the **Left out** list, one line per thing the planner refused:
 

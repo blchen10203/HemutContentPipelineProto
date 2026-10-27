@@ -15,8 +15,8 @@ import yaml
 from pydantic import BaseModel
 
 from knowledge.build_fact_sheet import render as render_fact_sheet
-from knowledge.loader import ROOT, load_claims, load_voice
-from schemas import Angle, Brief, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
+from knowledge.loader import ROOT, load_audiences, load_claims, load_voice
+from schemas import Angle, AudienceProfile, Brief, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
 MODEL = "claude-opus-5-5"  # no server-side fallback, so this is always the model that answered
@@ -84,13 +84,16 @@ def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now
 def _generate(brief, result, claims, voice, client, on_event) -> None:
     system = system_prompt(claims, voice)
     brief_json = brief.model_dump_json(indent=2)
-    reply = ask(client, system, [_user(load_prompt("angles.txt", n=str(N_ANGLES), brief=brief_json))], _Angles)
+    if not (audience := load_audiences().get(brief.audience_id)):
+        raise ValueError(f"Brief audience_id {brief.audience_id!r} is not in knowledge/audiences.yaml")
+    persona = render_persona(audience)
+    reply = ask(client, system, [_user(load_prompt("angles.txt", n=str(N_ANGLES), persona=persona, brief=brief_json))], _Angles)
     result.angles = _Angles.model_validate_json(reply).angles
     on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
     for i, angle in enumerate(result.angles):
         attempts: list[DraftAttempt] = []
         result.drafts.append(attempts)  # filled in place, so an API error keeps the attempts made so far
-        first = load_prompt("draft.txt", brief=brief_json, angle=angle.model_dump_json(indent=2))
+        first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
         _draft(client, system, first, claims, voice, attempts, lambda a: on_event("draft", {"angle": i, **a}))
     if not any(attempts and attempts[-1].violations == [] for attempts in result.drafts):
         result.status = "failed_validation"
@@ -149,6 +152,11 @@ def load_prompt(name: str, **values: str) -> str:
     for key, value in values.items():  # not str.format: prompts contain literal {{claim:<id>}}
         text = text.replace("{" + key + "}", value)
     return text
+
+
+def render_persona(a: AudienceProfile) -> str:
+    lists = [("Struggles with", a.pains), ("Hesitates because of", a.objections), ("Tone", a.tone_notes)]
+    return f"{a.label}: {a.role}\n" + "\n".join(f"{name}:\n" + "\n".join(f"- {x}" for x in items) for name, items in lists if items)
 
 
 def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:

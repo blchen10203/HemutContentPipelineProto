@@ -13,7 +13,7 @@ CLAIMS = load_claims()
 
 
 def brief_reply(**overrides) -> str:
-    brief = {"origin": "trend", "audience": "5-15 truck fleets", "pain": "IFTA by hand", "hemut_feature": "IFTA from loads",
+    brief = {"origin": "trend", "audience": "5-15 truck fleets", "audience_id": "fleet-owner", "pain": "IFTA by hand", "hemut_feature": "IFTA from loads",
              "format": "reddit_post", "claim_ids": ["hemi-desk-settlements-ifta", "command-base-price"],
              "needs_source": [], "sensitivity": "low", "origin_ref": "made up"}
     return json.dumps(brief | overrides)
@@ -79,3 +79,13 @@ def test_interrupted_request_call_still_writes_run_folder(tmp_path):
         run_request(Request(text="Reddit-style post about IFTA"), client=FakeClient(KeyboardInterrupt()), out_root=tmp_path)
     (run_dir,) = [d for d in tmp_path.iterdir() if d.is_dir()]
     assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["status"] == "error"
+
+
+def test_request_maps_to_a_real_persona_id():
+    client = FakeClient(brief_reply())
+    brief = request_to_brief(Request(text="Reddit-style post about IFTA automation for 5-15 truck fleets"), CLAIMS, client=client)
+    assert brief.audience == "5-15 truck fleets" and brief.audience_id == "fleet-owner"  # requester's words kept
+    call = client.calls[0]
+    assert "- fleet-owner: Owner running a small fleet." in call["messages"][0]["content"]
+    schema = call["output_config"]["format"]["schema"]
+    assert set(schema["properties"]["audience_id"]["enum"]) == {"fleet-owner", "dispatcher", "back-office", "carrier-exec"}

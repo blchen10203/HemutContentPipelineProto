@@ -19,6 +19,9 @@ The fact sheet's "Context" notes are background for you, the writer. They tell y
 
 Fill claim_ids_used with exactly the claim ids your placeholders use, plus the stat card's claim id if there is one.
 
+Reader (background for you, the writer). Write to this reader, never as them: no first-person reader voice and no invented quotes. Use it to choose what to lead with and how to sound. Nothing in it is a fact for the post; facts come only from the fact sheet.
+{persona}
+
 Brief:
 {brief}
 

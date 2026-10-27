@@ -17,7 +17,7 @@ ANGLES = json.dumps({"angles": [
     {"hook": f"hook {i}", "pain": "IFTA by hand", "feature": "IFTA from loads", "claim_ids": ["hemi-desk-settlements-ifta"]}
     for i in range(N_ANGLES)
 ]})
-BRIEF = Brief(origin="request", audience="small fleets", pain="IFTA by hand", hemut_feature="IFTA",
+BRIEF = Brief(origin="request", audience="small fleets", audience_id="back-office", pain="IFTA by hand", hemut_feature="IFTA",
               format="reddit_post", claim_ids=["hemi-desk-settlements-ifta"])
 
 
@@ -127,3 +127,20 @@ def test_interrupt_mid_run_still_writes_meta(tmp_path):
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     assert meta["status"] == "error" and "KeyboardInterrupt" in meta["error"]
     assert [len(d) for d in meta["validator"]] == [1, 0]
+
+
+def test_persona_block_reaches_angles_and_draft_prompts(tmp_path):
+    client = FakeClient(ANGLES, GOOD)
+    run(client, tmp_path)
+    prompts = [c["messages"][0]["content"] for c in client.calls]  # angles call, then one draft call per angle
+    for prompt in prompts:
+        assert "Back-office and billing lead: Handles invoicing" in prompt and "Hesitates because of:" in prompt
+        assert "{persona}" not in prompt
+    assert "Back-office" not in client.calls[0]["system"][0]["text"]  # persona stays out of the cached system prompt
+
+
+def test_unknown_persona_is_an_error_run(tmp_path):
+    with pytest.raises(ValueError, match="audience_id 'nobody'"):
+        run(FakeClient(ANGLES, GOOD), tmp_path, brief=BRIEF.model_copy(update={"audience_id": "nobody"}))
+    (run_dir,) = tmp_path.iterdir()
+    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["status"] == "error"

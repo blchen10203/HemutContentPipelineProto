@@ -40,11 +40,11 @@ not remove the need for a snapshot in knowledge/sources/ and does not change req
 
 ## Layout
 ```
-knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
-                 loader.py (loads + checks claims.yaml / voice.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
+knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
+                 loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
                  pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
-schemas.py       Pydantic v2: Claim, VoiceRules, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
+schemas.py       Pydantic v2: Claim, VoiceRules, AudienceProfile, Request, Brief (origin: request|seasonal|trend|evergreen), TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem
 validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM)
 generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retry, with an on_event progress callback
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)

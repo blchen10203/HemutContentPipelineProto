@@ -1,6 +1,6 @@
 """The real knowledge/ files load, fit together, and fact_sheet.md is exactly what claims.yaml renders to."""
 from knowledge.build_fact_sheet import OUT, render
-from knowledge.loader import load_bridges, load_claims, load_seasons, load_voice
+from knowledge.loader import load_audiences, load_bridges, load_claims, load_seasons, load_voice
 
 
 def test_real_claims_load():
@@ -36,3 +36,9 @@ def test_bridge_text_has_no_digits_or_quotes():
     bad = [(b.tag, field, text) for b in load_bridges() for field, text in (("pain", b.pain), ("hemut_feature", b.hemut_feature))
            if any(c.isdigit() or c in '"“”' for c in text)]
     assert not bad, f"bridge_map.yaml text with a digit or quotation mark: {bad}"
+
+
+def test_every_bridge_persona_exists():
+    audiences = load_audiences()
+    missing = {(b.tag, a) for b in load_bridges() for a in b.audiences if a not in audiences}
+    assert not missing, f"bridge_map.yaml uses persona ids not in audiences.yaml: {sorted(missing)}"

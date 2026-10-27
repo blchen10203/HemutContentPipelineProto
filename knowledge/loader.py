@@ -1,10 +1,10 @@
-"""Load knowledge/*.yaml (claims, voice, seasonality, bridge map) into schemas models. Raises ValueError on anything malformed."""
+"""Load knowledge/*.yaml (claims, voice, audiences, seasonality, bridge map) into schemas models. Raises ValueError on anything malformed."""
 from pathlib import Path
 
 import yaml
 from pydantic import ValidationError
 
-from schemas import BridgeEntry, Claim, SeasonWindow, VoiceRules
+from schemas import AudienceProfile, BridgeEntry, Claim, SeasonWindow, VoiceRules
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -58,6 +58,15 @@ def load_voice(path: Path = ROOT / "knowledge" / "voice.yaml") -> VoiceRules:
         return VoiceRules.model_validate(_read_yaml(path))
     except ValidationError as e:
         raise ValueError(f"{path}: {e}") from e
+
+
+def load_audiences(path: Path = ROOT / "knowledge" / "audiences.yaml") -> dict[str, AudienceProfile]:
+    audiences = {}
+    for a in _load_list(path, AudienceProfile):
+        if a.id in audiences:
+            raise ValueError(f"{path}: duplicate audience id {a.id!r}")
+        audiences[a.id] = a
+    return audiences
 
 
 def load_seasons(path: Path = ROOT / "knowledge" / "seasonality.yaml") -> list[SeasonWindow]:

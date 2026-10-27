@@ -1,10 +1,13 @@
 Propose {n} distinct angles for the brief below. Each angle is a different way into the same pain, so the drafts written from them do not read alike.
 
 For each angle give:
-- hook: the opening line, written for this audience. No numbers.
+- hook: the opening line, written for the reader below. No numbers.
 - pain: the specific problem this angle leads with.
 - feature: the Hemut capability that solves it, in plain words.
 - claim_ids: ids from the fact sheet that back the angle. Start from the brief's claim_ids and add others only if they fit.
+
+Reader (background for you, the writer). Write to this reader, never as them: no first-person reader voice and no invented quotes. Use it to choose what to lead with and how to sound. Nothing in it is a fact for the post; facts come only from the fact sheet.
+{persona}
 
 Brief:
 {brief}

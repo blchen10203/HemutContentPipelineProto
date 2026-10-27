@@ -1,4 +1,4 @@
-"""Seasonal Brief source: which seasonality.yaml windows are active on a date, turned into PlanItems via bridge_map.yaml.
+"""Seasonal Brief source: which seasonality.yaml windows are active on a date, matched to their bridge_map.yaml entries.
 
 A window is active from (start - lead_days) through end. start after end means it wraps past Dec 31.
 Unverified windows (verified_by: null) still count; their reason says so.
@@ -6,15 +6,14 @@ Unverified windows (verified_by: null) still count; their reason says so.
 import calendar
 import datetime
 
-from schemas import Brief, BridgeEntry, PlanItem, SeasonWindow
+from schemas import AudienceProfile, Brief, BridgeEntry, SeasonWindow
 
-AUDIENCE = "asset-based carriers, from a few trucks to large fleets"
 FORMAT = {"seasonal": "reddit_post", "trend": "social_post", "evergreen": "short_ad"}
 
 
-def bridge_brief(bridge: BridgeEntry, origin: str) -> Brief:
+def bridge_brief(bridge: BridgeEntry, origin: str, persona: AudienceProfile) -> Brief:
     """The one way a season, trend or pillar becomes a Brief."""
-    return Brief(origin=origin, audience=AUDIENCE, pain=bridge.pain, hemut_feature=bridge.hemut_feature,
+    return Brief(origin=origin, audience=persona.label, audience_id=persona.id, pain=bridge.pain, hemut_feature=bridge.hemut_feature,
                  format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag)
 
 
@@ -28,7 +27,8 @@ def window(season: SeasonWindow, today: datetime.date) -> tuple[datetime.date, d
     return None
 
 
-def active_seasons(today: datetime.date, seasons: list[SeasonWindow], bridges: list[BridgeEntry]) -> list[PlanItem]:
+def active_seasons(today: datetime.date, seasons: list[SeasonWindow], bridges: list[BridgeEntry]) -> list[tuple[BridgeEntry, str]]:
+    """(bridge, reason) for every bridge of every season active today. The planner picks a persona and makes the Brief."""
     out = []
     for season in seasons:
         if not (dates := window(season, today)):
@@ -37,7 +37,7 @@ def active_seasons(today: datetime.date, seasons: list[SeasonWindow], bridges: l
         when = f"in season until {end:%b %d}" if today >= start else f"starts {start:%b %d}, {(start - today).days} days out"
         check = f"dates verified by {season.verified_by}" if season.verified_by else "dates unverified, not yet checked by a human"
         reason = f"Season: {season.name}, {when} ({check}; source {season.source_url})"
-        out += [PlanItem(brief=bridge_brief(b, "seasonal"), reason=reason) for b in bridges if b.tag == season.id]
+        out += [(b, reason) for b in bridges if b.tag == season.id]
     return out
 
 

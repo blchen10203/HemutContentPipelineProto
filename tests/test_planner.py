@@ -40,8 +40,8 @@ def test_lead_days_reach_back_across_new_year():
     q4 = season("ifta-q4", "01-01", "01-31", lead_days=7)
     assert window(q4, D(2026, 12, 25)) == (D(2027, 1, 1), D(2027, 1, 31))
     assert window(q4, D(2026, 12, 24)) is None
-    (item,) = active_seasons(D(2026, 12, 25), [q4], [bridge("ifta-q4")])
-    assert item.brief.origin == "seasonal" and "starts Jan 01, 7 days out" in item.reason
+    ((matched, reason),) = active_seasons(D(2026, 12, 25), [q4], [bridge("ifta-q4")])
+    assert matched.tag == "ifta-q4" and "starts Jan 01, 7 days out" in reason
 
 
 def test_feb_29_window_in_a_non_leap_year():
@@ -50,10 +50,10 @@ def test_feb_29_window_in_a_non_leap_year():
 
 def test_unverified_season_still_briefs_but_says_so():
     s = season("ifta-q3", "10-01", "10-31")
-    (item,) = active_seasons(D(2026, 10, 15), [s], [bridge("ifta-q3")])
-    assert "unverified" in item.reason
-    (item,) = active_seasons(D(2026, 10, 15), [s.model_copy(update={"verified_by": "Bryan"})], [bridge("ifta-q3")])
-    assert "verified by Bryan" in item.reason
+    ((_, reason),) = active_seasons(D(2026, 10, 15), [s], [bridge("ifta-q3")])
+    assert "unverified" in reason
+    ((_, reason),) = active_seasons(D(2026, 10, 15), [s.model_copy(update={"verified_by": "Bryan"})], [bridge("ifta-q3")])
+    assert "verified by Bryan" in reason
 
 
 def test_demo_week_plan():
@@ -119,6 +119,21 @@ def test_overlapping_seasons_never_repeat_a_feature():
     assert {"winter-weather", "hurricane-season"} <= set(tags(plan))
     assert len({p.brief.hemut_feature for p in plan}) == len(plan)
     assert any(s.startswith("hurricane-season: same feature already in this week's plan") for s in skipped)
+
+
+def test_demo_week_personas():
+    plan = plan_week(D(2026, 10, 31))
+    assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "dispatcher", "fleet-owner", "back-office"]
+    assert plan[0].reason.endswith("Reader: Back-office and billing lead") and plan[0].brief.audience == "Back-office and billing lead"
+
+
+def test_personas_spread_across_slots():
+    one_option = BridgeEntry(tag="evergreen-a", pain="p1", hemut_feature="f1", claim_ids=[], audiences=["dispatcher"])
+    two_options = BridgeEntry(tag="evergreen-b", pain="p2", hemut_feature="f2", claim_ids=[], audiences=["dispatcher", "back-office"])
+    any_persona = BridgeEntry(tag="evergreen-c", pain="p3", hemut_feature="f3", claim_ids=[])
+    plan = plan_week(D(2026, 10, 31), seasons=[], bridges=[two_options, one_option, any_persona])
+    # the single-option slot picks first, so the two-option slot moves aside, and the open slot takes an unused persona
+    assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner"]
 
 
 def test_overflow_is_reported_not_silent():

@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from knowledge.loader import load_claims, load_voice
+from knowledge.loader import load_audiences, load_claims, load_voice
 
 
 def claim(**overrides):
@@ -99,3 +99,27 @@ def test_empty_voice_fails(tmp_path):
     path.write_text("# nothing yet\n")
     with pytest.raises(ValueError):
         load_voice(path)
+
+
+PERSONA = {"id": "dispatcher", "label": "Dispatcher", "role": "Runs the board.", "pains": ["Check calls all day"],
+           "objections": ["Another screen"], "tone_notes": ["Fast and concrete"]}
+
+
+@pytest.mark.parametrize("field,text", [
+    ("pains", ["Waits 30 days to get paid"]),
+    ("objections", ["My people won't learn it"]),
+    ("tone_notes", ["Say “no card” up front"]),
+    ("role", "Busiest in November"),
+])
+def test_persona_text_with_numbers_dates_quotes_or_first_person_fails(tmp_path, field, text):
+    path = tmp_path / "audiences.yaml"
+    path.write_text(yaml.safe_dump([{**PERSONA, field: text}]), encoding="utf-8")
+    with pytest.raises(ValueError, match="persona 'dispatcher'"):
+        load_audiences(path)
+
+
+def test_duplicate_persona_id_fails(tmp_path):
+    path = tmp_path / "audiences.yaml"
+    path.write_text(yaml.safe_dump([PERSONA, PERSONA]), encoding="utf-8")
+    with pytest.raises(ValueError, match="duplicate audience id"):
+        load_audiences(path)

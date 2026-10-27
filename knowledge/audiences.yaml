@@ -1,0 +1,70 @@
+# Reader personas. Loaded into schemas.AudienceProfile by knowledge/loader.py.
+# Drawn from research/hemut_market_brief_2026-10.md section 3 (personas P1-P4), rewritten as writer guidance:
+# no numbers, no dates, no quoted or first-person speech (the model rejects them). Nothing here is a fact for copy.
+# Bridge entries name the personas they fit (bridge_map.yaml audiences); Mode A maps a request to the closest one.
+
+- id: fleet-owner  # P1
+  label: Owner running a small fleet
+  role: Owns the trucks and the authority, often drove before, still dispatches by day and does the books at night.
+  pains:
+    - Juggles several phones between customers, brokers and drivers
+    - Rate confirmations arrive by email while PODs arrive as phone photos and chat messages
+    - Waits weeks to get paid after a load delivers
+    - Has paid for software that cost more than it saved
+  objections:
+    - Price, and being locked into a contract
+    - Doubts the team will learn a new system
+    - Fears a painful move off spreadsheets or an old system
+    - Distrusts AI talking to drivers or customers
+  tone_notes:
+    - Plain and practical, peer to peer; respects that they have done the job themselves
+    - Leads with time and money back, shown through published prices from claims, never promises
+    - Moments that make them look for software are hiring a first dispatcher or biller, a missed IFTA deadline, a short-pay scare, factoring fees, and outgrowing a handful of trucks
+    - The founder ran a trucking company, which fits when a claim backs it
+
+- id: dispatcher  # P2
+  label: Dispatcher or operations manager
+  role: Runs the board day to day, assigning loads, tracking trucks and answering customers and drivers.
+  pains:
+    - Spends the day on check calls and status emails
+    - Sends customers new ETAs by hand whenever plans change
+    - Juggles drivers' hours of service when assigning loads
+    - Trucks run empty or sit waiting for a backhaul
+    - Detention that never gets billed
+  objections:
+    - One more screen on top of the ELD, the inbox and the phone
+    - Worry that automated messages will tell a customer or driver the wrong thing
+  tone_notes:
+    - Fast and concrete; name the task that goes away, such as a round of phone calls
+    - Speak the language of the board, with loads, drivers, ETAs and hours of service
+    - No time-saved figures unless an approved claim backs them
+
+- id: back-office  # P3
+  label: Back-office and billing lead
+  role: Handles invoicing, factoring, driver settlements, QuickBooks and the IFTA return, often alone.
+  pains:
+    - Invoices go out late because PODs are missing
+    - Builds factoring packets by hand
+    - Settlement errors turn into driver pay disputes
+    - Enters everything twice, once in the TMS and again in QuickBooks
+    - The crunch at the end of every IFTA quarter
+  objections:
+    - Fear that switching systems will break the books or lose history
+    - Doubts that automation gets the figures right without checking
+  tone_notes:
+    - Precise and calm; accuracy matters more than speed
+    - Show the paperwork that goes away, such as invoices from delivered loads and IFTA from miles and fuel already on record
+
+- id: carrier-exec  # P4
+  label: COO or CEO of a mid-size carrier
+  role: Runs a larger carrier, sometimes with its own brokerage, and owns the software budget and the vendor list.
+  pains:
+    - Pays for a large stack of disconnected systems
+    - Feels locked in to legacy vendors
+    - Pays consultants to keep old systems working
+  objections:
+    - The risk and downtime of replacing the core system
+    - Doubts that a newer vendor can run a larger operation
+  tone_notes:
+    - Business case first, covering cost, risk and a rollout beside the current system
+    - Customer stories and savings figures need approval before use, so do not lean on them

@@ -10,7 +10,7 @@ from schemas import Angle, Brief, DraftAttempt, RunResult, Violation
 
 AD = ("CANNED DRAFT\n\nCommand starts at $99 a month.\n\n"
       "Start free https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=short_ad&utm_campaign=x")
-BRIEF = Brief(origin="request", audience="a", pain="p", hemut_feature="f", format="short_ad", claim_ids=[])
+BRIEF = Brief(origin="request", audience="a", audience_id="fleet-owner", pain="p", hemut_feature="f", format="short_ad", claim_ids=[])
 RESULT = RunResult(run_id="x", run_dir="out/runs/x", status="ok", brief=BRIEF,
                    angles=[Angle(hook="hook", pain="p", feature="f", claim_ids=[])],
                    drafts=[[DraftAttempt(attempt=0, rendered_text=AD, violations=[])]])

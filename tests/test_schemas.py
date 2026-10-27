@@ -11,7 +11,7 @@ from schemas import (
 
 URL = "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post&utm_campaign=ifta-q4"
 BRIEF = {
-    "origin": "request", "audience": "5-15 truck fleets", "pain": "IFTA quarters eat a weekend",
+    "origin": "request", "audience": "5-15 truck fleets", "audience_id": "fleet-owner", "pain": "IFTA quarters eat a weekend",
     "hemut_feature": "IFTA quarterly reports", "format": "reddit_post", "claim_ids": ["command-base-price"],
 }
 POST = {

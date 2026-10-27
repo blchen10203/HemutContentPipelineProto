@@ -1,6 +1,6 @@
 """Pydantic v2 models that are the contract between modules, plus claim-placeholder rendering.
 
-Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml).
+Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), AudienceProfile (audiences.yaml).
 Mode A input:   SourceAttachment, Request.
 Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, RunResult.
 Mode B:         SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem.
@@ -8,6 +8,7 @@ Mode B:         SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem.
 Copy never contains free numbers or claim text. It references claims as {{claim:<id>}} (first phrasing)
 or {{claim:<id>:<n>}} (nth phrasing, 0-based); render_post() fills them from claims.yaml.
 """
+import calendar
 import datetime
 import re
 from typing import Literal
@@ -47,6 +48,34 @@ class VoiceRules(BaseModel):
     vocabulary: list[str]
 
 
+# Persona text is writer guidance, never copy: no numbers, dates, quotes or first-person speech can leak from it.
+_PERSONA_BANNED = [
+    (re.compile(r"\d"), "a digit"),
+    (re.compile('["“”]'), "a quotation mark"),
+    (re.compile(r"\b(?:I|[Mm]e|[Mm]y|[Mm]ine|[Ww]e|[Oo]urs?|[Uu]s)\b"), "first-person text"),
+    (re.compile(r"\b(?:" + "|".join(calendar.month_name[1:]) + r")\b"), "a month name"),
+]
+
+
+class AudienceProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(pattern=r"^[a-z]+(-[a-z]+)*$")
+    label: str
+    role: str
+    pains: list[str] = Field(min_length=1)
+    objections: list[str]
+    tone_notes: list[str]
+
+    @model_validator(mode="after")
+    def _writer_guidance_only(self):
+        for text in [self.label, self.role, *self.pains, *self.objections, *self.tone_notes]:
+            for pattern, what in _PERSONA_BANNED:
+                if pattern.search(text):
+                    raise ValueError(f"persona {self.id!r}: {what} in {text!r}; persona text has no numbers, dates or quoted/first-person speech")
+        return self
+
+
 # ---------------------------------------------------------------- Mode A input
 
 # These two are the trust boundary for typed user input; app.py does no validation of its own.
@@ -77,7 +106,8 @@ class Brief(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     origin: Literal["request", "seasonal", "trend", "evergreen"]
-    audience: str  # e.g. "5-15 truck fleets"
+    audience: str  # e.g. "5-15 truck fleets": the requester's words in Mode A, the persona label in Mode B
+    audience_id: str  # AudienceProfile id; its pains, objections and tone go into the angles and draft prompts
     pain: str
     hemut_feature: str
     format: Literal["reddit_post", "social_post", "short_ad", "stat_card"]
@@ -195,6 +225,7 @@ class BridgeEntry(BaseModel):
     pain: str
     hemut_feature: str
     claim_ids: list[str]
+    audiences: list[str] = []  # AudienceProfile ids this angle fits; empty means any
 
 
 class TrendItem(BaseModel):
