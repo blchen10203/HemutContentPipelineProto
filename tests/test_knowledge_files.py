@@ -29,3 +29,10 @@ def test_every_season_has_a_bridge_and_a_unique_id():
     assert len({s.id for s in seasons}) == len(seasons)
     tags = {b.tag for b in load_bridges()}
     assert not {s.id for s in seasons} - tags, "a season with no bridge can never become a Brief"
+
+
+def test_bridge_text_has_no_digits_or_quotes():
+    # research/ rule: bridge text carries no numbers and no quoted speech; facts live in claim_ids
+    bad = [(b.tag, field, text) for b in load_bridges() for field, text in (("pain", b.pain), ("hemut_feature", b.hemut_feature))
+           if any(c.isdigit() or c in '"“”' for c in text)]
+    assert not bad, f"bridge_map.yaml text with a digit or quotation mark: {bad}"

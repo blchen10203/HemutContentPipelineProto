@@ -29,6 +29,12 @@ A weekly planner mixes seasonal + trend + evergreen Briefs into a content plan.
 - No unofficial scraping of Instagram, TikTok, X, or Facebook. Use official APIs only, and only once access is approved. Until then those sources are stubs.
 - Secrets in `.env`, never committed.
 
+## research/
+research/ holds secondary research. It is never loaded into prompts and is never a source for claims.
+A fact from research/ enters claims.yaml only after its primary source is snapshotted into
+knowledge/sources/. If it can't be snapshotted, it stays out. Persona and bridge text drawn from
+research/ must contain no numbers, no dates and no first-person or quoted speech.
+
 ## Layout
 ```
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
@@ -47,6 +53,7 @@ export/          trxckwrld.py (adapter, later)
 cli.py           entry points for both modes + review
 tests/           golden/  fixtures/ (frozen dated data, e.g. the demo trend fixture) + unit tests
 out/runs/<timestamp>/   drafts + meta.json
+research/        secondary research, never loaded into prompts (see research/ rules)
 ```
 
 ## Conventions
