@@ -31,6 +31,7 @@ def drafts_shown(at):
 
 
 def test_app_runs_both_modes_and_keeps_results(monkeypatch):
+    monkeypatch.delenv("SHOW_API_USE", raising=False)
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
     monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([RESULT]))
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
@@ -40,9 +41,8 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     assert at.error and drafts_shown(at) == 0  # blank request is rejected by Request, not drafted
     at.text_area[0].input("Social post about detention").run()
     assert drafts_shown(click(at, "Run")) == 1
-    assert usage_captions(at) == [r"API use: 1 calls · 7,700 input tokens (6,700 from cache) · 5,000 output (4,000 thinking) · ≈ \$0.11"]
     assert drafts_shown(click(at, "Draft all")) == 2
-    assert len(usage_captions(at)) == 2  # one under the request, one under the week
+    assert usage_captions(at) == []  # cost stays off screen unless SHOW_API_USE=1
     click(at, "Plan")  # a rerun must not wipe either tab's results
     assert drafts_shown(at) == 2 and any(m.value.startswith("**1. The office rebuilds the IFTA return") for m in at.markdown)
 
@@ -86,3 +86,50 @@ def test_only_passing_ads_are_shown(monkeypatch):
     shown = " ".join(m.value for m in at.markdown) + " ".join(t.value for t in at.text)
     assert drafts_shown(at) == 1 and "BANNED_WORD" not in shown and "guaranteed" not in shown
     assert any(r"\$99" in m.value for m in at.markdown) and any("Start free →" in m.value for m in at.markdown)
+
+
+def test_api_use_caption_only_with_flag(monkeypatch):
+    monkeypatch.setenv("SHOW_API_USE", "1")
+    monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
+    monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([RESULT]))
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.text_area[0].input("Social post about detention").run()
+    click(at, "Run")
+    assert usage_captions(at) == [r"API use: 1 calls · 7,700 input tokens (6,700 from cache) · 5,000 output (4,000 thinking) · ≈ \$0.11"]
+    click(at, "Draft all")
+    assert len(usage_captions(at)) == 2  # one under the request, one under the week
+
+
+def emit_intermediate(on_event):
+    """Every progress event run_brief sends, carrying text that must never reach the screen."""
+    on_event("brief", {"format": "social_post", "audience": "HIDDEN-AUDIENCE", "pain": "HIDDEN-PAIN", "hemut_feature": "HIDDEN-FEATURE"})
+    on_event("angles", {"angles": [{"hook": "HIDDEN-HOOK", "pain": "p", "feature": "f", "claim_ids": []}]})
+    on_event("draft", {"angle": 0, "attempt": 0, "violations": [{"code": "BANNED_WORD", "message": "HIDDEN-VIOLATION"}]})
+    on_event("draft", {"angle": 0, "attempt": 1, "violations": []})
+    on_event("done", {"status": "ok", "run_dir": "HIDDEN-RUN-DIR"})
+
+
+def screen_text(at):
+    elements = [*at.markdown, *at.caption, *at.text, *at.subheader, *at.info, *at.warning, *at.error]
+    return " ".join(e.value for e in elements) + " ".join(s.label for s in at.status)
+
+
+def test_only_final_drafts_shown_while_and_after_running(monkeypatch):
+    def run_request(request, on_event):
+        emit_intermediate(on_event)
+        return RESULT
+
+    def run_week(day, plan, on_event):
+        emit_intermediate(on_event)
+        yield RESULT
+
+    monkeypatch.setattr(modes.request, "run_request", run_request)
+    monkeypatch.setattr(modes.scheduled, "run_week", run_week)
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.text_area[0].input("Social post about detention").run()
+    click(at, "Run")
+    assert drafts_shown(at) == 1 and "HIDDEN" not in screen_text(at)
+    assert [s.label for s in at.status] == ["Drafting: done"]
+    click(at, "Draft all")
+    assert drafts_shown(at) == 2 and "HIDDEN" not in screen_text(at)
+    assert any(m.value.startswith("**1. The office rebuilds the IFTA return") for m in at.markdown)  # the week's topic list stays

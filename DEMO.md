@@ -38,9 +38,9 @@ Tab **Request (Mode A)**. Type:
 
 > Reddit-style ad about IFTA automation for 5-15 truck fleets
 
-Click **Run**. While it runs (about 70s), the status box shows the Brief, then the three angles, then "Draft N ready" as each draft passes. When it finishes, the box folds away and only the finished ads show. Drafts that never pass the checks are not shown. Talk over it:
+Click **Run**. While it runs (about 70s), the screen shows only a progress line counting finished ads ("Drafting: 2 ads ready"). When it finishes, only the finished ads show. The intermediate steps stay off screen but are all saved in the run folder (see below). Drafts that never pass the checks are not shown. Talk over it:
 
-- The request becomes a Brief (audience in the requester's words, the closest reader persona, pain, Hemut feature, format, the claim ids that cover it). The persona's pains, objections and tone go into the angle and draft prompts.
+- Behind the progress line, the request becomes a Brief (audience in the requester's words, the closest reader persona, pain, Hemut feature, format, the claim ids that cover it). The persona's pains, objections and tone go into the angle and draft prompts.
 - Three angles, one draft each. Every draft goes through the deterministic validator. A draft with a violation is sent back with the violations, at most twice.
 
 When it finishes, point at one draft:
@@ -82,7 +82,7 @@ Click **Draft all**. Results appear one brief at a time (about 5 minutes total).
 - **Nothing is posted.** There is no posting code and no platform write API. Output is files in `out/runs/`.
 - **Every number traces to a claim.** Open `knowledge/claims.yaml` (or the **Knowledge** tab) and find the claim behind a price in a draft. It has a source URL, a dated snapshot in `knowledge/sources/` and a checked date.
 - **Approval badges.** A draft that uses a claim marked `requires_approval` (ROI numbers, competitor facts, customer names) shows an orange **Approval needed** badge. The flag is worked out from the claims, never taken from the model.
-- **The run folder.** Click the folded "done" box above the ads: its last line names the folder. Open it:
+- **The run folder.** The newest folder in `out/runs/` (named by date and time). Open it:
   - `draft-N.md`: the rendered draft, ready for a human to review.
   - `meta.json`: mode, brief origin, model, effort, prompt versions (content hashes), knowledge checked dates, and every validator result for every attempt.
   - `result.json`: the full Brief, angles and attempts.

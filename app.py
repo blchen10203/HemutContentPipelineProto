@@ -3,6 +3,7 @@
 Run: streamlit run app.py
 """
 import datetime
+import os
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -27,18 +28,16 @@ def md(text: str) -> str:
     return text.replace("$", "\\$")  # two $ in markdown render as LaTeX
 
 
-def on_event_for(status):
-    """The thought process, kept short: the brief, the angles, then one line per finished draft."""
+def on_event_for(status, label: str):
+    """Progress only: a count of finished ads in the status label. Briefs, angles, validator results and retries
+    stay off screen; they are still written to each run's meta.json and result.json."""
+    ready = 0
+
     def on_event(name: str, payload: dict) -> None:
-        if name == "brief":
-            status.markdown(md(f"**Brief** · {FORMAT[payload['format']]} for {payload['audience']}  \n"
-                               f"Problem: {payload['pain']}  \nHemut answer: {payload['hemut_feature']}"))
-        elif name == "angles":
-            status.markdown(md("**Angles**\n" + "\n".join(f"{i}. {a['hook']}" for i, a in enumerate(payload["angles"], 1))))
-        elif name == "draft" and not payload["violations"]:  # failed attempts are retried quietly
-            status.markdown(f"Draft {payload['angle'] + 1} ready")
-        elif name == "done":
-            status.caption(f"Saved for review in {payload['run_dir']}")
+        nonlocal ready
+        if name == "draft" and not payload["violations"]:  # failed attempts are retried quietly
+            ready += 1
+            status.update(label=f"{label}: {ready} ad{'' if ready == 1 else 's'} ready")
     return on_event
 
 
@@ -56,7 +55,9 @@ def show_ad(text: str, needs_approval: bool) -> None:
 
 
 def usage_caption(results: list[RunResult]) -> None:
-    """API use of the shown run(s), for the operator, not the reviewers."""
+    """API use of the shown run(s), for the operator, not the reviewers. Off unless SHOW_API_USE=1 (env or .env)."""
+    if os.environ.get("SHOW_API_USE") != "1":
+        return
     t = usage_total([c for r in results for c in r.usage])
     if t["calls"]:
         cost = "no price for this model" if t["usd_estimate"] is None else f"≈ ${t['usd_estimate']:.2f}"
@@ -80,9 +81,9 @@ def show_result(result: RunResult) -> None:
 
 def run_with_status(label: str, job):
     """Run job(on_event) inside a status box; show a plain error (details folded away) instead of a traceback."""
-    status = st.status(label, expanded=True)
+    status = st.status(f"{label}…")
     try:
-        out = job(on_event_for(status))
+        out = job(on_event_for(status, label))
     except Exception as e:
         status.update(label=f"{label}: failed", state="error")
         st.error("**Status: error.** Drafting stopped before it finished. Anything done so far was saved for review.")
