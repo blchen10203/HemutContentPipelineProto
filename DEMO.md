@@ -81,7 +81,7 @@ Click **Draft all**. Results appear one brief at a time (about 5 minutes total).
 
 - **Nothing is posted.** There is no posting code and no platform write API. Output is files in `out/runs/`.
 - **Every number traces to a claim.** Open `knowledge/claims.yaml` (or the **Knowledge** tab) and find the claim behind a price in a draft. It has a source URL, a dated snapshot in `knowledge/sources/` and a checked date.
-- **Approval badges.** A draft that uses a claim marked `requires_approval` (ROI numbers, competitor facts, customer names) shows an orange **Approval needed** badge. The flag is worked out from the claims, never taken from the model.
+- **Approval badges.** A draft that uses a claim marked `requires_approval` shows an orange **Approval needed** badge. Since the 2026-10-27 sign-off no claim in `claims.yaml` is gated, so the badge will not appear in the demo. The flag is worked out from the claims, never taken from the model.
 - **The run folder.** The newest folder in `out/runs/` (named by date and time). Open it:
   - `draft-N.md`: the rendered draft, ready for a human to review.
   - `meta.json`: mode, brief origin, model, effort, prompt versions (content hashes), knowledge checked dates, and every validator result for every attempt.

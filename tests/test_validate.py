@@ -38,3 +38,10 @@ def test_golden_set_covers_every_code():
     expected = {code for p in BAD for code in yaml.safe_load(p.read_text(encoding="utf-8"))["expected_codes"]}
     assert len(GOOD) >= 6 and len(BAD) >= 12
     assert expected == set(get_args(Violation.model_fields["code"].annotation))
+
+
+def test_gated_claim_needs_the_flag():
+    # Nothing in claims.yaml is gated since the 2026-10-27 approvals; pending claims will be, so gate one here.
+    claims = {**CLAIMS, "mcleod-pricing": CLAIMS["mcleod-pricing"].model_copy(update={"requires_approval": True})}
+    post, _ = parse_post(yaml.safe_load((GOLDEN / "bad" / "approval_flag_wrong.yaml").read_text(encoding="utf-8"))["post"])
+    assert post.requires_approval and validate(post, claims, VOICE) == []

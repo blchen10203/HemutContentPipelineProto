@@ -84,6 +84,8 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "The dispatcher board shows a driver's hours of service at the moment you put a load on them" `feature-hos-at-assignment`
 - "On Command Pro, drivers are ranked for each load so the assignment starts from a short list" Context: Command Pro and up only. `feature-driver-ranking`
 - "Live truck positions and proactive ETAs" `feature-tracking`
+- "ELD positions feed a tracking page you can send a customer" Context: Every plan, per llms-full. Detailed shipper tracking links are a separate All-in feature (feature-detailed-shipper-tracking-links). `feature-customer-tracking-link`
+- "Detailed shipper tracking links on Command All-in" Context: Command All-in only, per the /pricing table. The basic customer tracking page is on every plan (feature-customer-tracking-link). `feature-detailed-shipper-tracking-links`
 - "Invoicing, factoring exports, driver settlements, QuickBooks sync and IFTA quarterly reports are part of Command, not separate purchases" `feature-back-office-in-plans`
 - "Driver credential and document expiry turns into a renewal task before it lapses" `feature-compliance-expiry`
 - "Command can run beside your legacy TMS first, so you don't have to replace it on day one" Context: Part of an Enterprise engagement. llms-full's 'common mistakes' line omits this qualifier; keep it. `feature-beside-legacy-tms`
@@ -96,6 +98,18 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "Most small fleets dispatch the same afternoon" or "You can be dispatching the same afternoon" Context: Hemut has not measured or published a median; never turn this into a number of hours. `setup-same-afternoon`
 - "Customers, lanes and past loads are found in your inbox, drivers come in from a spreadsheet, and your ELD connects so trucks appear on the map" Context: Anything the old system holds that is not in your inbox or a spreadsheet needs an export from that system. `setup-what-comes-across`
 - "For fleets of 31 trucks or more, a named Hemut team moves your data and EDI connections" Context: No fixed published timeline; it depends on your data and EDI partners. `setup-enterprise-team`
+
+## Metrics
+
+- "Meiborg is a $100M+ carrier, brokerage, and 3PL" Context: '+' must stay. Revenue basis not stated on the page. `customer-meiborg-size`
+- "Before Hemut, Meiborg's back office ran on a stack of 10+ disconnected enterprise software tools" `customer-meiborg-tool-count`
+- "When fully deployed, Meiborg's software spend will drop by 82%" Context: Projected, not achieved: 'when fully deployed ... will drop'. Never state in past tense. `customer-meiborg-software-spend`
+- "More than half of Kismet's existing workflows are now automated" Context: No exact percentage published; never convert to a number. `customer-kismet-automation`
+- "11 hours saved per dispatcher, per week" Context: Hemut-reported client metric; no client, period or method given. `roi-dispatcher-hours-saved`
+- "$300,000+ eliminated in bloated software expenditure" Context: '+' must stay. Hemut-reported client metric; no client, period or method given. `roi-software-spend-eliminated`
+- "4.7% increase in revenue per mile" Context: Hemut-reported client metric; no client, period or method given. `roi-revenue-per-mile`
+- "52% reduction in labor expense" Context: Hemut-reported client metric; no client, period or method given. `roi-labor-expense`
+- "1.4x win rate on lane bids" Context: Hemut-reported client metric; no client, period or method given. Baseline not stated. `roi-lane-bid-win-rate`
 
 ## Deadlines
 
@@ -113,41 +127,19 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "Launched to the broader market in April 2026" `company-launch`
 - "Hemut co-owns Trxckwrld" Context: Disclose on Trxckwrld posts; every post must be visibly from Hemut. `company-trxckwrld-co-owner`
 - "Hemut" Context: llms-full: 'Legal and brand name: Hemut'. See company-footer-name. `company-legal-name`
+- "Hemut Co" Context: Site footer copyright line. The brand name in copy is company-legal-name ('Hemut'). `company-footer-name`
 - "Start free at command.hemut.com/signup" or "hemut.com/pricing" `company-links`
 - Record only, never use in copy. Context: Guard entry: never state or imply a number of Hemut customers. `company-no-customer-count`
 - "Hemut is not LoadStop. LoadStop is a TMS made by a different company. Hemut makes Command." `company-not-loadstop`
 - "Command is the system a carrier runs its own freight on, not a load board" `company-not-tracking-app-or-load-board`
-
-## Approval required
-
-### Features
-
-- "ELD positions feed a tracking page you can send a customer" Context: Conflicts with feature-detailed-shipper-tracking-links: llms-full puts a customer tracking link in Command with no plan limit; the /pricing table makes the customer link All-in only. Unresolved. `feature-customer-tracking-link`
-- "Detailed shipper tracking links on Command All-in" Context: Command All-in only, per the /pricing table. Conflicts with feature-customer-tracking-link, which llms-full gives every plan. Unresolved. `feature-detailed-shipper-tracking-links`
-
-### Metrics
-
-- "Meiborg is a $100M+ carrier, brokerage, and 3PL" Context: '+' must stay. Revenue basis not stated on the page. `customer-meiborg-size`
-- "Before Hemut, Meiborg's back office ran on a stack of 10+ disconnected enterprise software tools" `customer-meiborg-tool-count`
-- "When fully deployed, Meiborg's software spend will drop by 82%" Context: Projected, not achieved: 'when fully deployed ... will drop'. Never state in past tense. `customer-meiborg-software-spend`
-- "More than half of Kismet's existing workflows are now automated" Context: No exact percentage published; never convert to a number. `customer-kismet-automation`
-- "11 hours saved per dispatcher, per week" Context: Hemut-reported client metric; no client, period or method given. `roi-dispatcher-hours-saved`
-- "$300,000+ eliminated in bloated software expenditure" Context: '+' must stay. Hemut-reported client metric; no client, period or method given. `roi-software-spend-eliminated`
-- "4.7% increase in revenue per mile" Context: Hemut-reported client metric; no client, period or method given. `roi-revenue-per-mile`
-- "52% reduction in labor expense" Context: Hemut-reported client metric; no client, period or method given. `roi-labor-expense`
-- "1.4x win rate on lane bids" Context: Hemut-reported client metric; no client, period or method given. Baseline not stated. `roi-lane-bid-win-rate`
-
-### Company and customers
-
-- "Hemut Co" Context: Site footer copyright line. Conflicts with company-legal-name. `company-footer-name`
 - "Meiborg Brothers, a carrier, brokerage and 3PL based in Illinois and Texas, works with Hemut on a custom platform" Context: Custom platform, rollout in progress in parallel with existing systems. `customer-meiborg-brothers`
 - "The rollout runs in parallel with their existing systems — no hard cutover, no downtime" `customer-meiborg-parallel-rollout`
 - "Kismet Trucking, a carrier in Fresno, California, runs on Hemut Command" Context: Smaller carrier; moved from pen and paper; Command is their first digital operating platform. `customer-kismet-trucking`
-- "PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command" Context: Conflict: llms-full says the ROI page names PrimeLink Express, but the ROI page snapshot does not. Unresolved. `customer-primelink-express`
+- "PrimeLink Express, a carrier in Fresno, California, runs on Hemut Command" Context: Named as a customer in llms-full; the ROI page snapshot does not name it. `customer-primelink-express`
 - Record only, never use in copy. Context: Raman, PrimeLink Express. Testimonial: not allowed in copy. `customer-quote-raman-primelink`
 - Record only, never use in copy. Context: James Cooper, COO; company not named on the page. Contains '20 systems'. Testimonial: not allowed in copy. `customer-quote-james-cooper`
 
-### Competitors
+## Competitors
 
 - "McLeod does not publish prices; its homepage offers a demo request" Context: Per McLeod's pages as reviewed by Hemut, October 21, 2026. `mcleod-pricing`
 - "McLeod lists no free trial on the pages we reviewed" Context: 'on the pages we reviewed' must stay. `mcleod-trial`

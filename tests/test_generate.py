@@ -84,10 +84,10 @@ def test_not_json_is_a_parse_error(tmp_path):
 
 
 def test_approval_flag_is_derived_not_trusted(tmp_path):
-    good = yaml.safe_load((GOLDEN / "good" / "approval_tracking_link.yaml").read_text(encoding="utf-8"))["post"]
-    good["requires_approval"] = False  # the model got it wrong; the pipeline sets it from the claims
+    good = yaml.safe_load((GOLDEN / "good" / "tracking_link.yaml").read_text(encoding="utf-8"))["post"]
+    good["requires_approval"] = True  # the model got it wrong; the pipeline sets it from the claims
     result, _ = run(FakeClient(ANGLES, json.dumps(good)), tmp_path)
-    assert result.status == "ok" and result.drafts[0][0].raw_post.requires_approval is True
+    assert result.status == "ok" and result.drafts[0][0].raw_post.requires_approval is False
 
 
 def test_needs_source_and_sensitive_make_no_calls(tmp_path):
