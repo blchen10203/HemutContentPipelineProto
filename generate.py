@@ -9,6 +9,8 @@ import datetime
 import hashlib
 import json
 import queue
+import random
+import shutil
 import threading
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
@@ -31,6 +33,7 @@ DRAFT_WORKERS = N_ANGLES  # one thread per angle's draft chain
 MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
+PHOTOS = ROOT / "assets" / "hemut-brand" / "photos"  # local only (gitignored): no folder means ads get no image
 RUN_ID = "%Y%m%d-%H%M%S-%f"
 # USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
 PRICES = {"claude-opus-5-5": {"input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write": 5.00}}
@@ -201,6 +204,13 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
     return next(b.text for b in response.content if b.type == "text")
 
 
+def pick_image(run_id: str, angle: int) -> Path | None:
+    """The photo attached to a finished ad: random, but seeded by run and angle, so the app and the run folder agree."""
+    # shortcut: any photo for any ad, as asked; pick by topic if reviewers want photos that match the copy
+    photos = sorted(p for p in PHOTOS.glob("*") if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
+    return random.Random(f"{run_id}:{angle}").choice(photos) if photos else None
+
+
 def usage_total(calls: list[CallUsage]) -> dict:
     """Token sums over calls and a USD estimate from PRICES. usd_estimate is None if a call's model has no price,
     thinking_tokens is None if any call did not report it (unknown, not zero)."""
@@ -276,5 +286,8 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
             continue
         last = attempts[-1]
         body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
+        if last.rendered_text and (image := pick_image(result.run_id, i)):  # only finished ads get a photo
+            shutil.copyfile(image, run_dir / f"draft-{i + 1}{image.suffix}")
+            body = f"![](draft-{i + 1}{image.suffix})\n\n{body}"
         flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
         (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")

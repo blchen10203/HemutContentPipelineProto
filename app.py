@@ -9,7 +9,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-from generate import usage_total
+from generate import pick_image, usage_total
 from knowledge.loader import load_claims, load_seasons
 from modes.request import run_request
 from modes.scheduled import run_week
@@ -41,12 +41,14 @@ def on_event_for(status, label: str):
     return on_event
 
 
-def show_ad(text: str, needs_approval: bool) -> None:
-    """One finished ad: title, body, CTA link. render_post joins those parts with blank lines."""
+def show_ad(text: str, needs_approval: bool, image=None) -> None:
+    """One finished ad: its photo, title, body, CTA link. render_post joins those parts with blank lines."""
     parts = text.split("\n\n")
     with st.container(border=True):
         if needs_approval:
             st.badge("Approval needed", color="orange")
+        if image:
+            st.image(str(image), width="stretch")
         st.markdown(md(f"#### {parts[0]}"))
         if len(parts) > 1:
             st.markdown(md("\n\n".join(parts[1:-1])))
@@ -72,9 +74,9 @@ def show_result(result: RunResult) -> None:
                       + "\n".join(f"- {item}" for item in result.needs_source)))
     elif result.status == "blocked_sensitive":
         st.error("**Blocked: sensitive topic.** A human decides whether to write about this.")
-    passed = [a[-1] for a in result.drafts if a and not a[-1].violations and a[-1].rendered_text]
-    for last in passed:  # drafts that never passed the checks are not shown
-        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval))
+    passed = [(i, a[-1]) for i, a in enumerate(result.drafts) if a and not a[-1].violations and a[-1].rendered_text]
+    for i, last in passed:  # drafts that never passed the checks are not shown
+        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval), pick_image(result.run_id, i))
     if result.drafts and not passed:
         st.info("No draft passed the review checks this time. Run it again.")
 

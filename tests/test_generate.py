@@ -295,3 +295,26 @@ def test_abort_in_on_event_does_not_wait_for_in_flight_calls(tmp_path, monkeypat
         assert [len(d) for d in meta["validator"]] == [1, 0, 0]
     finally:
         release.set()
+
+
+def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
+    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path)  # angle 1 passes; angles 2 and 3 never do
+    run_dir = Path(result.run_dir)
+    image = generate.pick_image(result.run_id, 0)
+    assert image.parent == photos and image.suffix in {".png", ".jpg"}
+    assert (run_dir / f"draft-1{image.suffix}").read_bytes() == image.read_bytes()
+    assert (run_dir / "draft-1.md").read_text(encoding="utf-8").startswith(f"![](draft-1{image.suffix})\n\n")
+    assert not any(run_dir.glob("draft-2.*g")) and "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
+
+
+def test_pick_image_is_random_but_stable(photos):
+    picks = {generate.pick_image(f"run-{n}", a) for n in range(20) for a in range(3)}
+    assert {p.name for p in picks} == {"road.png", "truck.jpg"}  # both photos get used, never notes.txt
+    assert generate.pick_image("run-1", 2) == generate.pick_image("run-1", 2)  # the app and the run folder agree
+
+
+def test_no_photos_folder_means_no_image(tmp_path, monkeypatch):
+    monkeypatch.setattr(generate, "PHOTOS", tmp_path / "missing")
+    assert generate.pick_image("run", 0) is None
+    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path)
+    assert not (Path(result.run_dir) / "draft-1.md").read_text(encoding="utf-8").startswith("![]")

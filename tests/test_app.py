@@ -88,6 +88,18 @@ def test_only_passing_ads_are_shown(monkeypatch):
     assert any(r"\$99" in m.value for m in at.markdown) and any("Start free →" in m.value for m in at.markdown)
 
 
+def test_finished_ad_shows_its_photo(monkeypatch, photos):
+    bad = [DraftAttempt(attempt=0, rendered_text=None, violations=[Violation(code="BANNED_WORD", message="x")])]
+    mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]]})
+    monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: mixed)
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    assert not at.get("image")
+    at.text_area[0].input("Social post about detention").run()
+    click(at, "Run")
+    assert len(at.get("image")) == 1  # the finished ad only, not the failed one
+    assert len(click(at, "Plan").get("image")) == 1  # a rerun shows the same ad with its photo
+
+
 def test_api_use_caption_only_with_flag(monkeypatch):
     monkeypatch.setenv("SHOW_API_USE", "1")
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
