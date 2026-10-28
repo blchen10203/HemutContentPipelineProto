@@ -1,6 +1,6 @@
 """Run every tests/eval/requests.yaml request through Mode A N times, then report needs_source accuracy and run_stats.
 
-Run: python scripts/run_eval.py [--n 2] [--yes]
+Run: python scripts/run_eval.py [--n 2] [--yes] [--only 13 --only "rate cons" ...]
 Calls the API (each run writes its folder to out/runs/ as usual). Prints an estimated cost and asks first unless --yes.
 Progress goes to stderr, the report to stdout, so `> reports/eval_<date>.txt` keeps only the report.
 """
@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 from generate import OUT  # noqa: E402
 from modes.request import run_request  # noqa: E402
-from run_stats import load, report  # noqa: E402
+from scripts.run_stats import load, report  # noqa: E402
 from schemas import Request  # noqa: E402
 
 REQUESTS = ROOT / "tests" / "eval" / "requests.yaml"
@@ -25,12 +25,24 @@ REQUESTS = ROOT / "tests" / "eval" / "requests.yaml"
 USD_PER_RUN = {"drafts": 0.15, "needs_source": 0.02}
 
 
+def select(requests: list[dict], only: list[str]) -> list[dict]:
+    """Entries picked by 1-based index or by a case-insensitive substring of their text; no filters keeps all."""
+    if not only:
+        return requests
+    picked = [r for i, r in enumerate(requests, 1)
+              if any(str(i) == o if o.isdigit() else o.lower() in r["text"].lower() for o in only)]
+    if not picked:
+        raise SystemExit(f"--only {only} matches no request in {REQUESTS.name}")
+    return picked
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="run_eval.py")
     parser.add_argument("--n", type=int, default=2, help="runs per request")
     parser.add_argument("--yes", action="store_true", help="skip the cost confirmation")
+    parser.add_argument("--only", action="append", default=[], help="1-based index or text substring; repeat for more")
     args = parser.parse_args(argv)
-    requests = yaml.safe_load(REQUESTS.read_text(encoding="utf-8"))
+    requests = select(yaml.safe_load(REQUESTS.read_text(encoding="utf-8")), args.only)
 
     estimate = args.n * sum(USD_PER_RUN[r["expect"]] for r in requests)
     print(f"{len(requests)} requests x {args.n} runs = {len(requests) * args.n} runs, estimated ${estimate:.2f}", file=sys.stderr)

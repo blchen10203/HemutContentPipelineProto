@@ -36,3 +36,17 @@
 # needs_source: signup takes a name, a work email and the USDOT number, not "just" the number (expect fixed after the first run)
 - text: Short ad for owner-operators about signing up with just a USDOT number and dispatching the same afternoon
   expect: needs_source
+
+# Paraphrased but covered: loosely worded, the way someone at Hemut would type it. Each must produce drafts.
+# hemi-desk-settlements-ifta: "IFTA quarters built from your miles and fuel"
+- text: reddit post on getting IFTA done from the miles and fuel data that's already in there, small fleets
+  expect: drafts
+# setup-signup-needs (name, work email, USDOT number) + setup-same-afternoon ("You can be dispatching the same afternoon")
+- text: short ad for owner ops - sign up with your name, work email and DOT number and you can be dispatching same afternoon
+  expect: drafts
+# trial-days + trial-no-card
+- text: quick social post that you can try it free and nobody asks for a card up front
+  expect: drafts
+# feature-rate-cons-from-email + hemi-desk-inbox-rate-cons ("Nobody retypes an email again")
+- text: reddit post for dispatchers about not having to retype rate cons that come in by email, they just turn into loads
+  expect: drafts
