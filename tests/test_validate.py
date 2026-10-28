@@ -42,6 +42,11 @@ def test_golden_set_covers_every_code():
 
 def test_gated_claim_needs_the_flag():
     # Nothing in claims.yaml is gated since the 2026-10-27 approvals; pending claims will be, so gate one here.
-    claims = {**CLAIMS, "mcleod-pricing": CLAIMS["mcleod-pricing"].model_copy(update={"requires_approval": True})}
+    claims = {**CLAIMS, "prices-published": CLAIMS["prices-published"].model_copy(update={"requires_approval": True})}
     post, _ = parse_post(yaml.safe_load((GOLDEN / "bad" / "approval_flag_wrong.yaml").read_text(encoding="utf-8"))["post"])
     assert post.requires_approval and validate(post, claims, VOICE) == []
+
+
+def test_competitor_named_in_free_text_and_by_claim():
+    violations, _ = check(GOLDEN / "bad" / "competitor_name.yaml")
+    assert {v.span for v in violations if v.code == "COMPETITOR_NAME"} == {"Alvys", "McLeod"}

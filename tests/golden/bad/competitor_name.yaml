@@ -1,0 +1,9 @@
+# A competitor named in free text, and one named by a competitor claim's own wording.
+post:
+  title: "Done waiting on a demo?"
+  body: 'Still on Alvys? {{claim:mcleod-pricing}}. {{claim:prices-published}}.'
+  cta_text: See pricing
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: [mcleod-pricing, prices-published]
+  requires_approval: false
+expected_codes: [COMPETITOR_NAME]

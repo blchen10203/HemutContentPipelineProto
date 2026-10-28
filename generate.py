@@ -194,6 +194,7 @@ def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
         "system.txt",
         product_names=", ".join(voice.allowed_product_names),
         retired_names=", ".join(voice.retired_names),
+        competitor_names=", ".join(voice.competitor_names),
         banned_words=", ".join(f'"{w}"' for w in voice.banned_words),
         vocabulary=", ".join(voice.vocabulary),
         fact_sheet=render_fact_sheet(claims),  # rendered from the claims in use, so it always matches the validator

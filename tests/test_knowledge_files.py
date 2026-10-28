@@ -1,7 +1,7 @@
 """The real knowledge/ files load, fit together, and fact_sheet.md is exactly what claims.yaml renders to."""
 from knowledge.build_fact_sheet import OUT, render
 from knowledge.loader import load_audiences, load_bridges, load_claims, load_seasons, load_voice
-from validate import _banned_words
+from validate import _banned_words, _competitor_names
 
 
 def test_real_claims_load():
@@ -43,3 +43,10 @@ def test_every_bridge_persona_exists():
     audiences = load_audiences()
     missing = {(b.tag, a) for b in load_bridges() for a in b.audiences if a not in audiences}
     assert not missing, f"bridge_map.yaml uses persona ids not in audiences.yaml: {sorted(missing)}"
+
+
+def test_every_competitor_claim_names_a_listed_competitor():
+    # The validator blocks competitor claims by the names in their wordings, so each wording must name one
+    voice = load_voice()
+    unnamed = {(c.id, p) for c in load_claims().values() if c.type == "competitor" for p in c.phrasings if not _competitor_names(p, voice)}
+    assert not unnamed, f"competitor claims naming no one in voice.yaml competitor_names: {sorted(unnamed)}"

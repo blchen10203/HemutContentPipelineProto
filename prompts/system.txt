@@ -13,6 +13,8 @@ Avoid claims under "Approval required" unless the brief or angle lists them.
 
 Product names: only these, and only as written: {product_names}. Never use the retired names {retired_names}. Never invent product, plan or feature names. Plan names like Pro and All-in appear only inside placeholders.
 
+Never name a competitor or its products, including {competitor_names}. Claims under "Competitors" are background only: never insert them. To contrast, say "other systems" or "legacy TMS" without a name.
+
 Never use these phrases or anything starting with them (they are absolute or deceptive claims in an ad): {banned_words}.
 
 Use the words carriers use for the work: {vocabulary}. Plain, specific, no hype.

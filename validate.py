@@ -2,8 +2,8 @@
 
 parse_post(raw) builds a TrxckwrldPost from model output and reports why it can't.
 validate(post, claims, voice) checks the RENDERED text: claim ids and placeholders, unbacked numbers,
-retired and unknown product names, banned (absolute / deceptive) phrases, customer voice, and the
-approval flag. needs_approval(post, claims) tells callers how to set that flag.
+retired and unknown product names, competitor names, banned (absolute / deceptive) phrases, customer
+voice, and the approval flag. needs_approval(post, claims) tells callers how to set that flag.
 """
 import re
 
@@ -86,6 +86,7 @@ def validate(post: TrxckwrldPost, claims: dict[str, Claim], voice: VoiceRules) -
     out += [_v("UNBACKED_NUMBER", "number not backed by a claim placeholder", m[0]) for m in NUMBER.finditer(free_text)]
     out += _retired_names(text, voice)
     out += _unknown_products(free_text, voice)
+    out += _competitor_names(text, voice)  # full text: a competitor claim's own wording names the competitor
     out += _banned_words(text, voice)
     out += _customer_voice(free_text)
     if post.requires_approval != needs_approval(post, claims):
@@ -118,6 +119,14 @@ def _unknown_products(free_text: str, voice: VoiceRules) -> list[Violation]:
         _v("UNKNOWN_PRODUCT", "not a current product name", m[1])
         for m in PRODUCT_MENTION.finditer(free_text)
         if m[1] not in allowed and not (m[2] == "Hemut" and m[3] in allowed)
+    ]
+
+
+def _competitor_names(text: str, voice: VoiceRules) -> list[Violation]:
+    return [
+        _v("COMPETITOR_NAME", "names a competitor", m[0])
+        for name in voice.competitor_names
+        for m in re.finditer(rf"\b{re.escape(name)}\b", text)
     ]
 
 

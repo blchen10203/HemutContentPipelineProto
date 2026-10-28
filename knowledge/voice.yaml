@@ -3,6 +3,12 @@
 allowed_product_names: [Command, Control, Hemi, Forge, Custom, Hemut Diesel]
 retired_names: [Core, Reach]
 
+# Never named in copy: other TMS vendors and their products. Matched case-sensitively as whole words.
+# Competitor claims in claims.yaml are background for the writer; each one names a company listed here.
+competitor_names:
+  [McLeod, RespondAI, PCS, Cortex, Backhaul Booster, Trimble, TMW, TruckMate, Arc Agent, Alvys, Foundry, LoadStop,
+   Vooma, Everest, Drumkit, Rose Rocket, AscendTMS, Tailwind TMS, Turvo, MercuryGate, Truckbase, Aljex, ProTransport]
+
 # PROPOSED, NEEDS BRYAN'S SIGN-OFF: banned_words and vocabulary below.
 # banned_words holds only claims that are absolute, or false or deceptive in an ad (FTC Act section 5:
 # claims need substantiation; FTC "Free" guide, 16 CFR 251). Style is not policed here.

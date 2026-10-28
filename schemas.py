@@ -44,6 +44,7 @@ class VoiceRules(BaseModel):
 
     allowed_product_names: list[str] = Field(min_length=1)
     retired_names: list[str]
+    competitor_names: list[str]
     banned_words: list[str]
     vocabulary: list[str]
 
@@ -170,7 +171,7 @@ class Violation(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     code: Literal[
-        "UNBACKED_NUMBER", "RETIRED_NAME", "UNKNOWN_PRODUCT", "BANNED_WORD", "CUSTOMER_VOICE",
+        "UNBACKED_NUMBER", "RETIRED_NAME", "UNKNOWN_PRODUCT", "COMPETITOR_NAME", "BANNED_WORD", "CUSTOMER_VOICE",
         "MISSING_UTM", "UNKNOWN_CLAIM", "APPROVAL_FLAG_WRONG", "PLACEHOLDER_ERROR", "PARSE_ERROR",
     ]
     message: str
