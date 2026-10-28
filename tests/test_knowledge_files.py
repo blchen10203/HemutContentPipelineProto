@@ -54,3 +54,10 @@ def test_only_competitor_claims_name_a_competitor():
         for p in c.phrasings if (c.type == "competitor") != bool(_competitor_names(p, voice))
     }
     assert not wrong, f"claim wordings that should (competitor) or must not (others) name a voice.yaml competitor: {sorted(wrong)}"
+
+
+def test_allowed_competitor_phrases_are_claim_wordings():
+    # Each entry switches off the competitor check for its text, so only exact non-competitor claim wordings belong
+    wordings = {p for c in load_claims().values() if c.type != "competitor" for p in c.phrasings}
+    extra = set(load_voice().allowed_competitor_phrases) - wordings
+    assert not extra, f"allowed_competitor_phrases not an exact non-competitor claim wording: {sorted(extra)}"
