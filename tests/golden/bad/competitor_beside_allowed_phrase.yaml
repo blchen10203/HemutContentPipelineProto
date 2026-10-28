@@ -1,0 +1,9 @@
+# The approved integration wording passes; a second, free mention of McLeod still fails.
+post:
+  title: "Leaving McLeod?"
+  body: 'Command connects with what you already run: {{claim:feature-integrations}}.'
+  cta_text: See pricing
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post&utm_campaign=integrations"
+  claim_ids_used: [feature-integrations]
+  requires_approval: false
+expected_codes: [COMPETITOR_NAME]

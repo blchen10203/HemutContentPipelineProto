@@ -45,8 +45,12 @@ def test_every_bridge_persona_exists():
     assert not missing, f"bridge_map.yaml uses persona ids not in audiences.yaml: {sorted(missing)}"
 
 
-def test_every_competitor_claim_names_a_listed_competitor():
-    # The validator blocks competitor claims by the names in their wordings, so each wording must name one
+def test_only_competitor_claims_name_a_competitor():
+    # The validator rejects any wording that names a competitor: competitor claims must name one (so they stay
+    # background), and any other claim that does could never be used. company-not-loadstop is background by design.
     voice = load_voice()
-    unnamed = {(c.id, p) for c in load_claims().values() if c.type == "competitor" for p in c.phrasings if not _competitor_names(p, voice)}
-    assert not unnamed, f"competitor claims naming no one in voice.yaml competitor_names: {sorted(unnamed)}"
+    wrong = {
+        (c.id, p) for c in load_claims().values() if c.id != "company-not-loadstop"
+        for p in c.phrasings if (c.type == "competitor") != bool(_competitor_names(p, voice))
+    }
+    assert not wrong, f"claim wordings that should (competitor) or must not (others) name a voice.yaml competitor: {sorted(wrong)}"

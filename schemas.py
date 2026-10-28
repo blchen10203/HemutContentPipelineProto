@@ -45,6 +45,7 @@ class VoiceRules(BaseModel):
     allowed_product_names: list[str] = Field(min_length=1)
     retired_names: list[str]
     competitor_names: list[str]
+    allowed_competitor_phrases: list[str]
     banned_words: list[str]
     vocabulary: list[str]
 

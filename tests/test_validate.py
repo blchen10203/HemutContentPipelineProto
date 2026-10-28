@@ -50,3 +50,8 @@ def test_gated_claim_needs_the_flag():
 def test_competitor_named_in_free_text_and_by_claim():
     violations, _ = check(GOLDEN / "bad" / "competitor_name.yaml")
     assert {v.span for v in violations if v.code == "COMPETITOR_NAME"} == {"Alvys", "McLeod"}
+
+
+def test_only_the_approved_mcleod_wording_passes():
+    violations, _ = check(GOLDEN / "bad" / "competitor_beside_allowed_phrase.yaml")
+    assert [v.span for v in violations if v.code == "COMPETITOR_NAME"] == ["McLeod"]  # the title, not the claim

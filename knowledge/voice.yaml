@@ -3,13 +3,21 @@
 allowed_product_names: [Command, Control, Hemi, Forge, Custom, Hemut Diesel]
 retired_names: [Core, Reach]
 
-# Never named in copy: other TMS vendors and their products. Matched case-sensitively as whole words.
+# PROPOSED, NEEDS SIGN-OFF: competitor_names below.
+# Never named in copy: other TMS vendors and their products, and Vooma, Everest and Drumkit, the AI order-entry
+# tools McLeod certifies. Matched case-sensitively as whole words.
+# The 8 names Rose Rocket through ProTransport have no source in knowledge/: well-known TMS names added by hand.
+# Trimble also sells ELDs: if Hemut has a Trimble integration, this list blocks "integrates with Trimble" too.
 # Competitor claims in claims.yaml are background for the writer; each one names a company listed here.
 competitor_names:
   [McLeod, RespondAI, PCS, Cortex, Backhaul Booster, Trimble, TMW, TruckMate, Arc Agent, Alvys, Foundry, LoadStop,
    Vooma, Everest, Drumkit, Rose Rocket, AscendTMS, Tailwind TMS, Turvo, MercuryGate, Truckbase, Aljex, ProTransport]
+# Exact claim wordings that may name a competitor; removed before the competitor check. McLeod as an
+# integration only (feature-integrations, Chelsey Sheng's approved wording), never in a comparison.
+allowed_competitor_phrases:
+  - "ELD, QuickBooks and McLeod integrations, plus factoring exports"
 
-# PROPOSED, NEEDS BRYAN'S SIGN-OFF: banned_words and vocabulary below.
+# banned_words and vocabulary below approved 2026-10-27.
 # banned_words holds only claims that are absolute, or false or deceptive in an ad (FTC Act section 5:
 # claims need substantiation; FTC "Free" guide, 16 CFR 251). Style is not policed here.
 # Matched case-insensitively as phrases; none appear in any claims.yaml phrasing.
@@ -35,14 +43,15 @@ banned_words:
   - number one
   - industry-leading
   - market leader
-  - the only
+  - the only TMS  # not bare "the only": that flags "the only thing your dispatcher does"
+  - the only platform
   - lowest price
   - cheapest
   # False offer terms: there is no free tier, and agents have monthly allowances
   - free forever
   - free plan
   - free account
-  - unlimited
+  - unlimited  # remove if a plan ever offers unlimited anything
   # False government endorsement
   - FMCSA approved
   - FMCSA certified

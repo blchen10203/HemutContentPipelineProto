@@ -1,0 +1,8 @@
+# McLeod named only through the approved feature-integrations wording (voice.yaml allowed_competitor_phrases).
+post:
+  title: "Your books and your ELD, in one place"
+  body: 'Command connects with what you already run: {{claim:feature-integrations}}.'
+  cta_text: See pricing
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post&utm_campaign=integrations"
+  claim_ids_used: [feature-integrations]
+  requires_approval: false

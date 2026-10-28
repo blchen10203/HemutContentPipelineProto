@@ -123,6 +123,8 @@ def _unknown_products(free_text: str, voice: VoiceRules) -> list[Violation]:
 
 
 def _competitor_names(text: str, voice: VoiceRules) -> list[Violation]:
+    for phrase in voice.allowed_competitor_phrases:  # exact approved wordings only; any other mention still fails
+        text = text.replace(phrase, "\n")
     return [
         _v("COMPETITOR_NAME", "names a competitor", m[0])
         for name in voice.competitor_names
