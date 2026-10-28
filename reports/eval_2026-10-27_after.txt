@@ -1,0 +1,37 @@
+Eval: 12 requests x 2 runs from tests\eval\requests.yaml
+
+needs_source accuracy: 24/24 runs match expect
+
+run                      mode status              secs calls  attempts/draft     usd
+20261027-235833-002704   A    ok                  53.3     5  1,1,1            0.173
+20261027-235926-230817   A    ok                  49.1     5  1,1,1            0.160
+20261028-000016-690680   A    needs_source         5.6     1  -                0.014
+20261028-000021-341854   A    needs_source         4.6     1  -                0.014
+20261028-000028-010096   A    needs_source         6.7     1  -                0.013
+20261028-000034-136536   A    needs_source         6.1     1  -                0.016
+20261028-000040-070323   A    needs_source         5.9     1  -                0.017
+20261028-000047-592485   A    needs_source         7.5     1  -                0.015
+20261028-000052-870890   A    needs_source         5.3     1  -                0.015
+20261028-000057-497079   A    needs_source         4.6     1  -                0.014
+20261028-000100-184142   A    ok                  32.9     5  1,1,1            0.118
+20261028-000133-842673   A    ok                  30.8     5  1,1,1            0.110
+20261028-000204-971368   A    ok                  24.6     5  1,1,1            0.100
+20261028-000229-167107   A    ok                  31.0     5  1,1,1            0.107
+20261028-000300-896947   A    ok                  26.4     5  1,1,1            0.102
+20261028-000326-668518   A    ok                  33.6     5  1,1,1            0.120
+20261028-000400-723159   A    ok                  46.3     5  1,1,1            0.163
+20261028-000447-169213   A    ok                  49.2     5  1,1,1            0.162
+20261028-000538-398216   A    needs_source         6.0     1  -                0.016
+20261028-000543-293280   A    needs_source         4.9     1  -                0.014
+20261028-000548-721771   A    ok                  32.2     5  1,1,1            0.120
+20261028-000619-137783   A    ok                  28.2     5  1,1,1            0.110
+20261028-000650-043879   A    needs_source         6.2     1  -                0.015
+20261028-000656-369050   A    needs_source         6.3     1  -                0.017
+
+Runs: 24  timed: 24  drafts: 36  total usd: 1.72
+Wall time by step (timed runs, 507 s): normalize 22%  angles 20%  drafts (overlapping) 58%
+API call time by step (drafts overlap, so this sums past the wall time): normalize 18%  angles 16%  draft-first-attempt 66%  draft-retry 0%
+Output tokens by step: normalize 16%  angles 16%  draft-first-attempt 68%  draft-retry 0%
+Average attempts per draft: 1.00
+Drafts passing on attempt: 1 100% (36)  2 0% (0)  3 0% (0)  never 0% (0)
+First-attempt violations by code: none

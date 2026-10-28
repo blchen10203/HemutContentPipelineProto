@@ -9,6 +9,10 @@ Leave stat_card empty for every format except stat_card.
 
 Say each thing once. Use each claim at most once, use only one wording per claim, and do not restate a claim's point in your own words elsewhere in the post. Two claims that say nearly the same thing count as one point: pick one. Pick the claims that serve this angle best and leave the rest out.
 
+Before you answer, reread every word you wrote yourself (title, body, stat card label, CTA text; not the placeholders) for the two mistakes the validator rejects most:
+- A number word, even as a figure of speech: "half", "twice", "two", "three", "dozen", "hundred" ("not half the product", "a two-step setup", "twice the work"). Say it without the number.
+- A plan name: Command Pro and Command All-in appear only inside a claim's wording. In your own words say "the trial", "every plan" or "the whole product".
+
 Build each sentence around the wording, so the wording reads as part of the sentence:
 - Good: "Run it on your own loads for {{claim:trial-loads-per-truck}}."
 - Bad: a lead-in that ends in a colon, then the wording alone on its own line or as a fragment ("Here's what it covers:", "For context:", "This is not a separate purchase:").

@@ -1,0 +1,38 @@
+# Fixed Mode A requests for measuring prompt changes (scripts/run_eval.py). Don't edit an entry once a report uses it:
+# add new ones instead, so before/after reports stay comparable.
+# expect: drafts (every item is covered by claims.yaml) or needs_source (the gap rule must stop it).
+
+# The two DEMO.md requests
+- text: Reddit-style ad about IFTA automation for 5-15 truck fleets
+  expect: drafts
+- text: Post about Hemut's new fuel card with 50% off in November
+  expect: needs_source
+
+# Gap rule: each mentions something no claim covers
+- text: Short ad announcing Hemut's partnership with Samsara and a 20% discount for Samsara customers
+  expect: needs_source
+- text: Social post saying Command now has a built-in load board with 10,000 loads a day
+  expect: needs_source
+- text: Reddit post about Hemut's new Canadian IFTA and IRP filing service, launching in December
+  expect: needs_source
+
+# One per format
+- text: Social post for dispatchers about rate confirmations from email turning into loads automatically
+  expect: drafts
+- text: Short ad about the free trial with no credit card
+  expect: drafts
+- text: Stat card about what a 10-truck fleet pays on Command
+  expect: drafts
+
+# Leaning on numbers: pricing, trial, IFTA due dates
+- text: Reddit-style post explaining how Command's per-truck pricing bands work for a 20-truck fleet
+  expect: drafts
+# needs_source: the claim is "IFTA quarters built from your miles and fuel", not from loads (expect fixed after the first run)
+- text: Social post reminding carriers the Q4 IFTA return is due January 31 and that Command builds the IFTA report from their loads
+  expect: needs_source
+- text: Social post about the email agent and the voice agent and what they cost
+  notes: Lead with the office's morning inbox, not the price.
+  expect: drafts
+# needs_source: signup takes a name, a work email and the USDOT number, not "just" the number (expect fixed after the first run)
+- text: Short ad for owner-operators about signing up with just a USDOT number and dispatching the same afternoon
+  expect: needs_source
