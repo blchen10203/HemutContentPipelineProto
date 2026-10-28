@@ -16,7 +16,7 @@ def no_photos(monkeypatch, tmp_path_factory):
 @pytest.fixture
 def photos(monkeypatch, tmp_path_factory):
     folder = tmp_path_factory.mktemp("photos")
-    for name in ("road.png", "truck.jpg", "notes.txt"):  # notes.txt is not a photo and is never picked
+    for name in ("demo-road.png", "launch-truck.jpg", "core-page_hero-bg.png"):  # the last is not in PHOTO_NAMES
         (folder / name).write_bytes(TINY_PNG)
     monkeypatch.setattr(generate, "PHOTOS", folder)
     return folder

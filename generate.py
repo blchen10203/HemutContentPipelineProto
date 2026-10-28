@@ -34,6 +34,11 @@ MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
 PHOTOS = ROOT / "assets" / "hemut-brand" / "photos"  # local only (gitignored): no folder means ads get no image
+# Photos someone looked at: no people, no customer brands, no product artwork. A file not listed here is never used
+# (core-page_hero-bg.png shows a customer's truck and two people; the Forge and Custom files are product artwork).
+PHOTO_NAMES = ["command-page_hero-bg.png", "cta-truck.png", "custom-page_hero-background.png", "demo-road.png",
+               "future-road.jpg", "hero-landscape.png", "launch-truck.jpg", "onboarding-truck.png", "roi-truck.png",
+               "solutions-warehouse.png"]
 RUN_ID = "%Y%m%d-%H%M%S-%f"
 # USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
 PRICES = {"claude-opus-5-5": {"input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write": 5.00}}
@@ -207,7 +212,7 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
 def pick_image(run_id: str, angle: int) -> Path | None:
     """The photo attached to a finished ad: random, but seeded by run and angle, so the app and the run folder agree."""
     # shortcut: any photo for any ad, as asked; pick by topic if reviewers want photos that match the copy
-    photos = sorted(p for p in PHOTOS.glob("*") if p.suffix.lower() in {".png", ".jpg", ".jpeg"})
+    photos = [PHOTOS / name for name in PHOTO_NAMES if (PHOTOS / name).is_file()]
     return random.Random(f"{run_id}:{angle}").choice(photos) if photos else None
 
 

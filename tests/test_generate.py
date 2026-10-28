@@ -309,7 +309,7 @@ def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
 
 def test_pick_image_is_random_but_stable(photos):
     picks = {generate.pick_image(f"run-{n}", a) for n in range(20) for a in range(3)}
-    assert {p.name for p in picks} == {"road.png", "truck.jpg"}  # both photos get used, never notes.txt
+    assert {p.name for p in picks} == {"demo-road.png", "launch-truck.jpg"}  # both listed photos get used, never an unlisted file
     assert generate.pick_image("run-1", 2) == generate.pick_image("run-1", 2)  # the app and the run folder agree
 
 
