@@ -1,4 +1,6 @@
 """The real knowledge/ files load, fit together, and fact_sheet.md is exactly what claims.yaml renders to."""
+import re
+
 from knowledge.build_fact_sheet import OUT, render
 from knowledge.loader import load_audiences, load_bridges, load_claims, load_seasons, load_voice
 from validate import _banned_words, _competitor_names
@@ -37,6 +39,21 @@ def test_no_claim_wording_contains_a_banned_word():
     voice = load_voice()
     bad = {(c.id, v.span) for c in load_claims().values() for p in c.phrasings for v in _banned_words(p, voice)}
     assert not bad, f"claims.yaml wordings with a banned word from voice.yaml: {sorted(bad)}"
+
+
+# Phrasings that state the value another way: "Over 30 trucks" (value 31), "about five minutes" (value 5).
+VALUE_IN_WORDS = {"enterprise-threshold", "setup-signup-minutes"}
+
+
+def test_numeric_claim_wordings_state_their_value():
+    # Only phrasings reach copy, never value: a price changed in one place but not the other would ship the old price
+    wrong = []
+    for c in load_claims().values():
+        if isinstance(c.value, (int, float)) and c.id not in VALUE_IN_WORDS:
+            number = str(int(c.value)) if float(c.value).is_integer() else str(c.value)
+            wrong += [(c.id, c.value, p) for p in c.phrasings
+                      if not re.search(rf"(?<![\d.]){re.escape(number)}(?![\d]|\.\d)", p.replace(",", ""))]
+    assert not wrong, f"claims.yaml wordings that do not state the claim's value: {wrong}"
 
 
 def test_every_bridge_persona_exists():

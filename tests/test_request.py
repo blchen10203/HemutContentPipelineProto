@@ -42,13 +42,6 @@ def test_uncovered_request_needs_source_and_makes_no_draft_calls(tmp_path):
     assert len(client.calls) == 1 and result.drafts == []
 
 
-def test_attached_source_does_not_cover_gaps_yet(tmp_path):
-    client = FakeClient(brief_reply(needs_source=["50% off in November"]))
-    request = Request(text="Ad for 50% off in November", sources=[{"kind": "text", "value": "Promo: 50% off in November"}])
-    result = run_request(request, client=client, out_root=tmp_path)
-    assert result.status == "needs_source" and "Promo" not in client.calls[0]["messages"][0]["content"]
-
-
 def test_sensitive_request_is_blocked(tmp_path):
     client = FakeClient(brief_reply(sensitivity="high"), ANGLES, GOOD)
     result = run_request(Request(text="Post about the I-80 pileup"), client=client, out_root=tmp_path)

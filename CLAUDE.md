@@ -39,7 +39,7 @@ not remove the need for a snapshot in knowledge/sources/ and does not change req
 ```
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
-                 pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
+                 pending_claims.yaml (later: Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
 brief_sources/   seasonal.py

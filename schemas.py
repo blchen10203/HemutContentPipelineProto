@@ -1,7 +1,7 @@
 """Pydantic v2 models that are the contract between modules, plus claim-placeholder rendering.
 
 Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), AudienceProfile (audiences.yaml).
-Mode A input:   SourceAttachment, Request.
+Mode A input:   Request.
 Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, CallUsage, RunResult.
 Mode B:         SeasonWindow, BridgeEntry, PlanItem.
 
@@ -85,26 +85,12 @@ class AudienceProfile(BaseModel):
 
 # ---------------------------------------------------------------- Mode A input
 
-# These two are the trust boundary for typed user input; app.py does no validation of its own.
-class SourceAttachment(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
-
-    kind: Literal["url", "text"]
-    value: str = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def _url_is_http(self):
-        if self.kind == "url" and not re.match(r"https?://\S+$", self.value):
-            raise ValueError(f"url attachment must be an http(s) URL, got {self.value!r}")
-        return self
-
-
+# The trust boundary for typed user input; app.py does no validation of its own.
 class Request(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)  # so min_length rejects blank text
 
     text: str = Field(min_length=1)
     notes: str | None = None
-    sources: list[SourceAttachment] = []
 
 
 # ---------------------------------------------------------------- Core

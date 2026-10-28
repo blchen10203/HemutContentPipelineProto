@@ -1,6 +1,6 @@
 # Hemut Content Pipeline
 
-Turns a short brief into review-ready static content for Hemut Command. Drafts and exports only; nothing is ever posted. See `CLAUDE.md` for rules and build order.
+Turns a short brief into review-ready static content for Hemut Command. Drafts and exports only; nothing is ever posted. See `CLAUDE.md` for rules and status.
 
 ## Setup
 

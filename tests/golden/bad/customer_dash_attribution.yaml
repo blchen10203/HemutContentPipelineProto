@@ -1,0 +1,8 @@
+post:
+  title: "No looking back"
+  body: "We switched to Command and never looked back. — a fleet owner in Ohio"
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [CUSTOMER_VOICE]

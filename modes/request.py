@@ -19,8 +19,6 @@ def request_to_brief(
     audiences: dict[str, AudienceProfile] | None = None, client: anthropic.Anthropic | None = None,
     usage: list[CallUsage] | None = None,  # gets this call's token use
 ) -> Brief:
-    # TODO(cut list #3): turn request.sources into pending claims (requires_approval: true). Until then an attached
-    # source does not cover anything: its items stay in needs_source, and the source text never reaches the model.
     audiences = load_audiences() if audiences is None else audiences
     personas = "\n".join(f"- {a.id}: {a.label}. {a.role}" for a in audiences.values())
     prompt = load_prompt("normalize.txt", personas=personas, request=request.text, notes=request.notes or "(none)")

@@ -44,11 +44,12 @@ def plan_week(
     for bridge, origin, reason in candidates:
         tag = bridge.tag
         if tag in tags:
-            continue  # this tag's other angle is already in the plan
+            continue  # this tag's other angle is already in the plan, or the tag is already reported as out of slots
         elif bridge.hemut_feature in features:
             skipped.append(f"{tag}: same feature already in this week's plan ({bridge.hemut_feature})")
         elif len(picked) >= slots:
             skipped.append(f"{tag}: no slot left this week")
+            tags.add(tag)  # one line per tag, not one per angle
         else:
             picked.append((bridge, origin, reason))
             tags.add(tag)

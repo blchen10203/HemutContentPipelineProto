@@ -5,7 +5,7 @@ from pydantic import BaseModel, ValidationError
 
 from schemas import (
     Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
-    SeasonWindow, SourceAttachment, StatCard, TrxckwrldPost, Violation,
+    SeasonWindow, StatCard, TrxckwrldPost, Violation,
     render_post, used_claim_ids,
 )
 
@@ -19,7 +19,6 @@ POST = {
     "cta_text": "Start free", "cta_url": URL, "claim_ids_used": ["command-base-price"],
 }
 VALID: list[tuple[type[BaseModel], dict]] = [
-    (SourceAttachment, {"kind": "url", "value": "https://example.com/deal"}),
     (Request, {"text": "Reddit-style ad about IFTA automation for 5-15 truck fleets"}),
     (Brief, BRIEF),
     (Angle, {"hook": "Your IFTA weekend", "pain": "manual mileage", "feature": "IFTA reports", "claim_ids": []}),
@@ -38,6 +37,7 @@ VALID: list[tuple[type[BaseModel], dict]] = [
                  "duration_s": 12.5}),
 ]
 IDS = [m.__name__ for m, _ in VALID]
+DATA = dict(VALID)
 
 
 @pytest.mark.parametrize("model,data", VALID, ids=IDS)
@@ -52,12 +52,11 @@ def test_extra_key_rejected(model, data):
 
 
 @pytest.mark.parametrize("model,data,field,bad", [
-    (SourceAttachment, VALID[0][1], "kind", "pdf"),
     (Brief, BRIEF, "origin", "viral"),
     (Brief, BRIEF, "format", "tweet"),
     (Brief, BRIEF, "sensitivity", "medium"),
-    (Violation, VALID[6][1], "code", "TYPO"),
-    (RunResult, VALID[8][1], "status", "done"),
+    (Violation, DATA[Violation], "code", "TYPO"),
+    (RunResult, DATA[RunResult], "status", "done"),
 ])
 def test_bad_literal_rejected(model, data, field, bad):
     with pytest.raises(ValidationError, match=field):
@@ -68,16 +67,6 @@ def test_bad_literal_rejected(model, data, field, bad):
 def test_blank_request_text_rejected(text):
     with pytest.raises(ValidationError):
         Request(text=text)
-
-
-@pytest.mark.parametrize("value", ["not a url", "hemut.com/deal", "ftp://hemut.com", "   "])
-def test_bad_url_attachment_rejected(value):
-    with pytest.raises(ValidationError):
-        SourceAttachment(kind="url", value=value)
-
-
-def test_text_attachment_takes_any_text():
-    assert SourceAttachment(kind="text", value="  Deal: 20% off fuel through Nov  ").value == "Deal: 20% off fuel through Nov"
 
 
 @pytest.mark.parametrize("url", [
@@ -95,14 +84,14 @@ def test_bad_utm_rejected(url):
 
 
 def test_season_window_may_wrap_past_year_end():
-    w = SeasonWindow.model_validate({**VALID[9][1], "start": "12-15", "end": "01-31"})
+    w = SeasonWindow.model_validate({**DATA[SeasonWindow], "start": "12-15", "end": "01-31"})
     assert (w.start, w.end) == ("12-15", "01-31")
 
 
 @pytest.mark.parametrize("field,bad", [("start", "02-30"), ("end", "13-01"), ("start", "1-05"), ("lead_days", -1)])
 def test_bad_season_window_rejected(field, bad):
     with pytest.raises(ValidationError):
-        SeasonWindow.model_validate({**VALID[9][1], field: bad})
+        SeasonWindow.model_validate({**DATA[SeasonWindow], field: bad})
 
 
 # ---------------------------------------------------------------- placeholders

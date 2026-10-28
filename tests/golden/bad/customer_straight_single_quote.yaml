@@ -1,0 +1,8 @@
+post:
+  title: "Hear it from a carrier"
+  body: "'This changed how the whole office works' - Dana R., owner-operator"
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [CUSTOMER_VOICE]

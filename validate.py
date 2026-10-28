@@ -14,8 +14,11 @@ from schemas import Claim, PlaceholderError, TrxckwrldPost, Violation, VoiceRule
 _NUMBER_WORDS = (
     "two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|"
     "seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|"
-    "million|billion|dozen|half|halves|twice"
-)  # bare "one" is allowed: "one place", "one system"
+    "million|billion|dozen|half|halves|twice|"
+    "third|fourth|fifth(?! wheel)|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|"
+    "sixteenth|seventeenth|eighteenth|nineteenth|twentieth|thirtieth|fortieth|fiftieth|sixtieth|seventieth|eightieth|"
+    "ninetieth|hundredth|thousandth|millionth"
+)  # bare "one", "first" and "second" are allowed: "one system", "first week", "a second look"; a fifth wheel is a coupling
 NUMBER = re.compile(  # s? so "thousands of fleets" counts too
     rf"\$?\d(?:[\d,.]*\d)?%?|[$%]|\b(?:{_NUMBER_WORDS})s?(?:[-\s]+(?:{_NUMBER_WORDS})s?)*\b", re.IGNORECASE
 )
@@ -23,7 +26,8 @@ NUMBER = re.compile(  # s? so "thousands of fleets" counts too
 # Lookahead so "Hemut Command Pro" yields both pairs.
 PRODUCT_MENTION = re.compile(r"\b(?=((Hemut|Command)[ \t]+([A-Z][\w-]*)))")
 
-QUOTE = re.compile(r'["“]([^"“”\n]+)["”]')
+# Double or single quotes. A single quote opens only after a non-letter and closes only before one, so "don't" is no quote.
+QUOTE = re.compile(r'["“]([^"“”\n]+)["”]|(?<!\w)[\'‘]([^\'‘’\n]+)[\'’](?!\w)')
 FIRST_PERSON = re.compile(
     r"\bI(?:'ve| have)? (?:switched|moved|signed up|started using|tried|use|run|saved|love|recommend)\b"
     r"|\bI'?m an? (?:driver|trucker|dispatcher|owner[- ]operator|fleet owner|carrier)\b"
@@ -37,6 +41,14 @@ TESTIMONIAL = re.compile(
     r"|\b(?:says|said) (?!Hemut\b|Hemi\b)[A-Z][a-z]+\b"
     r"|\baccording to (?!Hemut\b)[A-Z][a-z]+ [A-Z][a-z]+"
     r"|[★☆⭐]|\b\d(?:\.\d)?\s*(?:/\s*5|stars?)\b|\bfive[- ]stars?\b"
+)
+# A dash, then a name and a comma or "a"/"an", then a role, ending the line: "— Dana, fleet owner", "- a carrier in Ohio".
+_ROLE = r"(?:driver|trucker|dispatcher|owner[- ]operator|owner|manager|carrier|customer|CEO|founder|president)s?"
+ATTRIBUTION = re.compile(
+    r"(?:[—–]|(?<!\S)--?)[ \t]*(?:[A-Z][\w.]*(?:[ \t][A-Z][\w.]*)*,|an?)[ \t]+"
+    r"(?:(?!(?:for|to|of|the|your|every|with|and)\b)[\w-]+[ \t]+){0,3}?" + _ROLE
+    + r"(?:[ \t]+(?:in|from|at)[ \t]+[A-Z][\w \t]*)?[.!]?[ \t]*$",
+    re.MULTILINE,
 )
 
 
@@ -137,6 +149,6 @@ def _banned_words(text: str, voice: VoiceRules) -> list[Violation]:
 
 
 def _customer_voice(free_text: str) -> list[Violation]:
-    spans = [m[0] for m in QUOTE.finditer(free_text) if len(m[1].split()) >= 4]  # "rate con" is a term, not speech
-    spans += [m[0] for m in FIRST_PERSON.finditer(free_text)] + [m[0] for m in TESTIMONIAL.finditer(free_text)]
+    spans = [m[0] for m in QUOTE.finditer(free_text) if len((m[1] or m[2]).split()) >= 4]  # "rate con" is a term, not speech
+    spans += [m[0] for pattern in (FIRST_PERSON, TESTIMONIAL, ATTRIBUTION) for m in pattern.finditer(free_text)]
     return [_v("CUSTOMER_VOICE", "reads as customer or driver voice, not Hemut", s) for s in dict.fromkeys(spans)]

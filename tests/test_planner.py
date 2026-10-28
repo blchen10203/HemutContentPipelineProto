@@ -122,4 +122,5 @@ def test_overflow_is_reported_not_silent():
     plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 9 pillars: 11 tags for 4 slots
     assert tags(plan) == ["ifta-q4", "winter-weather", "evergreen-expiring-documents", "evergreen-empty-miles"]
     assert "evergreen-tight-capacity: no slot left this week" in skipped
+    assert skipped.count("evergreen-short-pays-collections: no slot left this week") == 1  # two angles, one line
     assert not any(s.startswith(("ifta-q4", "winter-weather")) for s in skipped)  # a tag's second angle is not "left out"

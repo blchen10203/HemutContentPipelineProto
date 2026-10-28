@@ -68,7 +68,7 @@ Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default is today; set 
 
 Each _Why_ line ends with the reader the item is written for (from `knowledge/audiences.yaml`). Readers rotate so a week repeats one as little as it can. This week only three of the four personas fit these angles, so two repeat.
 
-Then the **Left out** list, one line per thing the planner refused. This week it is the other six pillars with **no slot left this week** (short pays and collections has two angles, so it is listed twice); they come up in later weeks. The other reason is **same feature already in this week's plan** (try **2026-11-21**, where hurricane season and winter weather overlap).
+Then the **Left out** list, one line per thing the planner refused. This week it is the other six pillars with **no slot left this week**; they come up in later weeks. The other reason is **same feature already in this week's plan** (try **2026-11-21**, where hurricane season and winter weather overlap).
 
 Click **Draft all**. Results appear one brief at a time (see the time from the morning pre-run). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
 
