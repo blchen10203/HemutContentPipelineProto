@@ -31,6 +31,7 @@ A weekly planner mixes seasonal + trend + evergreen Briefs into a content plan.
 
 ## research/
 research/ holds secondary research. It is never loaded into prompts and is never a source for claims.
+research/ is kept locally and is gitignored, because it contains Hemut-internal notes and personal details.
 A fact from research/ enters claims.yaml only after its primary source is snapshotted into
 knowledge/sources/. If it can't be snapshotted, it stays out. Persona and bridge text drawn from
 research/ must contain no numbers, no dates and no first-person or quoted speech.
@@ -57,6 +58,7 @@ cli.py           entry points for both modes + review
 tests/           golden/  fixtures/ (frozen dated data, e.g. the demo trend fixture) + unit tests
 out/runs/<timestamp>/   drafts + meta.json
 research/        secondary research, never loaded into prompts (see research/ rules)
+assets/          local only, gitignored; brand files downloaded from hemut.com. Not used by the pipeline. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
 ```
 
 ## Conventions
