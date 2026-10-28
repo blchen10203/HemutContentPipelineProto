@@ -89,3 +89,41 @@
   hemut_feature: Self-serve setup, dispatching the same afternoon, able to run beside the old TMS
   claim_ids: [setup-same-afternoon, setup-what-comes-across, feature-beside-legacy-tms]
   audiences: [fleet-owner]
+
+- tag: evergreen-detention
+  pain: Trucks wait at the dock for hours and the detention never gets billed
+  hemut_feature: Detention flagged while the truck waits, with dock time ready to bill
+  claim_ids: [hemi-desk-detention]
+  audiences: [dispatcher, fleet-owner]
+# Only product-hemut-diesel backs fuel, so one angle; its claim publishes no discount amount.
+- tag: evergreen-diesel-prices
+  pain: Fuel eats into every load when diesel prices climb
+  hemut_feature: Hemut Diesel, a fuel card with fleet discounts and nationwide coverage
+  claim_ids: [product-hemut-diesel]
+  audiences: [fleet-owner]
+# Collections and short-pay surfacing only: Hemut makes no fraud-prevention claim.
+- tag: evergreen-short-pays-collections
+  pain: Short pays and deductions go unnoticed until the money is gone
+  hemut_feature: Overdue invoices chased, with short pays and deductions surfaced
+  claim_ids: [hemi-desk-payments-collections]
+  audiences: [back-office, fleet-owner]
+- tag: evergreen-short-pays-collections
+  pain: Invoices go out late because the POD never came back
+  hemut_feature: PODs chased until they are in, and delivered loads become invoices
+  claim_ids: [hemi-desk-pod-paperwork, hemi-desk-billing]
+  audiences: [back-office]
+- tag: evergreen-tight-capacity
+  pain: Every truck counts and the wrong assignment costs a load
+  hemut_feature: On Command Pro, drivers ranked for each load with hours of service in view
+  claim_ids: [hemi-desk-dispatch, feature-driver-ranking, feature-hos-at-assignment]
+  audiences: [dispatcher, fleet-owner]
+- tag: evergreen-expiring-documents
+  pain: A medical card or permit lapses and nobody noticed
+  hemut_feature: Expiring documents turn into a renewal task before they lapse
+  claim_ids: [feature-compliance-expiry, hemi-desk-pod-paperwork]
+  audiences: [back-office, fleet-owner]
+- tag: evergreen-empty-miles
+  pain: Trucks sit or run empty waiting for the next load
+  hemut_feature: On Command Pro, backhauls found before a truck sits
+  claim_ids: [hemi-desk-dispatch]
+  audiences: [dispatcher, fleet-owner]

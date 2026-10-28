@@ -8,6 +8,7 @@ import pytest
 from test_generate import ANGLES, GOOD, N_ANGLES, FakeClient
 
 from brief_sources.seasonal import active_seasons, window
+from knowledge.loader import load_bridges
 from modes.scheduled import run_week
 from planner import plan_week
 from schemas import BridgeEntry, SeasonWindow
@@ -58,10 +59,16 @@ def test_unverified_season_still_briefs_but_says_so():
 def test_demo_week_plan():
     skipped = []
     plan = plan_week(D(2026, 10, 31), skipped=skipped)
-    assert tags(plan) == ["ifta-q3", "hurricane-season", "evergreen-pricing", "evergreen-rate-cons", "evergreen-switching"]
+    assert tags(plan) == ["ifta-q3", "hurricane-season", "evergreen-tight-capacity", "evergreen-expiring-documents", "evergreen-empty-miles"]
     assert [p.brief.origin for p in plan] == ["seasonal"] * 2 + ["evergreen"] * 3  # active seasons first: the boost
     assert all("dates verified by" in p.reason for p in plan[:2])
-    assert skipped == []
+    assert "evergreen-pricing: no slot left this week" in skipped
+
+
+def test_every_pillar_is_picked_within_a_year():
+    pillars = {b.tag for b in load_bridges() if b.tag.startswith("evergreen-")}
+    picked = {t for n in range(52) for t in tags(plan_week(D(2026, 11, 2) + datetime.timedelta(weeks=n)))}
+    assert pillars <= picked, f"never picked in 52 weeks: {sorted(pillars - picked)}"
 
 
 def test_consecutive_weeks_rotate_angles():
@@ -97,7 +104,7 @@ def test_overlapping_seasons_never_repeat_a_feature():
 
 def test_demo_week_personas():
     plan = plan_week(D(2026, 10, 31))
-    assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner", "back-office", "fleet-owner"]
+    assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner", "back-office", "dispatcher"]
     assert plan[0].reason.endswith("Reader: Back-office and billing lead") and plan[0].brief.audience == "Back-office and billing lead"
 
 
@@ -112,7 +119,7 @@ def test_personas_spread_across_slots():
 
 def test_overflow_is_reported_not_silent():
     skipped = []
-    plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 3 pillars: 5 tags for 4 slots
-    assert tags(plan) == ["ifta-q4", "winter-weather", "evergreen-pricing", "evergreen-rate-cons"]
-    assert "evergreen-switching: no slot left this week" in skipped
+    plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 9 pillars: 11 tags for 4 slots
+    assert tags(plan) == ["ifta-q4", "winter-weather", "evergreen-expiring-documents", "evergreen-empty-miles"]
+    assert "evergreen-tight-capacity: no slot left this week" in skipped
     assert not any(s.startswith(("ifta-q4", "winter-weather")) for s in skipped)  # a tag's second angle is not "left out"

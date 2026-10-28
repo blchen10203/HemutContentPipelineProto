@@ -1,7 +1,8 @@
 """Weekly content plan for Mode B: active seasons first (the boost), then evergreen pillars.
 
 One angle per tag per week. A tag with several bridge entries rotates through them by week number, so consecutive
-weeks lead with different angles without any stored history. Two tags never sell the same hemut_feature in one week.
+weeks lead with different angles without any stored history. The evergreen pillars rotate the same way, so the
+slots left after the seasons go to different pillars each week. Two tags never sell the same hemut_feature in one week.
 Once the slots are filled, each gets a reader persona from its bridge's audiences, spread so a week repeats one as little as it can.
 """
 import datetime
@@ -35,7 +36,9 @@ def plan_week(
     by_tag: dict[str, list] = {}
     for c in candidates:
         by_tag.setdefault(c[0].tag, []).append(c)
-    candidates = [c for group in by_tag.values() for c in group[week % len(group):] + group[:week % len(group)]]
+    groups = [_rotate(group, week) for group in by_tag.values()]
+    pillars = [g for g in groups if g[0][1] == "evergreen"]  # listed after the seasons
+    candidates = [c for group in groups[:len(groups) - len(pillars)] + _rotate(pillars, week) for c in group]
 
     picked, tags, features = [], set(), set()
     for bridge, origin, reason in candidates:
@@ -54,6 +57,11 @@ def plan_week(
     personas = _personas([b for b, _, _ in picked], audiences)
     return [PlanItem(brief=bridge_brief(b, origin, persona), reason=f"{reason} · Reader: {persona.label}")
             for (b, origin, reason), persona in zip(picked, personas)]
+
+
+def _rotate(items: list, week: int) -> list:
+    n = week % len(items) if items else 0
+    return items[n:] + items[:n]
 
 
 def _personas(bridges: list[BridgeEntry], audiences: dict[str, AudienceProfile]) -> list[AudienceProfile]:

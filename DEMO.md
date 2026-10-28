@@ -64,11 +64,11 @@ Tab **Weekly plan (Mode B)**. Week of **2026-10-31** (the default is today; set 
 
 1. **"The office rebuilds the IFTA return by hand…"** (Seasonal, Reddit post): the IFTA Q3 return is due Oct 31. The reason line names who checked the season dates against the source. Drafts can state the due date because it is a claim (`ifta-q3-due`, from iftach.org), and the claim always says "or the next business day when that falls on a weekend or holiday". That matters this year: Oct 31, 2026 is a Saturday.
 2. **"Storm delays push loads late…"** (Seasonal): Atlantic hurricane season runs through Nov 30 (source: NOAA's hurricane center). Like IFTA, its reason line names who checked the dates.
-3. to 5. **Evergreen** (Short ads): published pricing, rate confirmations retyped by hand, and switching TMS.
+3. to 5. **Evergreen** (Short ads): driver assignment when capacity is tight, expiring documents, and empty miles. The nine evergreen pillars take turns by week number, so another week shows different ones.
 
 Each _Why_ line ends with the reader the item is written for (from `knowledge/audiences.yaml`). Readers rotate so a week repeats one as little as it can. This week only three of the four personas fit these angles, so two repeat.
 
-Nothing is left out this week: two active seasons and three evergreen pillars fill the five slots exactly. When the planner refuses something, a **Left out** list names it and why: no slot left, or the same Hemut feature already in the plan (try **2026-11-21**, where hurricane season and winter weather overlap).
+Then the **Left out** list, one line per thing the planner refused. This week it is the other six pillars with **no slot left this week** (short pays and collections has two angles, so it is listed twice); they come up in later weeks. The other reason is **same feature already in this week's plan** (try **2026-11-21**, where hurricane season and winter weather overlap).
 
 Click **Draft all**. Results appear one brief at a time (see the time from the morning pre-run). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
 
