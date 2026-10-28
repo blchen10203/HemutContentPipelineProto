@@ -199,6 +199,7 @@ class CallUsage(BaseModel):
     thinking_tokens: int | None = None  # the part of output_tokens spent thinking; None if the API did not report it
     cache_read_input_tokens: int = 0
     cache_creation_input_tokens: int = 0
+    duration_s: float  # wall time of the API call alone
 
 
 class RunResult(BaseModel):

@@ -15,7 +15,7 @@ RESULT = RunResult(run_id="x", run_dir="out/runs/x", status="ok", brief=BRIEF,
                    angles=[Angle(hook="hook", pain="p", feature="f", claim_ids=[])],
                    drafts=[[DraftAttempt(attempt=0, rendered_text=AD, violations=[])]],
                    usage=[CallUsage(step="draft", model="claude-opus-5-5", input_tokens=1000, output_tokens=5000,
-                                    thinking_tokens=4000, cache_read_input_tokens=6700)])  # $0.10534
+                                    thinking_tokens=4000, cache_read_input_tokens=6700, duration_s=20.0)])  # $0.10534
 
 
 def usage_captions(at):

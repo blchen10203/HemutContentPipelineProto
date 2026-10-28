@@ -63,7 +63,7 @@ research/        secondary research, never loaded into prompts (see research/ ru
 - Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework.
 - One Streamlit app (app.py) as a thin shell. It only calls functions in generate.py, modes/, planner.py, and knowledge/. No business logic, validation, or prompt text in app.py. Local only, no auth, never posts.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
-- Every run writes `meta.json`: mode, brief origin, prompt versions, knowledge checked-dates, model, temperature or effort, validator results, and token usage per API call with a run total and $ estimate (prices in generate.PRICES).
+- Every run writes `meta.json`: mode, brief origin, wall-clock `duration_s` of the whole run, prompt versions, knowledge checked-dates, model, temperature or effort, validator results, and token usage and `duration_s` per API call with a run total (incl. `call_seconds`, which exceeds the wall time because drafts run in parallel) and $ estimate (prices in generate.PRICES).
 - Every trend source implements one interface (`brief_sources/trends/base.py`), so adding or swapping a platform touches one file.
 - Schemas are the contract between modules. Don't change them without updating tests.
 

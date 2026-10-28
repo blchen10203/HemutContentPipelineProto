@@ -3,6 +3,7 @@
 Gap rule: anything the request mentions that no claim covers goes in Brief.needs_source, and run_brief() stops there.
 Nothing is web-searched or guessed.
 """
+import time
 from typing import Literal
 
 import anthropic
@@ -44,6 +45,7 @@ def run_request(
     client: anthropic.Anthropic | None = None,
     **run_kwargs,  # on_event, out_root
 ) -> RunResult:
+    started = time.perf_counter()  # meta.json duration_s counts the normalize call too
     claims = load_claims() if claims is None else claims
     voice = load_voice() if voice is None else voice
     client = client or anthropic.Anthropic()
@@ -51,6 +53,6 @@ def run_request(
     try:
         brief = request_to_brief(request, claims, voice=voice, client=client, usage=usage)
     except BaseException as e:  # same as run_brief: an aborted run still leaves its folder
-        write_failed_request(e, claims, run_kwargs.get("out_root", OUT), usage)
+        write_failed_request(e, claims, run_kwargs.get("out_root", OUT), usage, started)
         raise
-    return run_brief(brief, claims=claims, voice=voice, client=client, usage=usage, **run_kwargs)
+    return run_brief(brief, claims=claims, voice=voice, client=client, usage=usage, started=started, **run_kwargs)

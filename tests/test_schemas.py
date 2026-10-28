@@ -39,7 +39,8 @@ VALID: list[tuple[type[BaseModel], dict]] = [
     }),
     (TrendCard, {"id": "c1", "tag": "fuel-prices", "items": ["t1"], "sensitivity": "low", "expires_at": "2026-11-15"}),
     (PlanItem, {"brief": BRIEF, "reason": "IFTA Q4 deadline Jan 31 is 12 days out"}),
-    (CallUsage, {"step": "draft", "model": "claude-opus-5-5", "input_tokens": 120, "output_tokens": 900, "thinking_tokens": 600}),
+    (CallUsage, {"step": "draft", "model": "claude-opus-5-5", "input_tokens": 120, "output_tokens": 900, "thinking_tokens": 600,
+                 "duration_s": 12.5}),
 ]
 IDS = [m.__name__ for m, _ in VALID]
 
@@ -165,3 +166,9 @@ def test_render_bad_stat_card_claim_raises():
 
 def test_run_result_error_status():
     assert RunResult(run_id="r1", run_dir="out/runs/r1", status="error").status == "error"
+
+
+def test_call_usage_needs_duration():
+    data = {k: v for k, v in VALID[-1][1].items() if k != "duration_s"}
+    with pytest.raises(ValidationError, match="duration_s"):
+        CallUsage.model_validate(data)

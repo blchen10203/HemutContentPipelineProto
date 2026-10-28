@@ -3,10 +3,15 @@
 run_brief(brief) never posts anything. on_event(name, payload) reports progress for the CLI and Streamlit:
 "brief", "angles", "draft" (one per attempt), "done". If the API fails mid-run, the run folder is still written, then the
 error is re-raised. The same goes for a BaseException (Ctrl+C, or Streamlit's rerun when a widget is clicked mid-run).
+The angles' draft chains run in parallel threads; on_event is still only called from the thread that called run_brief().
 """
 import datetime
 import hashlib
 import json
+import queue
+import threading
+import time
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 from typing import Callable
 
@@ -22,6 +27,7 @@ from validate import needs_approval, parse_post, validate
 MODEL = "claude-opus-5-5"  # no server-side fallback, so this is always the model that answered
 EFFORT = "medium"  # Opus 5.5 rejects temperature; effort is the only sampling-side control
 N_ANGLES = 3
+DRAFT_WORKERS = N_ANGLES  # one thread per angle's draft chain
 MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
@@ -47,7 +53,9 @@ def run_brief(
     on_event: Callable[[str, dict], None] = lambda name, payload: None,
     out_root: Path = OUT,
     usage: list[CallUsage] | None = None,  # calls made before the Brief existed (Mode A's normalize step)
+    started: float | None = None,  # time.perf_counter() at the start of the run, if it began earlier (Mode A's normalize)
 ) -> RunResult:
+    started = time.perf_counter() if started is None else started
     claims = load_claims() if claims is None else claims  # the knowledge base is always loaded
     voice = load_voice() if voice is None else voice
     now = datetime.datetime.now()
@@ -64,25 +72,27 @@ def run_brief(
         try:
             _generate(brief, result, claims, voice, client or anthropic.Anthropic(), on_event)
         except BaseException as e:  # incl. Streamlit's rerun exception, so an aborted run keeps its folder
-            _write_error(run_dir, result, claims, now, e)
+            _write_error(run_dir, result, claims, now, started, e)
             raise
 
-    _write_run(run_dir, result, claims, now)
+    _write_run(run_dir, result, claims, now, started)
     on_event("done", {"status": result.status, "run_dir": str(run_dir)})
     return result
 
 
-def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT, usage: list[CallUsage] = ()) -> None:
+def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT, usage: list[CallUsage] = (),
+                         started: float | None = None) -> None:
     """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
     result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="error", usage=list(usage))
-    _write_error(run_dir, result, claims, now, error)
+    _write_error(run_dir, result, claims, now, time.perf_counter() if started is None else started, error)
 
 
-def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, e: BaseException) -> None:
+def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, started: float,
+                 e: BaseException) -> None:
     result.status = "error"
-    _write_run(run_dir, result, claims, now, error=f"{type(e).__name__}: {e}")
+    _write_run(run_dir, result, claims, now, started, error=f"{type(e).__name__}: {e}")
     e.add_note(f"run folder: {run_dir}")
 
 
@@ -96,18 +106,51 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
                 step="angles", usage=result.usage)
     result.angles = _Angles.model_validate_json(reply).angles
     on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
-    for i, angle in enumerate(result.angles):
-        attempts: list[DraftAttempt] = []
-        result.drafts.append(attempts)  # filled in place, so an API error keeps the attempts made so far
-        first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
-        _draft(client, system, first, claims, voice, attempts, lambda a: on_event("draft", {"angle": i, **a}), result.usage)
+
+    # The angles call above runs alone first; then one thread per angle runs its draft chain (with retries).
+    # Each worker fills only its own drafts[i] and usages[i]; events go through a queue so on_event stays on this thread.
+    result.drafts = [[] for _ in result.angles]  # filled in place, so an error keeps the attempts made so far
+    usages: list[list[CallUsage]] = [[] for _ in result.angles]
+    events: queue.Queue = queue.Queue()
+    stop = threading.Event()
+    pool = ThreadPoolExecutor(max_workers=DRAFT_WORKERS)
+    try:
+        pending = set()
+        for i, angle in enumerate(result.angles):
+            first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
+            on_attempt = lambda a, i=i: events.put(("draft", {"angle": i, **a}))
+            pending.add(pool.submit(_draft, client, system, first, claims, voice, result.drafts[i], on_attempt, usages[i], stop))
+        while pending:
+            done, pending = wait(pending, timeout=0.1, return_when=FIRST_COMPLETED)
+            _drain(events, on_event)  # Streamlit's rerun exception surfaces here
+            for future in done:
+                future.result()  # re-raises a worker's error
+    except BaseException:
+        stop.set()  # in-flight workers make no further API calls
+        raise
+    finally:
+        pool.shutdown(wait=False, cancel_futures=True)  # an abort does not wait for in-flight calls
+        result.drafts = [list(d) for d in result.drafts]  # a worker still in flight after an abort cannot change what is written
+        result.usage += [c for u in usages for c in u]  # angle order
     if not any(attempts and attempts[-1].violations == [] for attempts in result.drafts):
         result.status = "failed_validation"
 
 
-def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAttempt], on_attempt, usage: list[CallUsage]) -> None:
+def _drain(events: queue.Queue, on_event) -> None:
+    while True:
+        try:
+            name, payload = events.get_nowait()
+        except queue.Empty:
+            return
+        on_event(name, payload)
+
+
+def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAttempt], on_attempt, usage: list[CallUsage],
+           stop: threading.Event) -> None:
     messages = [_user(first_prompt)]
     for n in range(1 + MAX_RETRIES):
+        if stop.is_set():
+            return
         try:
             reply = ask(client, system, messages, TrxckwrldPost, step="draft", usage=usage)
         except Refused as e:  # retrying the same request will not help
@@ -138,6 +181,7 @@ def _draft(client, system, first_prompt, claims, voice, attempts: list[DraftAtte
 def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: str, usage: list[CallUsage]) -> str:
     """One structured-output call; returns the JSON text and appends its token use to usage.
     Raises Refused if the model gave no usable answer."""
+    start = time.perf_counter()
     response = client.messages.create(
         model=MODEL,
         max_tokens=16000,
@@ -145,9 +189,10 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
         messages=messages,
         output_config={"effort": EFFORT, "format": {"type": "json_schema", "schema": anthropic.transform_schema(shape)}},
     )
+    duration_s = round(time.perf_counter() - start, 3)  # the API call only, not the parsing below
     u = response.usage
     usage.append(CallUsage(  # before the refusal check: a refused call is still billed
-        step=step, model=response.model, input_tokens=u.input_tokens, output_tokens=u.output_tokens,
+        step=step, model=response.model, duration_s=duration_s, input_tokens=u.input_tokens, output_tokens=u.output_tokens,
         thinking_tokens=getattr(u.output_tokens_details, "thinking_tokens", None),
         cache_read_input_tokens=u.cache_read_input_tokens or 0, cache_creation_input_tokens=u.cache_creation_input_tokens or 0,
     ))
@@ -163,6 +208,8 @@ def usage_total(calls: list[CallUsage]) -> dict:
     total = {"calls": len(calls)} | {f: sum(getattr(c, f) for c in calls) for f in fields}
     total["thinking_tokens"] = None if any(c.thinking_tokens is None for c in calls) else sum(c.thinking_tokens for c in calls)
     total["usd_estimate"] = None if any(c.model not in PRICES for c in calls) else round(sum(map(_usd, calls)), 4)
+    # Time spent in API calls. Drafts run in parallel, so this is more than the run's wall time (meta.json duration_s).
+    total["call_seconds"] = round(sum(c.duration_s for c in calls), 3)
     return total
 
 
@@ -201,12 +248,14 @@ def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
     )
 
 
-def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, error: str | None = None) -> None:
+def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, started: float,
+               error: str | None = None) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     origin = result.brief.origin if result.brief else "request"  # no brief: Mode A failed while building it
     used = ["system.txt", "angles.txt", "draft.txt"] + (["normalize.txt"] if origin == "request" else [])
     meta = {
         "created": now.isoformat(timespec="seconds"),
+        "duration_s": round(time.perf_counter() - started, 3),  # wall clock of the whole run, incl. Mode A's normalize call
         "mode": "A" if origin == "request" else "B",
         "brief_origin": origin,
         "status": result.status,

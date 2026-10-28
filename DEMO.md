@@ -20,7 +20,7 @@ Every command calls the venv's own tools, so there is no activate step (PowerShe
 
 ## Morning of: pre-run everything (fallback)
 
-A request takes about 70 seconds and "Draft all" runs five briefs back to back (about 5 minutes). Run every demo item once in the morning, in the app or with the CLI:
+A request takes about 30 seconds (its three drafts run at the same time) and "Draft all" runs five briefs back to back (about 5 minutes). Run every demo item once in the morning, in the app or with the CLI:
 
 ```sh
 .venv/Scripts/python cli.py request "Reddit-style ad about IFTA automation for 5-15 truck fleets"
