@@ -2,8 +2,8 @@
 
 parse_post(raw) builds a TrxckwrldPost from model output and reports why it can't.
 validate(post, claims, voice) checks the RENDERED text: claim ids and placeholders, unbacked numbers,
-retired and unknown product names, competitor names, banned (absolute / deceptive) phrases, customer
-voice, and the approval flag. needs_approval(post, claims) tells callers how to set that flag.
+retired and unknown product names, competitor names, banned (absolute / deceptive) phrases and customer
+voice. needs_approval(post, claims) is how the pipeline sets requires_approval.
 """
 import re
 
@@ -89,11 +89,6 @@ def validate(post: TrxckwrldPost, claims: dict[str, Claim], voice: VoiceRules) -
     out += _competitor_names(text, voice)  # full text: a competitor claim's own wording names the competitor
     out += _banned_words(text, voice)
     out += _customer_voice(free_text)
-    if post.requires_approval != needs_approval(post, claims):
-        out.append(Violation(
-            code="APPROVAL_FLAG_WRONG",
-            message=f"requires_approval is {post.requires_approval}, but the claims used say {not post.requires_approval}",
-        ))
     return out
 
 
@@ -128,7 +123,7 @@ def _competitor_names(text: str, voice: VoiceRules) -> list[Violation]:
     return [
         _v("COMPETITOR_NAME", "names a competitor", m[0])
         for name in voice.competitor_names
-        for m in re.finditer(rf"\b{re.escape(name)}\b", text)
+        for m in re.finditer(rf"\b(?:{re.escape(name)}|{re.escape(name.upper())})\b", text)  # caps: headlines
     ]
 
 

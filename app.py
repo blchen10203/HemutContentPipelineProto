@@ -112,7 +112,7 @@ with request_tab:
         usage_caption([st.session_state.request_result])
 
 with week_tab:
-    day = st.date_input("Week of", value=datetime.date(2026, 10, 31))
+    day = st.date_input("Week of", value=datetime.date.today())
     plan_clicked = st.button("Plan")
     draft_clicked = st.button("Draft all", type="primary")
     if plan_clicked or draft_clicked:

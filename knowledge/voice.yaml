@@ -5,7 +5,7 @@ retired_names: [Core, Reach]
 
 # PROPOSED, NEEDS SIGN-OFF: competitor_names below.
 # Never named in copy: other TMS vendors and their products, and Vooma, Everest and Drumkit, the AI order-entry
-# tools McLeod certifies. Matched case-sensitively as whole words.
+# tools McLeod certifies. Matched as whole words, as written or in all caps ("pcs" passes, "MCLEOD" does not).
 # The 8 names Rose Rocket through ProTransport have no source in knowledge/: well-known TMS names added by hand.
 # Trimble also sells ELDs: if Hemut has a Trimble integration, this list blocks "integrates with Trimble" too.
 # Competitor claims in claims.yaml are background for the writer; each one names a company listed here.

@@ -1,0 +1,9 @@
+# Headlines are often all caps; a competitor name in caps is still a competitor name.
+post:
+  title: "LEAVING MCLEOD?"
+  body: 'Command is built for small fleets. {{claim:prices-published}}.'
+  cta_text: See pricing
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: [prices-published]
+  requires_approval: false
+expected_codes: [COMPETITOR_NAME]

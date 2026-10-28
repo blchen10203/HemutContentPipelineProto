@@ -1,9 +1,0 @@
-# No claim used needs approval, so the flag must be false.
-post:
-  title: "Compare before you buy"
-  body: 'Comparing systems? {{claim:prices-published}}.'
-  cta_text: Start free
-  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
-  claim_ids_used: [prices-published]
-  requires_approval: true
-expected_codes: [APPROVAL_FLAG_WRONG]

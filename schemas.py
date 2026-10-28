@@ -173,7 +173,7 @@ class Violation(BaseModel):
 
     code: Literal[
         "UNBACKED_NUMBER", "RETIRED_NAME", "UNKNOWN_PRODUCT", "COMPETITOR_NAME", "BANNED_WORD", "CUSTOMER_VOICE",
-        "MISSING_UTM", "UNKNOWN_CLAIM", "APPROVAL_FLAG_WRONG", "PLACEHOLDER_ERROR", "PARSE_ERROR",
+        "MISSING_UTM", "UNKNOWN_CLAIM", "PLACEHOLDER_ERROR", "PARSE_ERROR",
     ]
     message: str
     span: str | None = None
@@ -292,8 +292,10 @@ class PlaceholderError(ValueError):
 
 
 def used_claim_ids(post: TrxckwrldPost) -> set[str]:
-    """Claim ids referenced by the post's placeholders, plus its stat card's claim (it renders into the copy too)."""
-    ids = {m[1] for m in PLACEHOLDER.finditer("\n".join([post.title, post.body, post.cta_text]))}
+    """Claim ids referenced by the post's placeholders (stat card label included), plus its stat card's claim:
+    everything render_post fills."""
+    label = post.stat_card.label if post.stat_card else ""
+    ids = {m[1] for m in PLACEHOLDER.finditer("\n".join([post.title, post.body, post.cta_text, label]))}
     if post.stat_card:
         ids.add(post.stat_card.claim_id)
     return ids

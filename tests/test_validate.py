@@ -7,7 +7,7 @@ import yaml
 
 from knowledge.loader import load_claims, load_voice
 from schemas import Violation
-from validate import parse_post, validate
+from validate import needs_approval, parse_post, validate
 
 GOLDEN = Path(__file__).parent / "golden"
 GOOD = sorted((GOLDEN / "good").glob("*.yaml"))
@@ -40,11 +40,11 @@ def test_golden_set_covers_every_code():
     assert expected == set(get_args(Violation.model_fields["code"].annotation))
 
 
-def test_gated_claim_needs_the_flag():
+def test_gated_claim_in_stat_card_label_needs_approval():
     # Nothing in claims.yaml is gated since the 2026-10-27 approvals; pending claims will be, so gate one here.
     claims = {**CLAIMS, "prices-published": CLAIMS["prices-published"].model_copy(update={"requires_approval": True})}
-    post, _ = parse_post(yaml.safe_load((GOLDEN / "bad" / "approval_flag_wrong.yaml").read_text(encoding="utf-8"))["post"])
-    assert post.requires_approval and validate(post, claims, VOICE) == []
+    post, _ = parse_post(yaml.safe_load((GOLDEN / "bad" / "claim_in_stat_card_label.yaml").read_text(encoding="utf-8"))["post"])
+    assert needs_approval(post, claims)
 
 
 def test_competitor_named_in_free_text_and_by_claim():

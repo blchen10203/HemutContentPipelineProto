@@ -1,0 +1,11 @@
+# A placeholder in the stat card label renders into the copy, so it must be listed in claim_ids_used.
+post:
+  title: What Command costs
+  body: "One price, no sales call."
+  cta_text: See pricing
+  cta_url: "https://hemut.com/pricing?utm_source=trxckwrld&utm_medium=stat_card&utm_campaign=pricing"
+  claim_ids_used: [command-10-truck-price]
+  stat_card:
+    claim_id: command-10-truck-price
+    label: "{{claim:prices-published}}"
+expected_codes: [PLACEHOLDER_ERROR]
