@@ -41,24 +41,15 @@ knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader 
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
                  pending_claims.yaml (Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
-schemas.py       Pydantic v2: Claim, VoiceRules, AudienceProfile, Request, Brief (origin: request|seasonal|evergreen), TrxckwrldPost, StatCard, Violation, CallUsage, RunResult, SeasonWindow, BridgeEntry, PlanItem
-validate.py      deterministic checks (numbers, names, banned words, voice, CTA/UTM)
-generate.py      core: run_brief(): Brief -> angles -> draft -> validate -> retry, with an on_event progress callback
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
-prompts/         versioned prompt files, not inline strings
-modes/           request.py (Mode A)   scheduled.py (Mode B)
 brief_sources/   seasonal.py
-planner.py       weekly mix: active seasons + evergreen pillars, avoids repeated angles
 export/          trxckwrld.py (adapter, later)
-cli.py           entry points for both modes + review
-tests/           golden/ + unit tests
-out/runs/<timestamp>/   drafts + meta.json
 research/        secondary research, never loaded into prompts (see research/ rules)
 assets/          local only, gitignored; brand files downloaded from hemut.com. Only photos/ is used: each finished ad gets a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image), shown in the app and linked (not copied) from its draft-N.md; no folder, no photo. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
 ```
 
 ## Conventions
-- Python 3.11+, Pydantic v2, pytest. Keep it boring: no vector DB, no agent framework.
+- Keep it boring: no vector DB, no agent framework.
 - One Streamlit app (app.py) as a thin shell. It only calls functions in generate.py, modes/, planner.py, and knowledge/. No business logic, validation, or prompt text in app.py. Local only, no auth, never posts.
 - Fact sheet goes into the system prompt whole (prompt caching). No retrieval for facts.
 - Every run writes `meta.json`: mode, brief origin, wall-clock `duration_s` of the whole run, prompt versions, knowledge checked-dates, model, temperature or effort, validator results, and token usage and `duration_s` per API call with a run total (incl. `call_seconds`, which exceeds the wall time because drafts run in parallel) and $ estimate (prices in generate.PRICES).
@@ -69,22 +60,11 @@ assets/          local only, gitignored; brand files downloaded from hemut.com. 
 - Run `pytest` before any change to `validate.py` or `schemas.py` is considered done.
 - Seasonal and planner code is tested with fixed dates, never live network calls.
 
-## Build order
-Oct 31 demo: a local demo of BOTH modes through a thin Streamlit UI. Project skeleton is done.
-1. knowledge/: voice.yaml, generated fact_sheet.md (claims.yaml is done)
-2. schemas.py: Request, Brief, TrxckwrldPost, StatCard, Violation, RunResult, SeasonWindow, BridgeEntry, PlanItem
-3. validate.py + golden tests
-4. generate.py core: run_brief() with retry and an on_event progress callback
-5. Mode A: modes/request.py (function first) + minimal cli.py
-6. Mode B lite: seasonality.yaml + bridge_map.yaml (human-verified), seasonal source, planner.py, modes/scheduled.py
-7. Streamlit UI (app.py)
-8. Demo hardening + DEMO.md
+## Status
+Both modes run end to end through the Streamlit UI: knowledge/, schemas, validator + golden tests, generate.py core, Mode A, Mode B (seasonal + evergreen), app.py. There is no demo deadline any more.
 
-Cut list if behind, in this order:
-1. Knowledge tab in the UI
-2. Pending claims from attached sources
-
-## After the demo
+## Next
+- Pending claims from attached sources (knowledge/pending_claims.yaml)
 - LLM judge, diversity check, source-similarity check
 - Image templates
 - Trxckwrld export adapter
