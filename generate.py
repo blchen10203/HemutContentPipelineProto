@@ -107,31 +107,24 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
     result.angles = _Angles.model_validate_json(reply).angles
     on_event("angles", {"angles": [a.model_dump() for a in result.angles]})
 
-    # One thread per angle runs its draft chain (with retries). The cached prefix includes the output schema, so the angles
-    # call does not warm it for drafts: angle 1's first draft call runs alone and writes it, then the other chains start
-    # and read it. Each worker fills only its own drafts[i] and usages[i]; events go through a queue so on_event stays here.
+    # The angles call above runs alone first; then one thread per angle runs its draft chain (with retries).
+    # Each worker fills only its own drafts[i] and usages[i]; events go through a queue so on_event stays on this thread.
     result.drafts = [[] for _ in result.angles]  # filled in place, so an error keeps the attempts made so far
     usages: list[list[CallUsage]] = [[] for _ in result.angles]
     events: queue.Queue = queue.Queue()
     stop = threading.Event()
     pool = ThreadPoolExecutor(max_workers=DRAFT_WORKERS)
-
-    def start(i: int):
-        first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=result.angles[i].model_dump_json(indent=2))
-        on_attempt = lambda a: events.put(("draft", {"angle": i, **a}))
-        return pool.submit(_draft, client, system, first, claims, voice, result.drafts[i], on_attempt, usages[i], stop)
-
     try:
-        pending = {start(0)} if result.angles else set()
-        waiting = list(range(1, len(result.angles)))
+        pending = set()
+        for i, angle in enumerate(result.angles):
+            first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
+            on_attempt = lambda a, i=i: events.put(("draft", {"angle": i, **a}))
+            pending.add(pool.submit(_draft, client, system, first, claims, voice, result.drafts[i], on_attempt, usages[i], stop))
         while pending:
             done, pending = wait(pending, timeout=0.1, return_when=FIRST_COMPLETED)
             _drain(events, on_event)  # Streamlit's rerun exception surfaces here
             for future in done:
                 future.result()  # re-raises a worker's error
-            if waiting and usages[0]:  # angle 1's first call has returned, so the draft cache entry exists
-                pending |= {start(i) for i in waiting}
-                waiting = []
     except BaseException:
         stop.set()  # in-flight workers make no further API calls
         raise

@@ -1,7 +1,6 @@
 """run_brief() with a scripted fake client: retry loop, statuses, events and run files. No network."""
 import json
 import threading
-import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -229,15 +228,10 @@ TITLES = [json.loads(p)["title"] for p in POSTS]
 
 def test_parallel_drafts_line_up_with_their_angles(tmp_path, monkeypatch):
     monkeypatch.setattr(generate, "DRAFT_WORKERS", 3)
-    barrier = threading.Barrier(N_ANGLES - 1, timeout=5)  # angles 2 and 3 wait for each other: proves they overlap
-    cache_written = threading.Event()
+    barrier = threading.Barrier(N_ANGLES, timeout=5)  # every first attempt waits for the others: proves they overlap
 
     def before(angle, attempt):
-        if (angle, attempt) == (0, 0):
-            time.sleep(0.2)  # the others must not start while this call is in flight
-            cache_written.set()
-        elif attempt == 0:
-            assert cache_written.is_set(), "a draft chain started before angle 1's first call wrote the cache"
+        if attempt == 0:
             barrier.wait()
 
     client = AngleClient([[POSTS[0]], [BAD, POSTS[1]], [POSTS[2]]], before)  # only angle 2 needs a retry
@@ -282,26 +276,22 @@ def test_abort_in_on_event_does_not_wait_for_in_flight_calls(tmp_path, monkeypat
     # Streamlit's rerun exception arrives inside on_event, on the main thread, while other drafts are still in flight
     monkeypatch.setattr(generate, "DRAFT_WORKERS", 3)
     release = threading.Event()
-    in_flight = {1: threading.Event(), 2: threading.Event()}
 
     def before(angle, attempt):
         if angle != 0:
-            in_flight[angle].set()
             release.wait(10)  # angles 2 and 3 hang until the test lets them go
-        elif attempt == 1:  # angle 1's retry passes only once the other two calls are in flight
-            assert all(e.wait(5) for e in in_flight.values())
 
     def on_event(name, payload):
-        if name == "draft" and not payload["violations"]:
+        if name == "draft":
             raise KeyboardInterrupt
 
-    client = AngleClient([[BAD, POSTS[0]], [POSTS[1]], [POSTS[2]]], before)
+    client = AngleClient([[POSTS[0]], [POSTS[1]], [POSTS[2]]], before)
     try:
         with pytest.raises(KeyboardInterrupt):
             run_brief(BRIEF, client=client, out_root=tmp_path, on_event=on_event)  # returns while two calls hang
         (run_dir,) = run_dirs(tmp_path)
         meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
         assert meta["status"] == "error" and "KeyboardInterrupt" in meta["error"]
-        assert [len(d) for d in meta["validator"]] == [2, 0, 0]
+        assert [len(d) for d in meta["validator"]] == [1, 0, 0]
     finally:
         release.set()
