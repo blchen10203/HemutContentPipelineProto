@@ -13,7 +13,7 @@ CLAIMS = load_claims()
 
 
 def brief_reply(**overrides) -> str:
-    brief = {"origin": "trend", "audience": "5-15 truck fleets", "audience_id": "fleet-owner", "pain": "IFTA by hand", "hemut_feature": "IFTA from loads",
+    brief = {"origin": "seasonal", "audience": "5-15 truck fleets", "audience_id": "fleet-owner", "pain": "IFTA by hand", "hemut_feature": "IFTA from loads",
              "format": "reddit_post", "claim_ids": ["hemi-desk-settlements-ifta", "command-base-price"],
              "needs_source": [], "sensitivity": "low", "origin_ref": "made up"}
     return json.dumps(brief | overrides)

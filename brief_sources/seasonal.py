@@ -8,11 +8,11 @@ import datetime
 
 from schemas import AudienceProfile, Brief, BridgeEntry, SeasonWindow
 
-FORMAT = {"seasonal": "reddit_post", "trend": "social_post", "evergreen": "short_ad"}
+FORMAT = {"seasonal": "reddit_post", "evergreen": "short_ad"}
 
 
 def bridge_brief(bridge: BridgeEntry, origin: str, persona: AudienceProfile) -> Brief:
-    """The one way a season, trend or pillar becomes a Brief."""
+    """The one way a season or pillar becomes a Brief."""
     return Brief(origin=origin, audience=persona.label, audience_id=persona.id, pain=bridge.pain, hemut_feature=bridge.hemut_feature,
                  format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag)
 

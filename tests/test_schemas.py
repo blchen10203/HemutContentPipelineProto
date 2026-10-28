@@ -5,7 +5,7 @@ from pydantic import BaseModel, ValidationError
 
 from schemas import (
     Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
-    SeasonWindow, SourceAttachment, StatCard, TrendCard, TrendItem, TrxckwrldPost, Violation,
+    SeasonWindow, SourceAttachment, StatCard, TrxckwrldPost, Violation,
     render_post, used_claim_ids,
 )
 
@@ -33,11 +33,6 @@ VALID: list[tuple[type[BaseModel], dict]] = [
         "end": "01-31", "lead_days": 14, "source_url": "https://example.com/ifta", "checked": "2026-10-23",
     }),
     (BridgeEntry, {"tag": "ifta-q4", "pain": "quarterly IFTA return", "hemut_feature": "IFTA reports", "claim_ids": []}),
-    (TrendItem, {
-        "id": "t1", "title": "Diesel prices up", "url": "https://example.com/t1", "published": "2026-10-20",
-        "source": "fixture", "summary": "Diesel up for a third week.",
-    }),
-    (TrendCard, {"id": "c1", "tag": "fuel-prices", "items": ["t1"], "sensitivity": "low", "expires_at": "2026-11-15"}),
     (PlanItem, {"brief": BRIEF, "reason": "IFTA Q4 deadline Jan 31 is 12 days out"}),
     (CallUsage, {"step": "draft", "model": "claude-opus-5-5", "input_tokens": 120, "output_tokens": 900, "thinking_tokens": 600,
                  "duration_s": 12.5}),
@@ -63,8 +58,6 @@ def test_extra_key_rejected(model, data):
     (Brief, BRIEF, "sensitivity", "medium"),
     (Violation, VALID[6][1], "code", "TYPO"),
     (RunResult, VALID[8][1], "status", "done"),
-    (TrendItem, VALID[11][1], "source", "tiktok"),
-    (TrendCard, VALID[12][1], "sensitivity", "medium"),
 ])
 def test_bad_literal_rejected(model, data, field, bad):
     with pytest.raises(ValidationError, match=field):

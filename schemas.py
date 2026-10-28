@@ -3,7 +3,7 @@
 Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), AudienceProfile (audiences.yaml).
 Mode A input:   SourceAttachment, Request.
 Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, CallUsage, RunResult.
-Mode B:         SeasonWindow, BridgeEntry, TrendItem, TrendCard, PlanItem.
+Mode B:         SeasonWindow, BridgeEntry, PlanItem.
 
 Copy never contains free numbers or claim text. It references claims as {{claim:<id>}} (first phrasing)
 or {{claim:<id>:<n>}} (nth phrasing, 0-based); render_post() fills them from claims.yaml.
@@ -112,7 +112,7 @@ class Request(BaseModel):
 class Brief(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    origin: Literal["request", "seasonal", "trend", "evergreen"]
+    origin: Literal["request", "seasonal", "evergreen"]
     audience: str  # e.g. "5-15 truck fleets": the requester's words in Mode A, the persona label in Mode B
     audience_id: str  # AudienceProfile id; its pains, objections and tone go into the angles and draft prompts
     pain: str
@@ -121,7 +121,7 @@ class Brief(BaseModel):
     claim_ids: list[str]
     needs_source: list[str] = []
     sensitivity: Literal["low", "high"] = "low"
-    origin_ref: str | None = None  # season id, trend card id, or pillar name
+    origin_ref: str | None = None  # season id or evergreen tag
 
 
 class Angle(BaseModel):
@@ -242,7 +242,7 @@ class SeasonWindow(BaseModel):
 class BridgeEntry(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    tag: str  # season id or trend tag
+    tag: str  # season id or "evergreen-<pillar>"
     pain: str
     hemut_feature: str
     claim_ids: list[str]
@@ -252,28 +252,6 @@ class BridgeEntry(BaseModel):
     def _writer_guidance_only(self):  # pain and hemut_feature reach the draft model as part of the Brief
         _guidance_only(f"bridge {self.tag!r}", [self.pain, self.hemut_feature])
         return self
-
-
-class TrendItem(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    id: str
-    title: str
-    url: str = Field(pattern=r"^https?://")
-    published: datetime.date
-    source: Literal["rss", "federal_register", "fixture"]
-    summary: str
-
-
-class TrendCard(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    id: str
-    tag: str
-    items: list[str]  # TrendItem ids
-    sensitivity: Literal["low", "high"]
-    sensitivity_reason: str | None = None
-    expires_at: datetime.date
 
 
 class PlanItem(BaseModel):
