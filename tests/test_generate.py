@@ -302,9 +302,11 @@ def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
     run_dir = Path(result.run_dir)
     image = generate.pick_image(result.run_id, 0)
     assert image.parent == photos and image.suffix in {".png", ".jpg"}
-    assert (run_dir / f"draft-1{image.suffix}").read_bytes() == image.read_bytes()
-    assert (run_dir / "draft-1.md").read_text(encoding="utf-8").startswith(f"![](draft-1{image.suffix})\n\n")
-    assert not any(run_dir.glob("draft-2.*g")) and "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
+    first_line = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0]
+    assert first_line.startswith("![](") and "\\" not in first_line  # a relative link with forward slashes
+    assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked photo
+    assert not any(run_dir.glob("*.*g"))  # linked, not copied
+    assert "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
 
 
 def test_pick_image_is_random_but_stable(photos):

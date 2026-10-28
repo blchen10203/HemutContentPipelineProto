@@ -67,7 +67,7 @@ def main(argv: list[str] | None = None) -> None:
     lines = [f"Eval: {len(requests)} requests x {args.n} runs from {REQUESTS.relative_to(ROOT)}", ""]
     lines += [f"needs_source accuracy: {right}/{len(rows)} runs match expect"]
     lines += [f"  MISMATCH expect {expect}, got {status}: {r['text']}"
-              for r, (expect, got, status) in zip([r for r in requests for _ in range(args.n)], rows) if expect != got]
+              for r, (expect, got, status) in zip([r for r in requests for _ in range(args.n)], rows) if expect != got or status.startswith("error")]
     print("\n".join(lines) + "\n\n" + report(load(folders)))
 
 

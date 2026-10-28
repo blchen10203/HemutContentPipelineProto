@@ -8,9 +8,9 @@ The angles' draft chains run in parallel threads; on_event is still only called 
 import datetime
 import hashlib
 import json
+import os
 import queue
 import random
-import shutil
 import threading
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
@@ -292,7 +292,10 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
         last = attempts[-1]
         body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
         if last.rendered_text and (image := pick_image(result.run_id, i)):  # only finished ads get a photo
-            shutil.copyfile(image, run_dir / f"draft-{i + 1}{image.suffix}")
-            body = f"![](draft-{i + 1}{image.suffix})\n\n{body}"
+            try:  # linked, not copied: photos run up to 4 MB each
+                link = os.path.relpath(image, run_dir).replace(os.sep, "/")
+            except ValueError:  # out_root on another Windows drive than assets/
+                link = image.as_uri()
+            body = f"![]({link})\n\n{body}"
         flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
         (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")

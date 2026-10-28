@@ -20,7 +20,7 @@ Every command calls the venv's own tools, so there is no activate step (PowerShe
 
 ## Morning of: pre-run everything (fallback)
 
-A request takes about 30 seconds (its three drafts run at the same time) and "Draft all" runs five briefs back to back (about 5 minutes). Run every demo item once in the morning, in the app or with the CLI:
+A request takes about 30 seconds (its three drafts run at the same time) and "Draft all" runs five briefs back to back (it took about 5 minutes before drafts ran in parallel; time it during this pre-run). Run every demo item once in the morning, in the app or with the CLI:
 
 ```sh
 .venv/Scripts/python cli.py request "Reddit-style ad about IFTA automation for 5-15 truck fleets"
@@ -38,7 +38,7 @@ Tab **Request (Mode A)**. Type:
 
 > Reddit-style ad about IFTA automation for 5-15 truck fleets
 
-Click **Run**. While it runs (about 70s), the screen shows only a progress line counting finished ads ("Drafting: 2 ads ready"). When it finishes, only the finished ads show. The intermediate steps stay off screen but are all saved in the run folder (see below). Drafts that never pass the checks are not shown. Talk over it:
+Click **Run**. While it runs (about 30s), the screen shows only a progress line counting finished ads ("Drafting: 2 ads ready"). When it finishes, only the finished ads show. The intermediate steps stay off screen but are all saved in the run folder (see below). Drafts that never pass the checks are not shown. Talk over it:
 
 - Behind the progress line, the request becomes a Brief (audience in the requester's words, the closest reader persona, pain, Hemut feature, format, the claim ids that cover it). The persona's pains, objections and tone go into the angle and draft prompts.
 - Three angles, one draft each. Every draft goes through the deterministic validator. A draft with a violation is sent back with the violations, at most twice.
@@ -48,6 +48,7 @@ When it finishes, point at one draft:
 - Every number and product fact in it was inserted from `knowledge/claims.yaml` by claim id. The model never writes a number itself, and the validator rejects any number that didn't come from a claim.
 - It is visibly from Hemut, with the Trxckwrld co-ownership disclosed. No testimonials, no customer voice.
 - The CTA link carries UTM tags.
+- The photo is picked at random from a reviewed set of Hemut site photos. It is not matched to the topic yet.
 
 ## 2. Mode A gap (1 min)
 
@@ -75,7 +76,7 @@ Then the **Left out** list, one line per thing the planner refused:
 - `truck-parking`: **no bridge**. A trend reaches a Brief only through `bridge_map.yaml` (trend to pain to Hemut feature). No bridge, no Brief.
 - `evergreen-switching`: **no slot left this week**. Five slots, and active seasons and trends come first.
 
-Click **Draft all**. Results appear one brief at a time (about 5 minutes total). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
+Click **Draft all**. Results appear one brief at a time (see the time from the morning pre-run). Talk through the first one while the rest run. If time is short, open the pre-run week folders instead.
 
 ## 4. What to point out (2 min)
 

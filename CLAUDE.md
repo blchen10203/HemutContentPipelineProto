@@ -58,7 +58,7 @@ cli.py           entry points for both modes + review
 tests/           golden/  fixtures/ (frozen dated data, e.g. the demo trend fixture) + unit tests
 out/runs/<timestamp>/   drafts + meta.json
 research/        secondary research, never loaded into prompts (see research/ rules)
-assets/          local only, gitignored; brand files downloaded from hemut.com. Only photos/ is used: each finished ad gets a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image), shown in the app and copied into its run folder; no folder, no photo. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
+assets/          local only, gitignored; brand files downloaded from hemut.com. Only photos/ is used: each finished ad gets a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image), shown in the app and linked (not copied) from its draft-N.md; no folder, no photo. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
 ```
 
 ## Conventions

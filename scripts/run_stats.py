@@ -79,7 +79,7 @@ def report(metas: list[dict]) -> str:
 
 
 def main(args: list[str]) -> None:
-    folders = [Path(a) for a in args] or sorted((ROOT / "out" / "runs").iterdir())
+    folders = [Path(a) for a in args] or sorted((ROOT / "out" / "runs").glob("*"))  # no out/ yet: no runs
     print(report(load(folders)))
 
 
