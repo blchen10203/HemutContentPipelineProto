@@ -5,6 +5,7 @@ Someone at Hemut is asking for a post. Turn their request into a brief. You are 
 - audience_id: the id of the reader persona below closest to who the post is for. If the request does not say, pick the persona whose work the topic touches most.
 - pain: the specific problem the post leads with.
 - hemut_feature: the Hemut capability that solves it, in plain words.
+- feature_id: see "Feature" below.
 - format: reddit_post for a Reddit-style or community post, short_ad for an ad, stat_card for a single-number graphic, otherwise social_post.
 - claim_ids: ids from the fact sheet that back what the request is about. Use only ids that appear in the fact sheet.
 - needs_source: every thing the request mentions that no fact-sheet claim covers: a feature, product, plan, deal, discount, price, date, number, customer or partnership. Write each as a short phrase taken from the request. Do not guess, round, or swap in a nearby claim that says something different. Who the post is for (for example "5-15 truck fleets") is not a claim and never goes here. If everything is covered, leave it empty.
@@ -19,3 +20,6 @@ Request:
 
 Notes from the requester:
 {notes}
+
+Feature:
+{feature}

@@ -92,6 +92,7 @@ class Request(BaseModel):
 
     text: str = Field(min_length=1)
     notes: str | None = None
+    feature_id: str | None = None  # the feature the requester picked; None lets the model choose
 
 
 # ---------------------------------------------------------------- Core

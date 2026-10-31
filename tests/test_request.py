@@ -5,7 +5,7 @@ import pytest
 
 from test_generate import ANGLES, GOOD, N_ANGLES, FakeClient
 
-from knowledge.loader import load_claims
+from knowledge.loader import load_claims, load_features
 from modes.request import request_to_brief, run_request
 from schemas import Request
 
@@ -83,3 +83,28 @@ def test_request_maps_to_a_real_persona_id():
     assert "- fleet-owner: Owner running a small fleet." in call["messages"][0]["content"]
     schema = call["output_config"]["format"]["schema"]
     assert set(schema["properties"]["audience_id"]["enum"]) == {"fleet-owner", "dispatcher", "back-office", "carrier-exec"}
+
+
+def test_picked_feature_is_forced_onto_the_brief():
+    client = FakeClient(brief_reply(feature_id="live-tracking", hemut_feature="something else", claim_ids=["feature-dispatch-board", "command-base-price"]))
+    brief = request_to_brief(Request(text="Short ad for dispatchers", feature_id="dispatch-board-hos"), CLAIMS, client=client)
+    assert brief.feature_id == "dispatch-board-hos"
+    assert brief.hemut_feature == "Hours of service shown on the dispatch board when a load is assigned"
+    assert brief.claim_ids == ["feature-dispatch-board", "command-base-price", "feature-hos-at-assignment"]  # model's first, deduped
+    assert "Dispatch board with hours of service" in client.calls[0]["messages"][0]["content"]
+
+
+def test_without_a_pick_the_model_may_name_a_real_feature_or_none():
+    client = FakeClient(brief_reply(feature_id="ifta"))
+    assert request_to_brief(Request(text="IFTA post"), CLAIMS, client=client).feature_id == "ifta"
+    assert request_to_brief(Request(text="IFTA post"), CLAIMS, client=FakeClient(brief_reply())).feature_id is None
+    schema = client.calls[0]["output_config"]["format"]["schema"]["properties"]["feature_id"]  # a made-up id cannot pass
+    assert {e for option in schema["anyOf"] for e in option.get("enum", [])} == set(load_features())
+    assert {"type": "null"} in schema["anyOf"]
+
+
+def test_unknown_picked_feature_fails_before_any_call():
+    client = FakeClient(brief_reply())
+    with pytest.raises(ValueError, match="'gone'"):
+        request_to_brief(Request(text="x", feature_id="gone"), CLAIMS, client=client)
+    assert client.calls == []
