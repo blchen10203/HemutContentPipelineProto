@@ -21,7 +21,7 @@ A weekly planner mixes seasonal + evergreen Briefs into a content plan.
 - No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld).
 - Product names only from `voice.yaml` (Command, Control, Hemi, Forge, Custom, Hemut Diesel). "Core" and "Reach" are retired names.
 - Seasonal facts (dates, deadlines) are claims too: they need a source URL.
-- Seasons and evergreen pillars only reach a Brief through `knowledge/bridge_map.yaml` (tag -> pain -> Hemut feature). No bridge, no Brief.
+- Seasons and evergreen pillars only reach a Brief through `knowledge/bridge_map.yaml` (tag -> pain -> feature -> claims). No bridge, no Brief.
 - Sensitive topics are never drafted automatically: crashes, deaths, injuries, layoffs, bankruptcies, immigration / English-proficiency / non-domiciled CDL enforcement, politics. Flag them `sensitivity: high`; the run stops there for a human.
 - Secrets in `.env`, never committed.
 
@@ -37,7 +37,7 @@ not remove the need for a snapshot in knowledge/sources/ and does not change req
 
 ## Layout
 ```
-knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  bridge_map.yaml  sources/ (dated snapshots)
+knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  features.yaml  bridge_map.yaml  sources/ (dated snapshots)
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
                  pending_claims.yaml (later: Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
@@ -45,7 +45,7 @@ app.py           Streamlit thin shell over generate.py, modes/, planner.py, know
 brief_sources/   seasonal.py
 export/          trxckwrld.py (adapter, later)
 research/        secondary research, never loaded into prompts (see research/ rules)
-assets/          local only, gitignored; brand files downloaded from hemut.com. Only photos/ is used: each finished ad gets a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image), shown in the app and linked (not copied) from its draft-N.md; no folder, no photo. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
+assets/          local only, gitignored; brand files downloaded from hemut.com. Only screenshots/ and photos/ are used: each finished ad gets its feature's screenshot from assets/screenshots/ (listed in knowledge/features.yaml, demo data only, no real customer, driver or broker names), else a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image); shown in the app and linked (not copied) from its draft-N.md; no folder, no image. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
 ```
 
 ## Conventions

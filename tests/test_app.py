@@ -35,7 +35,7 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
     monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([RESULT]))
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
-    assert not at.exception and len(at.dataframe) == 2  # knowledge tab
+    assert not at.exception and len(at.dataframe) == 3  # knowledge tab
 
     click(at, "Run")
     assert at.error and drafts_shown(at) == 0  # blank request is rejected by Request, not drafted
@@ -145,3 +145,18 @@ def test_only_final_drafts_shown_while_and_after_running(monkeypatch):
     click(at, "Draft all")
     assert drafts_shown(at) == 2 and "HIDDEN" not in screen_text(at)
     assert any(m.value.startswith("**1. The office rebuilds the IFTA return") for m in at.markdown)  # the week's topic list stays
+
+
+def test_feature_dropdown_reaches_the_request(monkeypatch):
+    seen = []
+    monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: seen.append(request) or RESULT)
+    at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    box = at.selectbox[0]
+    assert box.options[0] == "Any (from the text)" and "Dispatch board with hours of service" in box.options
+    box.select("Dispatch board with hours of service").run()
+    at.text_area[0].input("Short ad for dispatchers").run()
+    click(at, "Run")
+    assert seen[-1].feature_id == "dispatch-board-hos"
+    at.selectbox[0].select("Any (from the text)").run()
+    click(at, "Run")
+    assert seen[-1].feature_id is None

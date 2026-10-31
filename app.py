@@ -9,8 +9,8 @@ import streamlit as st
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
-from generate import pick_image, usage_total
-from knowledge.loader import load_claims, load_seasons
+from generate import SCREENSHOTS, pick_image, usage_total
+from knowledge.loader import load_claims, load_features, load_seasons
 from modes.request import run_request
 from modes.scheduled import run_week
 from planner import plan_week
@@ -100,11 +100,14 @@ def run_with_status(label: str, job):
 request_tab, week_tab, knowledge_tab = st.tabs(["Request (Mode A)", "Weekly plan (Mode B)", "Knowledge"])
 
 with request_tab:
+    features = load_features()
+    choice = st.selectbox("Feature (optional)", ["Any (from the text)", *(f.label for f in features.values())])
     text = st.text_area("What should the post be about?", placeholder="Reddit-style post about IFTA automation for 5-15 truck fleets")
     notes = st.text_input("Notes (optional)")
     if st.button("Run", type="primary"):
         try:
-            request = Request(text=text, notes=notes or None)
+            request = Request(text=text, notes=notes or None,
+                              feature_id={f.label: f.id for f in features.values()}.get(choice))
         except ValidationError as e:
             st.error(e.errors()[0]["msg"])
         else:
@@ -150,6 +153,10 @@ with knowledge_tab:
     st.subheader("Seasons")
     st.dataframe([{"id": s.id, "window": f"{s.start} to {s.end}", "lead days": s.lead_days,
                    "verified": s.verified_by or "UNVERIFIED", "source": s.source_url} for s in load_seasons()])
+    st.subheader("Features")
+    st.dataframe([{"id": f.id, "label": f.label, "claims": ", ".join(f.claim_ids),
+                   "screenshots": f"{sum((SCREENSHOTS / x.file).exists() for x in f.screenshots)} of {len(f.screenshots)}"}
+                  for f in features.values()])
     st.subheader("Claims")
     st.dataframe([{"id": c.id, "type": c.type, "approval": "needs approval" if c.requires_approval else "",
                    "wording": " | ".join(c.phrasings) or "(record only)", "checked": c.checked, "source": c.source_url}
