@@ -31,3 +31,6 @@ Brief:
 
 Angle:
 {angle}
+
+Image (background for you, the writer):
+{screen}

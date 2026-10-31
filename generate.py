@@ -22,7 +22,7 @@ import yaml
 from pydantic import BaseModel
 
 from knowledge.build_fact_sheet import render as render_fact_sheet
-from knowledge.loader import ROOT, load_audiences, load_claims, load_voice
+from knowledge.loader import ROOT, load_audiences, load_claims, load_features, load_voice
 from schemas import Angle, AudienceProfile, Brief, CallUsage, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
@@ -39,6 +39,9 @@ PHOTOS = ROOT / "assets" / "hemut-brand" / "photos"  # local only (gitignored): 
 PHOTO_NAMES = ["command-page_hero-bg.png", "cta-truck.png", "custom-page_hero-background.png", "demo-road.png",
                "future-road.jpg", "hero-landscape.png", "launch-truck.jpg", "onboarding-truck.png", "roi-truck.png",
                "solutions-warehouse.png"]
+SCREENSHOTS = ROOT / "assets" / "screenshots"
+SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note} The copy may point at what it shows; facts still come only from the fact sheet."
+NO_SCREENSHOT = "The ad shows a brand photo or no image. Do not refer to the image."
 RUN_ID = "%Y%m%d-%H%M%S-%f"
 # USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
 PRICES = {"claude-opus-5-5": {"input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write": 5.00}}
@@ -125,7 +128,9 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
     try:
         pending = set()
         for i, angle in enumerate(result.angles):
-            first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2))
+            image = pick_image(result.run_id, i, brief.feature_id)
+            screen = SCREENSHOT_NOTE.format(note=image[1]) if image and image[1] else NO_SCREENSHOT
+            first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2), screen=screen)
             on_attempt = lambda a, i=i: events.put(("draft", {"angle": i, **a}))
             pending.add(pool.submit(_draft, client, system, first, claims, voice, result.drafts[i], on_attempt, usages[i], stop))
         while pending:
@@ -209,11 +214,16 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
     return next(b.text for b in response.content if b.type == "text")
 
 
-def pick_image(run_id: str, angle: int) -> Path | None:
-    """The photo attached to a finished ad: random, but seeded by run and angle, so the app and the run folder agree."""
-    # shortcut: any photo for any ad, as asked; pick by topic if reviewers want photos that match the copy
+def pick_image(run_id: str, angle: int, feature_id: str | None = None) -> tuple[Path, str | None] | None:
+    """The image of a finished ad: (path, on_screen) for a feature screenshot, (path, None) for a photo. Random, but seeded
+    by run and angle, so the app and the run folder agree."""
+    rng = random.Random(f"{run_id}:{angle}")
+    feature = load_features().get(feature_id)
+    shots = [(SCREENSHOTS / s.file, s.on_screen) for s in feature.screenshots if (SCREENSHOTS / s.file).is_file()] if feature else []
+    if shots:
+        return rng.choice(shots)
     photos = [PHOTOS / name for name in PHOTO_NAMES if (PHOTOS / name).is_file()]
-    return random.Random(f"{run_id}:{angle}").choice(photos) if photos else None
+    return (rng.choice(photos), None) if photos else None
 
 
 def usage_total(calls: list[CallUsage]) -> dict:
@@ -284,18 +294,23 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
         "validator": [[{"attempt": a.attempt, "violations": [v.model_dump() for v in a.violations]} for a in d] for d in result.drafts],
         "usage": {"calls": [c.model_dump() for c in result.usage], "total": usage_total(result.usage)},
     }
-    (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     (run_dir / "result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")
+    feature_id = result.brief.feature_id if result.brief else None
+    meta["images"] = []
     for i, attempts in enumerate(result.drafts):
+        meta["images"].append(None)
         if not attempts:
             continue
         last = attempts[-1]
         body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
-        if last.rendered_text and (image := pick_image(result.run_id, i)):  # only finished ads get a photo
+        if last.rendered_text and (image := pick_image(result.run_id, i, feature_id)):  # only finished ads get an image
+            path, note = image
+            meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if note else "photo"}
             try:  # linked, not copied: photos run up to 4 MB each
-                link = os.path.relpath(image, run_dir).replace(os.sep, "/")
+                link = os.path.relpath(path, run_dir).replace(os.sep, "/")
             except ValueError:  # out_root on another Windows drive than assets/
-                link = image.as_uri()
+                link = path.as_uri()
             body = f"![]({link})\n\n{body}"
         flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
         (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")
+    (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")

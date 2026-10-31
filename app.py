@@ -76,7 +76,8 @@ def show_result(result: RunResult) -> None:
         st.error("**Blocked: sensitive topic.** A human decides whether to write about this.")
     passed = [(i, a[-1]) for i, a in enumerate(result.drafts) if a and not a[-1].violations and a[-1].rendered_text]
     for i, last in passed:  # drafts that never passed the checks are not shown
-        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval), pick_image(result.run_id, i))
+        image = pick_image(result.run_id, i, result.brief.feature_id)
+        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval), image[0] if image else None)
     if result.drafts and not passed:
         st.info("No draft passed the review checks this time. Run it again.")
 

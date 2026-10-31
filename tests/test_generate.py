@@ -300,8 +300,8 @@ def test_abort_in_on_event_does_not_wait_for_in_flight_calls(tmp_path, monkeypat
 def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
     result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path)  # angle 1 passes; angles 2 and 3 never do
     run_dir = Path(result.run_dir)
-    image = generate.pick_image(result.run_id, 0)
-    assert image.parent == photos and image.suffix in {".png", ".jpg"}
+    image, note = generate.pick_image(result.run_id, 0)
+    assert note is None and image.parent == photos and image.suffix in {".png", ".jpg"}
     first_line = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0]
     assert first_line.startswith("![](") and "\\" not in first_line  # a relative link with forward slashes
     assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked photo
@@ -311,7 +311,7 @@ def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
 
 def test_pick_image_is_random_but_stable(photos):
     picks = {generate.pick_image(f"run-{n}", a) for n in range(20) for a in range(3)}
-    assert {p.name for p in picks} == {"demo-road.png", "launch-truck.jpg"}  # both listed photos get used, never an unlisted file
+    assert {p.name for p, _ in picks} == {"demo-road.png", "launch-truck.jpg"}  # both listed photos get used, never an unlisted file
     assert generate.pick_image("run-1", 2) == generate.pick_image("run-1", 2)  # the app and the run folder agree
 
 
@@ -320,3 +320,35 @@ def test_no_photos_folder_means_no_image(tmp_path, monkeypatch):
     assert generate.pick_image("run", 0) is None
     result, _ = run(FakeClient(ANGLES, GOOD), tmp_path)
     assert not (Path(result.run_dir) / "draft-1.md").read_text(encoding="utf-8").startswith("![]")
+
+
+def test_feature_screenshot_beats_photo_and_brings_its_note(photos, screenshots):
+    picks = {generate.pick_image(f"run-{n}", a, "dispatch-board-hos") for n in range(20) for a in range(3)}
+    assert {(p.name, note) for p, note in picks} == {("board-a.png", "Board A"), ("board-b.png", "Board B")}  # never the missing file
+
+
+def test_no_screenshot_falls_back_to_a_photo_without_note(photos, screenshots):
+    for feature_id in [None, "ifta", "removed-feature"]:  # no feature, a feature whose only screenshot is not on disk, an id no longer listed
+        path, note = generate.pick_image("run-1", 0, feature_id)
+        assert path.parent == photos and note is None
+
+
+def test_draft_prompt_gets_the_screenshot_note(tmp_path, photos, screenshots, serial):  # serial: calls[1 + i] is angle i
+    client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
+    result, _ = run(client, tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+    for i, call in enumerate(client.calls[1:]):
+        _, note = generate.pick_image(result.run_id, i, "dispatch-board-hos")
+        assert f"The ad shows this Hemut screenshot: {note}" in call["messages"][0]["content"]
+
+
+def test_draft_prompt_says_not_to_refer_to_a_photo(tmp_path, photos):
+    client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
+    run(client, tmp_path)
+    assert all(generate.NO_SCREENSHOT in c["messages"][0]["content"] for c in client.calls[1:])
+
+
+def test_meta_records_each_finished_ads_image(tmp_path, photos, screenshots, serial):
+    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+    images = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))["images"]
+    assert images[0]["image_kind"] == "screenshot" and images[0]["image"] in {"board-a.png", "board-b.png"}
+    assert images[1:] == [None, None]  # failed drafts get no image
