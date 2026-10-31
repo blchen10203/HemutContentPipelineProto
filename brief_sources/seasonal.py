@@ -14,7 +14,7 @@ FORMAT = {"seasonal": "reddit_post", "evergreen": "short_ad"}
 def bridge_brief(bridge: BridgeEntry, origin: str, persona: AudienceProfile) -> Brief:
     """The one way a season or pillar becomes a Brief."""
     return Brief(origin=origin, audience=persona.label, audience_id=persona.id, pain=bridge.pain, hemut_feature=bridge.hemut_feature,
-                 format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag)
+                 format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag, feature_id=bridge.feature)
 
 
 def window(season: SeasonWindow, today: datetime.date) -> tuple[datetime.date, datetime.date] | None:

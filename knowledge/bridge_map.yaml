@@ -4,6 +4,7 @@
 # Two entries for one tag are two angles: the planner rotates them week to week.
 # pain is a Brief field the draft model reads, so it states no facts, dates or numbers of its own.
 # audiences: the audiences.yaml persona ids this angle fits (tested); the planner picks one per slot.
+# feature: the features.yaml id this angle sells; it picks the ad's screenshot.
 
 # ---------------------------------------------------------------- Seasons
 # The four IFTA quarters share the same two angles.
@@ -12,52 +13,62 @@
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
   claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q1-due]
+  feature: ifta
   audiences: [back-office, fleet-owner]
 - tag: ifta-q1
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
   claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q1-due]
+  feature: ifta
   audiences: [fleet-owner, back-office]
 - tag: ifta-q2
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
   claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q2-due]
+  feature: ifta
   audiences: [back-office, fleet-owner]
 - tag: ifta-q2
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
   claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q2-due]
+  feature: ifta
   audiences: [fleet-owner, back-office]
 - tag: ifta-q3
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
   claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q3-due]
+  feature: ifta
   audiences: [back-office, fleet-owner]
 - tag: ifta-q3
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
   claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q3-due]
+  feature: ifta
   audiences: [fleet-owner, back-office]
 - tag: ifta-q4
   pain: The office rebuilds the IFTA return by hand from miles and fuel receipts every quarter
   hemut_feature: IFTA quarters built from the miles and fuel already in Command
   claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans, ifta-q4-due]
+  feature: ifta
   audiences: [back-office, fleet-owner]
 - tag: ifta-q4
   pain: Paying for a separate IFTA tool and keying the same miles in again
   hemut_feature: IFTA quarterly reports are part of every Command plan
   claim_ids: [feature-back-office-in-plans, command-base-price, ifta-q4-due]
+  feature: ifta
   audiences: [fleet-owner, back-office]
 
 - tag: winter-weather
   pain: Weather delays push loads late and customers call the office for updates
   hemut_feature: Customers warned before a load runs late, with live ETAs
   claim_ids: [hemi-desk-check-calls-tracking, feature-tracking]
+  feature: live-tracking
   audiences: [dispatcher]
 - tag: winter-weather
   pain: Replanning loads after a weather delay without running drivers out of hours
   hemut_feature: Hours of service shown on the dispatch board when a load is assigned
   claim_ids: [feature-hos-at-assignment, feature-dispatch-board]
+  feature: dispatch-board-hos
   audiences: [dispatcher]
 
 # Hurricane season shares the winter-weather angles and claims.
@@ -65,11 +76,13 @@
   pain: Storm delays push loads late and customers call the office for updates
   hemut_feature: Customers warned before a load runs late, with live ETAs
   claim_ids: [hemi-desk-check-calls-tracking, feature-tracking]
+  feature: live-tracking
   audiences: [dispatcher]
 - tag: hurricane-season
   pain: Replanning loads after a storm delay without running drivers out of hours
   hemut_feature: Hours of service shown on the dispatch board when a load is assigned
   claim_ids: [feature-hos-at-assignment, feature-dispatch-board]
+  feature: dispatch-board-hos
   audiences: [dispatcher]
 
 # ---------------------------------------------------------------- Evergreen pillars
@@ -78,52 +91,62 @@
   pain: Not knowing what a TMS costs until after a demo and a quote
   hemut_feature: Every self-serve price is published, with a free trial and no card
   claim_ids: [prices-published, command-base-price, trial-days]
+  feature: published-pricing
   audiences: [fleet-owner]
 - tag: evergreen-rate-cons
   pain: Someone in the office retypes every rate confirmation into the TMS
   hemut_feature: Rate confirmations that arrive by email become loads
   claim_ids: [feature-rate-cons-from-email, hemi-desk-inbox-rate-cons]
+  feature: rate-cons-from-email
   audiences: [back-office, dispatcher, fleet-owner]
 - tag: evergreen-switching
   pain: Switching TMS sounds like months of setup and a risky cutover
   hemut_feature: Self-serve setup, dispatching the same afternoon, able to run beside the old TMS
   claim_ids: [setup-same-afternoon, setup-what-comes-across, feature-beside-legacy-tms]
+  feature: self-serve-setup
   audiences: [fleet-owner]
 
 - tag: evergreen-detention
   pain: Trucks wait at the dock for hours and the detention never gets billed
   hemut_feature: Detention flagged while the truck waits, with dock time ready to bill
   claim_ids: [hemi-desk-detention]
+  feature: detention
   audiences: [dispatcher, fleet-owner]
 # Only product-hemut-diesel backs fuel, so one angle; its claim publishes no discount amount.
 - tag: evergreen-diesel-prices
   pain: Fuel eats into every load when diesel prices climb
   hemut_feature: Hemut Diesel, a fuel card with fleet discounts and nationwide coverage
   claim_ids: [product-hemut-diesel]
+  feature: hemut-diesel
   audiences: [fleet-owner]
 # Collections and short-pay surfacing only: Hemut makes no fraud-prevention claim.
 - tag: evergreen-short-pays-collections
   pain: Short pays and deductions go unnoticed until the money is gone
   hemut_feature: Overdue invoices chased, with short pays and deductions surfaced
   claim_ids: [hemi-desk-payments-collections]
+  feature: collections
   audiences: [back-office, fleet-owner]
 - tag: evergreen-short-pays-collections
   pain: Invoices go out late because the POD never came back
   hemut_feature: PODs chased until they are in, and delivered loads become invoices
   claim_ids: [hemi-desk-pod-paperwork, hemi-desk-billing]
+  feature: pods-to-invoices
   audiences: [back-office]
 - tag: evergreen-tight-capacity
   pain: Every truck counts and the wrong assignment costs a load
   hemut_feature: On Command Pro, drivers ranked for each load with hours of service in view
   claim_ids: [hemi-desk-dispatch, feature-driver-ranking, feature-hos-at-assignment]
+  feature: driver-ranking
   audiences: [dispatcher, fleet-owner]
 - tag: evergreen-expiring-documents
   pain: A medical card or permit lapses and nobody noticed
   hemut_feature: Expiring documents turn into a renewal task before they lapse
   claim_ids: [feature-compliance-expiry, hemi-desk-pod-paperwork]
+  feature: expiring-documents
   audiences: [back-office, fleet-owner]
 - tag: evergreen-empty-miles
   pain: Trucks sit or run empty waiting for the next load
   hemut_feature: On Command Pro, backhauls found before a truck sits
   claim_ids: [hemi-desk-dispatch]
+  feature: backhauls
   audiences: [dispatcher, fleet-owner]

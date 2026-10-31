@@ -2,7 +2,7 @@
 import re
 
 from knowledge.build_fact_sheet import OUT, render
-from knowledge.loader import load_audiences, load_bridges, load_claims, load_seasons, load_voice
+from knowledge.loader import load_audiences, load_bridges, load_claims, load_features, load_seasons, load_voice
 from validate import _banned_words, _competitor_names
 
 
@@ -78,3 +78,17 @@ def test_allowed_competitor_phrases_are_claim_wordings():
     wordings = {p for c in load_claims().values() if c.type != "competitor" for p in c.phrasings}
     extra = set(load_voice().allowed_competitor_phrases) - wordings
     assert not extra, f"allowed_competitor_phrases not an exact non-competitor claim wording: {sorted(extra)}"
+
+
+def test_real_features_load_and_their_claims_exist():
+    claims, features = load_claims(), load_features()
+    assert len(features) == 13
+    assert len({f.label for f in features.values()}) == len(features)  # the app's dropdown maps a label back to its id
+    missing = {(f.id, i) for f in features.values() for i in f.claim_ids if i not in claims}
+    assert not missing, f"features.yaml uses claim ids not in claims.yaml: {sorted(missing)}"
+
+
+def test_every_bridge_feature_exists():
+    features = load_features()
+    missing = {(b.tag, b.feature) for b in load_bridges() if b.feature not in features}
+    assert not missing, f"bridge_map.yaml uses feature ids not in features.yaml: {sorted(missing)}"

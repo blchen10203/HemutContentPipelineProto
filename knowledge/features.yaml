@@ -1,0 +1,71 @@
+# The product features an ad can sell, each with the screenshots that show it. A bridge_map.yaml entry names one by id.
+# Listing a screenshot here means a human reviewed that image. Screenshots must show demo data only: no real customer,
+# driver, load or company names. on_screen describes the screen in words with no numbers, quotes or dates.
+# Image files live in assets/screenshots/ (local only, gitignored); a listed file that is missing is skipped.
+# label is unique: the app's dropdown maps it back to the id.
+
+- id: ifta
+  label: IFTA quarterly reports
+  hemut_feature: IFTA quarters built from the miles and fuel already in Command
+  claim_ids: [hemi-desk-settlements-ifta, feature-back-office-in-plans]
+  screenshots: []
+- id: live-tracking
+  label: Live tracking and late-load warnings
+  hemut_feature: Customers warned before a load runs late, with live ETAs
+  claim_ids: [hemi-desk-check-calls-tracking, feature-tracking]
+  screenshots: []
+- id: dispatch-board-hos
+  label: Dispatch board with hours of service
+  hemut_feature: Hours of service shown on the dispatch board when a load is assigned
+  claim_ids: [feature-hos-at-assignment, feature-dispatch-board]
+  screenshots: []
+- id: published-pricing
+  label: Published pricing and free trial
+  hemut_feature: Every self-serve price is published, with a free trial and no card
+  claim_ids: [prices-published, command-base-price, trial-days]
+  screenshots: []
+- id: rate-cons-from-email
+  label: Rate confirmations from email
+  hemut_feature: Rate confirmations that arrive by email become loads
+  claim_ids: [feature-rate-cons-from-email, hemi-desk-inbox-rate-cons]
+  screenshots: []
+- id: self-serve-setup
+  label: Self-serve setup
+  hemut_feature: Self-serve setup, dispatching the same afternoon, able to run beside the old TMS
+  claim_ids: [setup-same-afternoon, setup-what-comes-across, feature-beside-legacy-tms]
+  screenshots: []
+- id: detention
+  label: Detention tracking
+  hemut_feature: Detention flagged while the truck waits, with dock time ready to bill
+  claim_ids: [hemi-desk-detention]
+  screenshots: []
+- id: hemut-diesel
+  label: Hemut Diesel fuel card
+  hemut_feature: Hemut Diesel, a fuel card with fleet discounts and nationwide coverage
+  claim_ids: [product-hemut-diesel]
+  screenshots: []
+- id: collections
+  label: Collections and short pays
+  hemut_feature: Overdue invoices chased, with short pays and deductions surfaced
+  claim_ids: [hemi-desk-payments-collections]
+  screenshots: []
+- id: pods-to-invoices
+  label: PODs to invoices
+  hemut_feature: PODs chased until they are in, and delivered loads become invoices
+  claim_ids: [hemi-desk-pod-paperwork, hemi-desk-billing]
+  screenshots: []
+- id: driver-ranking
+  label: Driver ranking for each load
+  hemut_feature: On Command Pro, drivers ranked for each load with hours of service in view
+  claim_ids: [hemi-desk-dispatch, feature-driver-ranking, feature-hos-at-assignment]
+  screenshots: []
+- id: expiring-documents
+  label: Expiring document reminders
+  hemut_feature: Expiring documents turn into a renewal task before they lapse
+  claim_ids: [feature-compliance-expiry, hemi-desk-pod-paperwork]
+  screenshots: []
+- id: backhauls
+  label: Backhaul finding
+  hemut_feature: On Command Pro, backhauls found before a truck sits
+  claim_ids: [hemi-desk-dispatch]
+  screenshots: []

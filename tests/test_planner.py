@@ -7,8 +7,8 @@ import pytest
 
 from test_generate import ANGLES, GOOD, N_ANGLES, FakeClient
 
-from brief_sources.seasonal import active_seasons, window
-from knowledge.loader import load_bridges
+from brief_sources.seasonal import active_seasons, bridge_brief, window
+from knowledge.loader import load_audiences, load_bridges
 from modes.scheduled import run_week
 from planner import plan_week
 from schemas import BridgeEntry, SeasonWindow
@@ -22,7 +22,7 @@ def season(id_, start, end, lead_days=0, verified_by=None):
 
 
 def bridge(tag, pain="p"):
-    return BridgeEntry(tag=tag, pain=pain, hemut_feature="f", claim_ids=["hemi-desk-detention"])
+    return BridgeEntry(tag=tag, pain=pain, hemut_feature="f", claim_ids=["hemi-desk-detention"], feature="detention")
 
 
 def tags(plan):
@@ -109,9 +109,9 @@ def test_demo_week_personas():
 
 
 def test_personas_spread_across_slots():
-    one_option = BridgeEntry(tag="evergreen-a", pain="pa", hemut_feature="fa", claim_ids=[], audiences=["dispatcher"])
-    two_options = BridgeEntry(tag="evergreen-b", pain="pb", hemut_feature="fb", claim_ids=[], audiences=["dispatcher", "back-office"])
-    any_persona = BridgeEntry(tag="evergreen-c", pain="pc", hemut_feature="fc", claim_ids=[])
+    one_option = BridgeEntry(tag="evergreen-a", pain="pa", hemut_feature="fa", claim_ids=[], feature="x", audiences=["dispatcher"])
+    two_options = BridgeEntry(tag="evergreen-b", pain="pb", hemut_feature="fb", claim_ids=[], feature="x", audiences=["dispatcher", "back-office"])
+    any_persona = BridgeEntry(tag="evergreen-c", pain="pc", hemut_feature="fc", claim_ids=[], feature="x")
     plan = plan_week(D(2026, 10, 31), seasons=[], bridges=[two_options, one_option, any_persona])
     # the single-option slot picks first, so the two-option slot moves aside, and the open slot takes an unused persona
     assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner"]
@@ -124,3 +124,8 @@ def test_overflow_is_reported_not_silent():
     assert "evergreen-tight-capacity: no slot left this week" in skipped
     assert skipped.count("evergreen-short-pays-collections: no slot left this week") == 1  # two angles, one line
     assert not any(s.startswith(("ifta-q4", "winter-weather")) for s in skipped)  # a tag's second angle is not "left out"
+
+
+def test_bridge_brief_carries_the_feature_id():
+    persona = load_audiences()["dispatcher"]
+    assert bridge_brief(bridge("evergreen-detention"), "evergreen", persona).feature_id == "detention"

@@ -4,6 +4,7 @@ Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), Audie
 Mode A input:   Request.
 Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, CallUsage, RunResult.
 Mode B:         SeasonWindow, BridgeEntry, PlanItem.
+Features:       Screenshot, Feature (features.yaml).
 
 Copy never contains free numbers or claim text. It references claims as {{claim:<id>}} (first phrasing)
 or {{claim:<id>:<n>}} (nth phrasing, 0-based); render_post() fills them from claims.yaml.
@@ -108,6 +109,7 @@ class Brief(BaseModel):
     needs_source: list[str] = []
     sensitivity: Literal["low", "high"] = "low"
     origin_ref: str | None = None  # season id or evergreen tag
+    feature_id: str | None = None  # features.yaml id; picks the ad's screenshot
 
 
 class Angle(BaseModel):
@@ -232,11 +234,34 @@ class BridgeEntry(BaseModel):
     pain: str
     hemut_feature: str
     claim_ids: list[str]
+    feature: str  # features.yaml id this angle sells
     audiences: list[str] = []  # AudienceProfile ids this angle fits; empty means any
 
     @model_validator(mode="after")
     def _writer_guidance_only(self):  # pain and hemut_feature reach the draft model as part of the Brief
         _guidance_only(f"bridge {self.tag!r}", [self.pain, self.hemut_feature])
+        return self
+
+
+class Screenshot(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    file: str = Field(pattern=r"^[A-Za-z0-9][\w.-]*\.(png|jpe?g|webp)$")  # a bare file name in assets/screenshots/
+    on_screen: str  # what the screen shows, read by the draft model
+
+
+class Feature(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
+    label: str
+    hemut_feature: str
+    claim_ids: list[str]
+    screenshots: list[Screenshot] = []
+
+    @model_validator(mode="after")
+    def _writer_guidance_only(self):  # label, hemut_feature and on_screen reach the draft model
+        _guidance_only(f"feature {self.id!r}", [self.label, self.hemut_feature, *(s.on_screen for s in self.screenshots)])
         return self
 
 

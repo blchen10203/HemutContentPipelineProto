@@ -52,8 +52,8 @@ File header rules:
 
 ## Loader (`knowledge/loader.py`)
 
-`load_features() -> dict[str, Feature]`. Fails on: duplicate id, a claim id not in `claims.yaml`. Bridge loading
-fails on a `feature` id not in `features.yaml`.
+`load_features() -> dict[str, Feature]`. Fails on a duplicate id. Unknown claim ids and bridge `feature` ids are caught
+by `tests/test_knowledge_files.py` on the real files.
 
 ## Flow
 

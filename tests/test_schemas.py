@@ -5,7 +5,7 @@ from pydantic import BaseModel, ValidationError
 
 from schemas import (
     Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
-    SeasonWindow, StatCard, TrxckwrldPost, Violation,
+    Feature, Screenshot, SeasonWindow, StatCard, TrxckwrldPost, Violation,
     render_post, used_claim_ids,
 )
 
@@ -31,7 +31,7 @@ VALID: list[tuple[type[BaseModel], dict]] = [
         "id": "ifta-q4", "name": "IFTA Q4 filing", "start": "01-01",
         "end": "01-31", "lead_days": 14, "source_url": "https://example.com/ifta", "checked": "2026-10-23",
     }),
-    (BridgeEntry, {"tag": "ifta-q4", "pain": "quarterly IFTA return", "hemut_feature": "IFTA reports", "claim_ids": []}),
+    (BridgeEntry, {"tag": "ifta-q4", "pain": "quarterly IFTA return", "hemut_feature": "IFTA reports", "claim_ids": [], "feature": "ifta"}),
     (PlanItem, {"brief": BRIEF, "reason": "IFTA Q4 deadline Jan 31 is 12 days out"}),
     (CallUsage, {"step": "draft", "model": "claude-opus-5-5", "input_tokens": 120, "output_tokens": 900, "thinking_tokens": 600,
                  "duration_s": 12.5}),
@@ -154,3 +154,16 @@ def test_call_usage_needs_duration():
     data = {k: v for k, v in VALID[-1][1].items() if k != "duration_s"}
     with pytest.raises(ValidationError, match="duration_s"):
         CallUsage.model_validate(data)
+
+
+def test_screenshot_file_is_a_bare_image_name():
+    Screenshot(file="dispatch-board.png", on_screen="Dispatch board")
+    for bad in ["../x.png", "sub/x.png", "x.gif", ".png"]:
+        with pytest.raises(ValidationError):
+            Screenshot(file=bad, on_screen="Dispatch board")
+
+
+def test_on_screen_note_is_guidance_only():
+    for bad in ["Shows 3 drivers", 'Says "on time"', "We show the board", "Due in April"]:
+        with pytest.raises(ValidationError):
+            Feature(id="f", label="F", hemut_feature="F", claim_ids=[], screenshots=[{"file": "a.png", "on_screen": bad}])

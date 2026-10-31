@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from knowledge.loader import load_audiences, load_bridges, load_claims, load_voice
+from knowledge.loader import load_audiences, load_bridges, load_claims, load_features, load_voice
 
 
 def claim(**overrides):
@@ -121,7 +121,7 @@ def test_persona_text_with_numbers_dates_quotes_or_first_person_fails(tmp_path, 
 @pytest.mark.parametrize("pain", ["Busy in November", "Customers call us all day", "Detention runs past two hours on 4 loads"])
 def test_bridge_text_follows_the_same_rule(tmp_path, pain):
     path = tmp_path / "bridge_map.yaml"
-    path.write_text(yaml.safe_dump([{"tag": "detention", "pain": pain, "hemut_feature": "f", "claim_ids": []}]), encoding="utf-8")
+    path.write_text(yaml.safe_dump([{"tag": "detention", "pain": pain, "hemut_feature": "f", "claim_ids": [], "feature": "f"}]), encoding="utf-8")
     with pytest.raises(ValueError, match="bridge 'detention'"):
         load_bridges(path)
 
@@ -131,3 +131,11 @@ def test_duplicate_persona_id_fails(tmp_path):
     path.write_text(yaml.safe_dump([PERSONA, PERSONA]), encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate audience id"):
         load_audiences(path)
+
+
+def test_duplicate_feature_id_fails(tmp_path):
+    path = tmp_path / "features.yaml"
+    entry = {"id": "ifta", "label": "IFTA", "hemut_feature": "IFTA reports", "claim_ids": []}
+    path.write_text(yaml.safe_dump([entry, entry]), encoding="utf-8")
+    with pytest.raises(ValueError, match="duplicate feature id 'ifta'"):
+        load_features(path)

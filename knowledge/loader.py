@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from schemas import AudienceProfile, BridgeEntry, Claim, SeasonWindow, VoiceRules
+from schemas import AudienceProfile, BridgeEntry, Claim, Feature, SeasonWindow, VoiceRules
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -67,6 +67,15 @@ def load_audiences(path: Path = ROOT / "knowledge" / "audiences.yaml") -> dict[s
             raise ValueError(f"{path}: duplicate audience id {a.id!r}")
         audiences[a.id] = a
     return audiences
+
+
+def load_features(path: Path = ROOT / "knowledge" / "features.yaml") -> dict[str, Feature]:
+    features = {}
+    for f in _load_list(path, Feature):
+        if f.id in features:
+            raise ValueError(f"{path}: duplicate feature id {f.id!r}")
+        features[f.id] = f
+    return features
 
 
 def load_seasons(path: Path = ROOT / "knowledge" / "seasonality.yaml") -> list[SeasonWindow]:
