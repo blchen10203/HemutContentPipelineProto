@@ -39,12 +39,12 @@ def request_to_brief(
     reply = ask(client or anthropic.Anthropic(), system_prompt(claims, voice or load_voice()), [{"role": "user", "content": prompt}], shape,
                 step="normalize", usage=[] if usage is None else usage)
     brief = Brief.model_validate_json(reply).model_copy(update={"origin": "request", "origin_ref": None})
-    # An id the model made up means it thinks something is covered that is not: that is a gap, not a typo to drop.
-    unknown = [i for i in brief.claim_ids if i not in claims]
-    known = [i for i in brief.claim_ids if i in claims]
     if picked:  # the pick overrides whatever the model chose; its claims are added to the model's
         brief = brief.model_copy(update={"feature_id": picked.id, "hemut_feature": picked.hemut_feature})
-        known = list(dict.fromkeys(known + picked.claim_ids))
+    ids = list(dict.fromkeys(brief.claim_ids + (picked.claim_ids if picked else [])))
+    # An id the model made up means it thinks something is covered that is not: that is a gap, not a typo to drop.
+    unknown = [i for i in ids if i not in claims]
+    known = [i for i in ids if i in claims]
     return brief.model_copy(update={
         "claim_ids": known,
         "needs_source": brief.needs_source + [f"no claim with id {i!r}" for i in unknown],

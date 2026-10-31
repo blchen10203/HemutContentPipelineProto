@@ -302,6 +302,7 @@ def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
     run_dir = Path(result.run_dir)
     image, note = generate.pick_image(result.run_id, 0)
     assert note is None and image.parent == photos and image.suffix in {".png", ".jpg"}
+    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["images"][0]["image_kind"] == "photo"
     first_line = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0]
     assert first_line.startswith("![](") and "\\" not in first_line  # a relative link with forward slashes
     assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked photo
@@ -352,3 +353,23 @@ def test_meta_records_each_finished_ads_image(tmp_path, photos, screenshots, ser
     images = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))["images"]
     assert images[0]["image_kind"] == "screenshot" and images[0]["image"] in {"board-a.png", "board-b.png"}
     assert images[1:] == [None, None]  # failed drafts get no image
+
+
+def test_meta_is_written_even_if_picking_an_image_raises(tmp_path, photos, monkeypatch):
+    real_features, real_total, writing = generate.load_features, generate.usage_total, []
+
+    def total(calls):  # first thing _write_run does after the drafts are done
+        writing.append(1)
+        return real_total(calls)
+
+    def features():
+        if writing:
+            raise RuntimeError("features.yaml is broken")
+        return real_features()
+
+    monkeypatch.setattr(generate, "usage_total", total)
+    monkeypatch.setattr(generate, "load_features", features)
+    with pytest.raises(RuntimeError, match="broken"):
+        run(FakeClient(ANGLES, GOOD), tmp_path)
+    (run_dir,) = run_dirs(tmp_path)
+    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["usage"]["total"]["calls"]  # the cost record survives

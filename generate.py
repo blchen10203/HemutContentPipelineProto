@@ -40,7 +40,7 @@ PHOTO_NAMES = ["command-page_hero-bg.png", "cta-truck.png", "custom-page_hero-ba
                "future-road.jpg", "hero-landscape.png", "launch-truck.jpg", "onboarding-truck.png", "roi-truck.png",
                "solutions-warehouse.png"]
 SCREENSHOTS = ROOT / "assets" / "screenshots"
-SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note} The copy may point at what it shows; facts still come only from the fact sheet."
+SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note}. The copy may point at what it shows; facts still come only from the fact sheet."
 NO_SCREENSHOT = "The ad shows a brand photo or no image. Do not refer to the image."
 RUN_ID = "%Y%m%d-%H%M%S-%f"
 # USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
@@ -297,20 +297,22 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
     (run_dir / "result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")
     feature_id = result.brief.feature_id if result.brief else None
     meta["images"] = []
-    for i, attempts in enumerate(result.drafts):
-        meta["images"].append(None)
-        if not attempts:
-            continue
-        last = attempts[-1]
-        body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
-        if last.rendered_text and (image := pick_image(result.run_id, i, feature_id)):  # only finished ads get an image
-            path, note = image
-            meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if note else "photo"}
-            try:  # linked, not copied: photos run up to 4 MB each
-                link = os.path.relpath(path, run_dir).replace(os.sep, "/")
-            except ValueError:  # out_root on another Windows drive than assets/
-                link = path.as_uri()
-            body = f"![]({link})\n\n{body}"
-        flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
-        (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")
-    (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    try:  # meta.json is the cost record: written even if picking an image or a draft write fails
+        for i, attempts in enumerate(result.drafts):
+            meta["images"].append(None)
+            if not attempts:
+                continue
+            last = attempts[-1]
+            body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
+            if last.rendered_text and (image := pick_image(result.run_id, i, feature_id)):  # only finished ads get an image
+                path, note = image
+                meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if note else "photo"}
+                try:  # linked, not copied: photos run up to 4 MB each
+                    link = os.path.relpath(path, run_dir).replace(os.sep, "/")
+                except ValueError:  # out_root on another Windows drive than assets/
+                    link = path.as_uri()
+                body = f"![]({link})\n\n{body}"
+            flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
+            (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")
+    finally:
+        (run_dir / "meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
