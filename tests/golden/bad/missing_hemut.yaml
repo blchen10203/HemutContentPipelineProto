@@ -1,0 +1,9 @@
+# Never says Hemut: "Command" and "Hemi" alone do not show who the post is from, and the hemut.com link does not count.
+post:
+  title: Dispatch that keeps up
+  body: "Command puts loads, drivers and hours of service on one board, and Hemi handles the check calls."
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false
+expected_codes: [MISSING_HEMUT]

@@ -18,7 +18,7 @@ A weekly planner mixes seasonal + evergreen Briefs into a content plan.
 - The knowledge base is ALWAYS loaded for every generation, in both modes. Facts come only from `knowledge/`.
 - Mode A gap rule: if a request mentions something not covered by `claims.yaml` (a new feature, a deal, a number), STOP and return `needs_source` listing the unknown items. Never web-search or guess to fill the gap. If the requester attaches a source (URL or text), create *pending* claims with `requires_approval: true`; drafts using them are flagged for approval.
 - Every number in generated copy must map to a `claims.yaml` entry or be flagged for human review. Never silently allowed.
-- No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld).
+- No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld) and names "Hemut" in its title, body or CTA text (validator: MISSING_HEMUT), in both modes.
 - Product names only from `voice.yaml` (Command, Control, Hemi, Forge, Custom, Hemut Diesel). "Core" and "Reach" are retired names.
 - Seasonal facts (dates, deadlines) are claims too: they need a source URL.
 - Seasons and evergreen pillars only reach a Brief through `knowledge/bridge_map.yaml` (tag -> pain -> feature -> claims). No bridge, no Brief.

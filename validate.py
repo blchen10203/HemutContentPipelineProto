@@ -2,8 +2,8 @@
 
 parse_post(raw) builds a TrxckwrldPost from model output and reports why it can't.
 validate(post, claims, voice) checks the RENDERED text: claim ids and placeholders, unbacked numbers,
-retired and unknown product names, competitor names, banned (absolute / deceptive) phrases and customer
-voice. needs_approval(post, claims) is how the pipeline sets requires_approval.
+retired and unknown product names, competitor names, banned (absolute / deceptive) phrases, customer
+voice, and that the post names Hemut. needs_approval(post, claims) is how the pipeline sets requires_approval.
 """
 import re
 
@@ -24,6 +24,7 @@ NUMBER = re.compile(  # s? so "thousands of fleets" counts too
 )
 # [ \t]+, not \s+: render_post joins title, body and CTA with blank lines, and "Command\n\nStart" is not a product.
 # Lookahead so "Hemut Command Pro" yields both pairs.
+HEMUT = re.compile(r"\bHemut\b")
 PRODUCT_MENTION = re.compile(r"\b(?=((Hemut|Command)[ \t]+([A-Z][\w-]*)))")
 
 # Double or single quotes. A single quote opens only after a non-letter and closes only before one, so "don't" is no quote.
@@ -101,6 +102,8 @@ def validate(post: TrxckwrldPost, claims: dict[str, Claim], voice: VoiceRules) -
     out += _competitor_names(text, voice)  # full text: a competitor claim's own wording names the competitor
     out += _banned_words(text, voice)
     out += _customer_voice(free_text)
+    if not HEMUT.search(text):  # every post is visibly from Hemut; a claim's own wording counts, the link does not
+        out.append(Violation(code="MISSING_HEMUT", message="the post never names Hemut in its title, body or CTA text"))
     return out
 
 

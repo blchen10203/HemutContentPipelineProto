@@ -162,7 +162,7 @@ class Violation(BaseModel):
 
     code: Literal[
         "UNBACKED_NUMBER", "RETIRED_NAME", "UNKNOWN_PRODUCT", "COMPETITOR_NAME", "BANNED_WORD", "CUSTOMER_VOICE",
-        "MISSING_UTM", "UNKNOWN_CLAIM", "PLACEHOLDER_ERROR", "PARSE_ERROR",
+        "MISSING_UTM", "UNKNOWN_CLAIM", "PLACEHOLDER_ERROR", "PARSE_ERROR", "MISSING_HEMUT",
     ]
     message: str
     span: str | None = None
