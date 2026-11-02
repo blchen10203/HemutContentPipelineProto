@@ -23,7 +23,7 @@ from pydantic import BaseModel
 
 from knowledge.build_fact_sheet import render as render_fact_sheet
 from knowledge.loader import ROOT, load_audiences, load_claims, load_features, load_voice
-from schemas import Angle, AudienceProfile, Brief, CallUsage, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
+from schemas import AdImage, Angle, AudienceProfile, Brief, CallUsage, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
 MODEL = "claude-opus-5-5"  # no server-side fallback, so this is always the model that answered
@@ -129,6 +129,7 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
         pending = set()
         for i, angle in enumerate(result.angles):
             image = pick_image(result.run_id, i, brief.feature_id)
+            result.images.append(AdImage(path=str(image[0]), on_screen=image[1]) if image else None)
             screen = SCREENSHOT_NOTE.format(note=image[1]) if image and image[1] else NO_SCREENSHOT
             first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2), screen=screen)
             on_attempt = lambda a, i=i: events.put(("draft", {"angle": i, **a}))
@@ -295,18 +296,18 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
         "usage": {"calls": [c.model_dump() for c in result.usage], "total": usage_total(result.usage)},
     }
     (run_dir / "result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")
-    feature_id = result.brief.feature_id if result.brief else None
     meta["images"] = []
-    try:  # meta.json is the cost record: written even if picking an image or a draft write fails
+    try:  # meta.json is the cost record: written even if a draft write fails
         for i, attempts in enumerate(result.drafts):
             meta["images"].append(None)
             if not attempts:
                 continue
             last = attempts[-1]
             body = last.rendered_text or yaml.safe_dump(last.raw_post.model_dump() if last.raw_post else None, sort_keys=False)
-            if last.rendered_text and (image := pick_image(result.run_id, i, feature_id)):  # only finished ads get an image
-                path, note = image
-                meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if note else "photo"}
+            image = result.images[i] if i < len(result.images) else None
+            if last.rendered_text and image:  # only finished ads get an image
+                path = Path(image.path)
+                meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if image.on_screen else "photo"}
                 try:  # linked, not copied: photos run up to 4 MB each
                     link = os.path.relpath(path, run_dir).replace(os.sep, "/")
                 except ValueError:  # out_root on another Windows drive than assets/

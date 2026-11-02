@@ -10,7 +10,7 @@ import pytest
 
 import generate
 from generate import N_ANGLES, Refused, run_brief, usage_total
-from schemas import Brief, CallUsage
+from schemas import Brief, CallUsage, RunResult
 
 GOLDEN = Path(__file__).parent / "golden"
 
@@ -355,20 +355,24 @@ def test_meta_records_each_finished_ads_image(tmp_path, photos, screenshots, ser
     assert images[1:] == [None, None]  # failed drafts get no image
 
 
-def test_meta_is_written_even_if_picking_an_image_raises(tmp_path, photos, monkeypatch):
-    real_features, real_total, writing = generate.load_features, generate.usage_total, []
+def test_each_ads_image_is_picked_once_when_drafting(tmp_path, photos, screenshots, serial, monkeypatch):
+    picks = []
+    real_pick = generate.pick_image
+    monkeypatch.setattr(generate, "pick_image", lambda *a: picks.append(a) or real_pick(*a))
+    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+    assert len(picks) == N_ANGLES  # saving the run reuses the picks, so the copy and the image cannot drift apart
+    assert [Path(img.path).parent for img in result.images] == [screenshots] * N_ANGLES
+    run_dir = Path(result.run_dir)
+    link = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0][4:-1]
+    assert (run_dir / link).resolve() == Path(result.images[0].path).resolve()
+    assert RunResult.model_validate_json((run_dir / "result.json").read_text(encoding="utf-8")).images == result.images
 
-    def total(calls):  # first thing _write_run does after the drafts are done
-        writing.append(1)
-        return real_total(calls)
 
-    def features():
-        if writing:
-            raise RuntimeError("features.yaml is broken")
-        return real_features()
+def test_meta_is_written_even_if_a_draft_file_fails(tmp_path, photos, monkeypatch):
+    def broken(*a):
+        raise RuntimeError("disk is broken")
 
-    monkeypatch.setattr(generate, "usage_total", total)
-    monkeypatch.setattr(generate, "load_features", features)
+    monkeypatch.setattr(generate.os.path, "relpath", broken)  # only called while writing the draft files
     with pytest.raises(RuntimeError, match="broken"):
         run(FakeClient(ANGLES, GOOD), tmp_path)
     (run_dir,) = run_dirs(tmp_path)

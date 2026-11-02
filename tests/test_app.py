@@ -6,10 +6,11 @@ import modes.request
 import modes.scheduled
 from streamlit.testing.v1 import AppTest
 
-from schemas import Angle, Brief, CallUsage, DraftAttempt, RunResult, Violation
+from schemas import AdImage, Angle, Brief, CallUsage, DraftAttempt, RunResult, Violation
 
 AD = ("CANNED DRAFT\n\nCommand starts at $99 a month.\n\n"
       "Start free https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=short_ad&utm_campaign=x")
+IFTA_WEEK = datetime.date(2026, 10, 12)  # fixed, never today: the week's plan leads with IFTA Q3 here
 BRIEF = Brief(origin="request", audience="a", audience_id="fleet-owner", pain="p", hemut_feature="f", format="short_ad", claim_ids=[])
 RESULT = RunResult(run_id="x", run_dir="out/runs/x", status="ok", brief=BRIEF,
                    angles=[Angle(hook="hook", pain="p", feature="f", claim_ids=[])],
@@ -35,6 +36,7 @@ def test_app_runs_both_modes_and_keeps_results(monkeypatch):
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: RESULT)
     monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([RESULT]))
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.date_input[0].set_value(IFTA_WEEK).run()
     assert not at.exception and len(at.dataframe) == 3  # knowledge tab
 
     click(at, "Run")
@@ -90,7 +92,8 @@ def test_only_passing_ads_are_shown(monkeypatch):
 
 def test_finished_ad_shows_its_photo(monkeypatch, photos):
     bad = [DraftAttempt(attempt=0, rendered_text=None, violations=[Violation(code="BANNED_WORD", message="x")])]
-    mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]]})
+    mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]],
+                                      "images": [None, AdImage(path=str(photos / "demo-road.png"))]})  # picked when drafting
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: mixed)
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
     assert not at.get("image")
@@ -138,6 +141,7 @@ def test_only_final_drafts_shown_while_and_after_running(monkeypatch):
     monkeypatch.setattr(modes.request, "run_request", run_request)
     monkeypatch.setattr(modes.scheduled, "run_week", run_week)
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
+    at.date_input[0].set_value(IFTA_WEEK).run()
     at.text_area[0].input("Social post about detention").run()
     click(at, "Run")
     assert drafts_shown(at) == 1 and "HIDDEN" not in screen_text(at)

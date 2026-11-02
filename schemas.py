@@ -191,6 +191,13 @@ class CallUsage(BaseModel):
     duration_s: float  # wall time of the API call alone
 
 
+class AdImage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    path: str
+    on_screen: str | None = None  # set for a feature screenshot, None for a brand photo
+
+
 class RunResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -200,6 +207,7 @@ class RunResult(BaseModel):
     brief: Brief | None = None
     angles: list[Angle] = []
     drafts: list[list[DraftAttempt]] = []  # one attempt list per angle
+    images: list[AdImage | None] = []  # one per angle, picked once when drafting so the copy and the image match
     needs_source: list[str] = []
     usage: list[CallUsage] = []  # every API call of the run, in order, refused ones included
 
