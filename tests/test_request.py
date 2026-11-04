@@ -51,6 +51,10 @@ def test_sensitive_request_is_blocked(tmp_path):
 @pytest.mark.parametrize("text, notes", [
     ("Reddit post about staying compliant after the non-domiciled CDL crackdown", None),
     ("Social post about detention", "tie it to the driver who was injured at the dock last week"),
+    ("Social post about how Command helps after a truck accident", None),
+    ("Reddit post on the wreck on I-80", None),
+    ("Post about FMCSA English language proficiency out-of-service orders", None),
+    ("Short ad tying IFTA to the new ELP rule", None),
     ("Short ad about rate cons", None),  # no sensitive word: the model's low stands
 ])
 def test_sensitive_words_block_even_when_the_model_says_low(tmp_path, text, notes):

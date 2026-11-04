@@ -17,8 +17,8 @@ from schemas import AudienceProfile, Brief, CallUsage, Claim, Feature, Request, 
 # Backstop for the CLAUDE.md sensitive-topic rule: these words make a request high sensitivity whatever the model says.
 # Word starts, so "injur" catches "injured" and "injuries". A false alarm only stops the run for a human.
 SENSITIVE = re.compile(
-    r"\b(?:crash|collision|pileup|pile-up|fatal|killed|died|death|injur|layoff|laid off|bankrupt|immigra|deport"
-    r"|english[- ]proficiency|non-domiciled|election|politic)", re.IGNORECASE)
+    r"\b(?:crash|collision|accident|wreck|pileup|pile-up|fatal|killed|died|death|injur|layoff|laid off|bankrupt|immigra"
+    r"|deport|english[- ](?:language[- ])?proficiency|elp\b|non-domiciled|election|politic)", re.IGNORECASE)
 
 
 def request_to_brief(
