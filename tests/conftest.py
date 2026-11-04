@@ -9,27 +9,24 @@ TINY_PNG = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0l
 
 
 @pytest.fixture(autouse=True)
-def no_photos(monkeypatch, tmp_path_factory):
-    # assets/ is local only, so tests never read it; photos() gives a test its own
-    monkeypatch.setattr(generate, "PHOTOS", tmp_path_factory.mktemp("no-photos"))
-    monkeypatch.setattr(generate, "SCREENSHOTS", tmp_path_factory.mktemp("no-screenshots"))
-
-
-@pytest.fixture
-def photos(monkeypatch, tmp_path_factory):
-    folder = tmp_path_factory.mktemp("photos")
-    for name in ("demo-road.png", "launch-truck.jpg", "core-page_hero-bg.png"):  # the last is not in PHOTO_NAMES
-        (folder / name).write_bytes(TINY_PNG)
-    monkeypatch.setattr(generate, "PHOTOS", folder)
+def shots_dir(monkeypatch, tmp_path_factory):
+    # assets/ is local only, so tests never read it; pool() and screenshots() put files in this empty folder
+    folder = tmp_path_factory.mktemp("screenshots")
+    monkeypatch.setattr(generate, "SCREENSHOTS", folder)
     return folder
 
 
 @pytest.fixture
-def screenshots(monkeypatch, tmp_path_factory):
-    folder = tmp_path_factory.mktemp("screenshots")
+def pool(shots_dir):
+    for name in ("tasks.jpg", "accounting-ifta.jpg", "crm-customers.jpg"):  # the last is not in RANDOM_SCREENSHOTS
+        (shots_dir / name).write_bytes(TINY_PNG)
+    return shots_dir
+
+
+@pytest.fixture
+def screenshots(shots_dir, monkeypatch):
     for name in ("board-a.png", "board-b.png"):
-        (folder / name).write_bytes(TINY_PNG)
-    monkeypatch.setattr(generate, "SCREENSHOTS", folder)
+        (shots_dir / name).write_bytes(TINY_PNG)
     missing = {"file": "missing.png", "on_screen": "Missing"}
     features = {
         "dispatch-board-hos": Feature(id="dispatch-board-hos", label="Board", hemut_feature="Board", claim_ids=[], screenshots=[
@@ -37,4 +34,4 @@ def screenshots(monkeypatch, tmp_path_factory):
         "ifta": Feature(id="ifta", label="IFTA", hemut_feature="IFTA", claim_ids=[], screenshots=[missing]),
     }
     monkeypatch.setattr(generate, "load_features", lambda: features)
-    return folder
+    return shots_dir

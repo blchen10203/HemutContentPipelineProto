@@ -45,7 +45,7 @@ app.py           Streamlit thin shell over generate.py, modes/, planner.py, know
 brief_sources/   seasonal.py
 export/          trxckwrld.py (adapter, later)
 research/        secondary research, never loaded into prompts (see research/ rules)
-assets/          local only, gitignored; brand files downloaded from hemut.com. Only screenshots/ and photos/ are used: each finished ad gets its feature's screenshot from assets/screenshots/ (listed in knowledge/features.yaml, demo data only, no real customer, driver or broker names), else a random photo from the reviewed list generate.PHOTO_NAMES (generate.pick_image); shown in the app and linked (not copied) from its draft-N.md; no folder, no image. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
+assets/          local only, gitignored; brand files downloaded from hemut.com. Only screenshots/ is used, and only in Mode B (Mode A ads get no image): each finished Mode B ad gets its feature's screenshot from assets/screenshots/ (listed in knowledge/features.yaml), else a random Command staging screenshot from the reviewed list generate.RANDOM_SCREENSHOTS (generate.pick_image); demo data only, no real customer, driver or broker names; shown in the app and linked (not copied) from its draft-N.md; no folder, no image. The testimonials/ photos show real people and customer brands: never use them without Hemut's written permission.
 ```
 
 ## Conventions

@@ -27,6 +27,8 @@ ANGLES = json.dumps({"angles": [
 ]})
 BRIEF = Brief(origin="request", audience="small fleets", audience_id="back-office", pain="IFTA by hand", hemut_feature="IFTA",
               format="reddit_post", claim_ids=["hemi-desk-settlements-ifta"])
+SEASONAL = BRIEF.model_copy(update={"origin": "seasonal"})  # Mode B: only these ads get an image
+POOL = {"tasks.jpg", "accounting-ifta.jpg"}  # the pool() files that are in RANDOM_SCREENSHOTS
 
 
 # Every fake call: 100 uncached input, 6,700 read from cache, 500 output of which 300 thinking.
@@ -297,83 +299,91 @@ def test_abort_in_on_event_does_not_wait_for_in_flight_calls(tmp_path, monkeypat
         release.set()
 
 
-def test_finished_ads_get_a_photo_failed_ones_do_not(tmp_path, photos, serial):
-    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path)  # angle 1 passes; angles 2 and 3 never do
+def test_finished_mode_b_ads_get_a_random_screenshot_failed_ones_do_not(tmp_path, pool, serial):
+    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path, SEASONAL)  # angle 1 passes; angles 2 and 3 never do
     run_dir = Path(result.run_dir)
     image, note = generate.pick_image(result.run_id, 0)
-    assert note is None and image.parent == photos and image.suffix in {".png", ".jpg"}
-    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["images"][0]["image_kind"] == "photo"
+    assert note is None and image.name in POOL
+    assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["images"][0]["image_kind"] == "random_screenshot"
     first_line = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0]
     assert first_line.startswith("![](") and "\\" not in first_line  # a relative link with forward slashes
-    assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked photo
+    assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked screenshot
     assert not any(run_dir.glob("*.*g"))  # linked, not copied
     assert "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
 
 
-def test_pick_image_is_random_but_stable(photos):
+def test_mode_a_ads_get_no_image(tmp_path, pool, screenshots):
+    client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
+    result, _ = run(client, tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))  # origin "request"
+    assert result.images == [None] * N_ANGLES
+    assert not (Path(result.run_dir) / "draft-1.md").read_text(encoding="utf-8").startswith("![]")
+    assert all(generate.NO_SCREENSHOT in c["messages"][0]["content"] for c in client.calls[1:])
+
+
+def test_pick_image_is_random_but_stable(pool):
     picks = {generate.pick_image(f"run-{n}", a) for n in range(20) for a in range(3)}
-    assert {p.name for p, _ in picks} == {"demo-road.png", "launch-truck.jpg"}  # both listed photos get used, never an unlisted file
+    assert {p.name for p, _ in picks} == POOL  # both listed screenshots get used, never an unlisted file
     assert generate.pick_image("run-1", 2) == generate.pick_image("run-1", 2)  # the app and the run folder agree
 
 
-def test_no_photos_folder_means_no_image(tmp_path, monkeypatch):
-    monkeypatch.setattr(generate, "PHOTOS", tmp_path / "missing")
+def test_no_screenshots_folder_means_no_image(tmp_path, monkeypatch):
+    monkeypatch.setattr(generate, "SCREENSHOTS", tmp_path / "missing")
     assert generate.pick_image("run", 0) is None
-    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path)
+    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path, SEASONAL)
     assert not (Path(result.run_dir) / "draft-1.md").read_text(encoding="utf-8").startswith("![]")
 
 
-def test_feature_screenshot_beats_photo_and_brings_its_note(photos, screenshots):
+def test_feature_screenshot_beats_random_one_and_brings_its_note(pool, screenshots):
     picks = {generate.pick_image(f"run-{n}", a, "dispatch-board-hos") for n in range(20) for a in range(3)}
     assert {(p.name, note) for p, note in picks} == {("board-a.png", "Board A"), ("board-b.png", "Board B")}  # never the missing file
 
 
-def test_no_screenshot_falls_back_to_a_photo_without_note(photos, screenshots):
+def test_no_feature_screenshot_falls_back_to_a_random_one_without_note(pool, screenshots):
     for feature_id in [None, "ifta", "removed-feature"]:  # no feature, a feature whose only screenshot is not on disk, an id no longer listed
         path, note = generate.pick_image("run-1", 0, feature_id)
-        assert path.parent == photos and note is None
+        assert path.name in POOL and note is None
 
 
-def test_draft_prompt_gets_the_screenshot_note(tmp_path, photos, screenshots, serial):  # serial: calls[1 + i] is angle i
+def test_draft_prompt_gets_the_screenshot_note(tmp_path, pool, screenshots, serial):  # serial: calls[1 + i] is angle i
     client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
-    result, _ = run(client, tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+    result, _ = run(client, tmp_path, SEASONAL.model_copy(update={"feature_id": "dispatch-board-hos"}))
     for i, call in enumerate(client.calls[1:]):
         _, note = generate.pick_image(result.run_id, i, "dispatch-board-hos")
         assert f"The ad shows this Hemut screenshot: {note}" in call["messages"][0]["content"]
 
 
-def test_draft_prompt_says_not_to_refer_to_a_photo(tmp_path, photos):
+def test_draft_prompt_says_not_to_refer_to_a_random_screenshot(tmp_path, pool):
     client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
-    run(client, tmp_path)
+    run(client, tmp_path, SEASONAL)
     assert all(generate.NO_SCREENSHOT in c["messages"][0]["content"] for c in client.calls[1:])
 
 
-def test_meta_records_each_finished_ads_image(tmp_path, photos, screenshots, serial):
-    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+def test_meta_records_each_finished_ads_image(tmp_path, pool, screenshots, serial):
+    result, _ = run(FakeClient(ANGLES, GOOD, BAD), tmp_path, SEASONAL.model_copy(update={"feature_id": "dispatch-board-hos"}))
     images = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))["images"]
     assert images[0]["image_kind"] == "screenshot" and images[0]["image"] in {"board-a.png", "board-b.png"}
     assert images[1:] == [None, None]  # failed drafts get no image
 
 
-def test_each_ads_image_is_picked_once_when_drafting(tmp_path, photos, screenshots, serial, monkeypatch):
+def test_each_ads_image_is_picked_once_when_drafting(tmp_path, pool, screenshots, serial, monkeypatch):
     picks = []
     real_pick = generate.pick_image
     monkeypatch.setattr(generate, "pick_image", lambda *a: picks.append(a) or real_pick(*a))
-    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))
+    result, _ = run(FakeClient(ANGLES, GOOD), tmp_path, SEASONAL.model_copy(update={"feature_id": "dispatch-board-hos"}))
     assert len(picks) == N_ANGLES  # saving the run reuses the picks, so the copy and the image cannot drift apart
-    assert [Path(img.path).parent for img in result.images] == [screenshots] * N_ANGLES
+    assert [Path(img.path).name in {"board-a.png", "board-b.png"} for img in result.images] == [True] * N_ANGLES
     run_dir = Path(result.run_dir)
     link = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0][4:-1]
     assert (run_dir / link).resolve() == Path(result.images[0].path).resolve()
     assert RunResult.model_validate_json((run_dir / "result.json").read_text(encoding="utf-8")).images == result.images
 
 
-def test_meta_is_written_even_if_a_draft_file_fails(tmp_path, photos, monkeypatch):
+def test_meta_is_written_even_if_a_draft_file_fails(tmp_path, pool, monkeypatch):
     def broken(*a):
         raise RuntimeError("disk is broken")
 
     monkeypatch.setattr(generate.os.path, "relpath", broken)  # only called while writing the draft files
     with pytest.raises(RuntimeError, match="broken"):
-        run(FakeClient(ANGLES, GOOD), tmp_path)
+        run(FakeClient(ANGLES, GOOD), tmp_path, SEASONAL)
     (run_dir,) = run_dirs(tmp_path)
     assert json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))["usage"]["total"]["calls"]  # the cost record survives

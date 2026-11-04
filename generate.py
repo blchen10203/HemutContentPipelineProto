@@ -33,15 +33,22 @@ DRAFT_WORKERS = N_ANGLES  # one thread per angle's draft chain
 MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
-PHOTOS = ROOT / "assets" / "hemut-brand" / "photos"  # local only (gitignored): no folder means ads get no image
-# Photos someone looked at: no people, no customer brands, no product artwork. A file not listed here is never used
-# (core-page_hero-bg.png shows a customer's truck and two people; the Forge and Custom files are product artwork).
-PHOTO_NAMES = ["command-page_hero-bg.png", "cta-truck.png", "custom-page_hero-background.png", "demo-road.png",
-               "future-road.jpg", "hero-landscape.png", "launch-truck.jpg", "onboarding-truck.png", "roi-truck.png",
-               "solutions-warehouse.png"]
-SCREENSHOTS = ROOT / "assets" / "screenshots"
+SCREENSHOTS = ROOT / "assets" / "screenshots"  # local only (gitignored): no folder means ads get no image
+# Command staging screenshots (2026-11-03) a Mode B ad may get at random. Only these were checked for real names: a file
+# not listed is never used. Left out because they show real-looking driver, customer, broker or user names or emails:
+# freight-marketplace-loads, scheduling-driver-calendar, scheduling-active-loads, tracking, dispatcher-board-*,
+# fleet-command-center, fleet-drivers, carrier-management, crm-customers, accounting-money-in, messages, usage-analytics.
+RANDOM_SCREENSHOTS = [
+    "overview-live.jpg", "overview-performance.jpg", "overview-profit-loss.jpg", "overview-waiting-on-you.jpg",
+    "insights-ask.jpg", "freight-marketplace-recurring-orders.jpg", "freight-marketplace-needs-you.jpg", "rfp-management.jpg",
+    "scheduling-historical-loads.jpg", "fleet-health.jpg", "fleet-safety.jpg", "fleet-maintenance.jpg", "brokerage-triage.jpg",
+    "brokerage-queue.jpg", "brokerage-sourcing.jpg", "brokerage-booked.jpg", "brokerage-tracking.jpg", "brokerage-accounting.jpg",
+    "crm-contacts.jpg", "crm-detention.jpg", "crm-reports.jpg", "tasks.jpg", "accounting-money-out.jpg",
+    "accounting-settlements.jpg", "accounting-books.jpg", "accounting-fuel.jpg", "accounting-ifta.jpg", "accounting-planning.jpg",
+    "inventory-catalog.jpg", "inventory-reorder.jpg", "inventory-orders.jpg", "inventory-finances.jpg", "voice-agents.jpg",
+    "notifications.jpg", "help-center.jpg"]
 SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note}. The copy may point at what it shows; facts still come only from the fact sheet."
-NO_SCREENSHOT = "The ad shows a brand photo or no image. Do not refer to the image."
+NO_SCREENSHOT = "The ad shows a Hemut Command screenshot picked at random, or no image. Do not refer to the image."
 RUN_ID = "%Y%m%d-%H%M%S-%f"
 # USD per million tokens, from Anthropic's model docs (2026-10-06). cache_write is the 5-minute TTL rate (1.25x input).
 PRICES = {"claude-opus-5-5": {"input": 4.00, "output": 20.00, "cache_read": 0.20, "cache_write": 5.00}}
@@ -128,7 +135,7 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
     try:
         pending = set()
         for i, angle in enumerate(result.angles):
-            image = pick_image(result.run_id, i, brief.feature_id)
+            image = pick_image(result.run_id, i, brief.feature_id) if brief.origin != "request" else None  # Mode B only
             result.images.append(AdImage(path=str(image[0]), on_screen=image[1]) if image else None)
             screen = SCREENSHOT_NOTE.format(note=image[1]) if image and image[1] else NO_SCREENSHOT
             first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2), screen=screen)
@@ -216,15 +223,15 @@ def ask(client, system: str, messages: list, shape: type[BaseModel], *, step: st
 
 
 def pick_image(run_id: str, angle: int, feature_id: str | None = None) -> tuple[Path, str | None] | None:
-    """The image of a finished ad: (path, on_screen) for a feature screenshot, (path, None) for a photo. Random, but seeded
-    by run and angle, so the app and the run folder agree."""
+    """The image of a finished Mode B ad: (path, on_screen) for a feature screenshot, else (path, None) for one of
+    RANDOM_SCREENSHOTS. Random, but seeded by run and angle, so the app and the run folder agree."""
     rng = random.Random(f"{run_id}:{angle}")
     feature = load_features().get(feature_id)
     shots = [(SCREENSHOTS / s.file, s.on_screen) for s in feature.screenshots if (SCREENSHOTS / s.file).is_file()] if feature else []
     if shots:
         return rng.choice(shots)
-    photos = [PHOTOS / name for name in PHOTO_NAMES if (PHOTOS / name).is_file()]
-    return (rng.choice(photos), None) if photos else None
+    pool = [SCREENSHOTS / name for name in RANDOM_SCREENSHOTS if (SCREENSHOTS / name).is_file()]
+    return (rng.choice(pool), None) if pool else None
 
 
 def usage_total(calls: list[CallUsage]) -> dict:
@@ -307,8 +314,8 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
             image = result.images[i] if i < len(result.images) else None
             if last.rendered_text and image:  # only finished ads get an image
                 path = Path(image.path)
-                meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if image.on_screen else "photo"}
-                try:  # linked, not copied: photos run up to 4 MB each
+                meta["images"][i] = {"image": path.name, "image_kind": "screenshot" if image.on_screen else "random_screenshot"}
+                try:  # linked, not copied
                     link = os.path.relpath(path, run_dir).replace(os.sep, "/")
                 except ValueError:  # out_root on another Windows drive than assets/
                     link = path.as_uri()
