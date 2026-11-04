@@ -34,19 +34,12 @@ MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
 SCREENSHOTS = ROOT / "assets" / "screenshots"  # local only (gitignored): no folder means ads get no image
-# Command staging screenshots (2026-11-03) a Mode B ad may get at random. Only these were checked for real names: a file
-# not listed is never used. Left out because they show real-looking driver, customer, broker or user names or emails:
-# freight-marketplace-loads, scheduling-driver-calendar, scheduling-active-loads, tracking, dispatcher-board-*,
-# fleet-command-center, fleet-drivers, carrier-management, crm-customers, accounting-money-in, messages, usage-analytics.
+# Command staging screenshots (2026-11-03) a Mode B ad may get at random. Each was checked: no real-looking names or
+# emails, no staging test data (QA Freight Co, HEMUT TEST, DOGFOOD, TEST123, $1.00 vendor "a", sample landscaping books),
+# no empty "nothing here yet" screen. A file not listed is never used; the other screenshots in the folder failed a check.
 RANDOM_SCREENSHOTS = [
-    "overview-live.jpg", "overview-performance.jpg", "overview-profit-loss.jpg", "overview-waiting-on-you.jpg",
-    "insights-ask.jpg", "freight-marketplace-recurring-orders.jpg", "freight-marketplace-needs-you.jpg", "rfp-management.jpg",
-    "scheduling-historical-loads.jpg", "fleet-health.jpg", "fleet-safety.jpg", "fleet-maintenance.jpg", "brokerage-triage.jpg",
-    "brokerage-queue.jpg", "brokerage-sourcing.jpg", "brokerage-booked.jpg", "brokerage-tracking.jpg", "brokerage-accounting.jpg",
-    "crm-contacts.jpg", "crm-detention.jpg", "crm-reports.jpg", "tasks.jpg", "accounting-money-out.jpg",
-    "accounting-settlements.jpg", "accounting-books.jpg", "accounting-fuel.jpg", "accounting-ifta.jpg", "accounting-planning.jpg",
-    "inventory-catalog.jpg", "inventory-reorder.jpg", "inventory-orders.jpg", "inventory-finances.jpg", "voice-agents.jpg",
-    "notifications.jpg", "help-center.jpg"]
+    "overview-live.jpg", "insights-ask.jpg", "scheduling-historical-loads.jpg", "crm-detention.jpg", "crm-reports.jpg",
+    "accounting-books.jpg", "accounting-ifta.jpg", "notifications.jpg", "help-center.jpg"]
 SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note}. The copy may point at what it shows; facts still come only from the fact sheet."
 NO_SCREENSHOT = "The ad shows a Hemut Command screenshot picked at random, or no image. Do not refer to the image."
 RUN_ID = "%Y%m%d-%H%M%S-%f"

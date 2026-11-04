@@ -18,7 +18,7 @@ def shots_dir(monkeypatch, tmp_path_factory):
 
 @pytest.fixture
 def pool(shots_dir):
-    for name in ("tasks.jpg", "accounting-ifta.jpg", "crm-customers.jpg"):  # the last is not in RANDOM_SCREENSHOTS
+    for name in ("help-center.jpg", "accounting-ifta.jpg", "crm-customers.jpg"):  # the last is not in RANDOM_SCREENSHOTS
         (shots_dir / name).write_bytes(TINY_PNG)
     return shots_dir
 

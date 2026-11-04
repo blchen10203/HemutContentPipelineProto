@@ -93,7 +93,7 @@ def test_only_passing_ads_are_shown(monkeypatch):
 def test_finished_ad_shows_its_image(monkeypatch, pool):
     bad = [DraftAttempt(attempt=0, rendered_text=None, violations=[Violation(code="BANNED_WORD", message="x")])]
     mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]],
-                                      "images": [None, AdImage(path=str(pool / "tasks.jpg"))]})  # picked when drafting
+                                      "images": [None, AdImage(path=str(pool / "help-center.jpg"))]})  # picked when drafting
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: mixed)
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
     assert not at.get("image")

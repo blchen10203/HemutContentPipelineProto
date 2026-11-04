@@ -28,7 +28,7 @@ ANGLES = json.dumps({"angles": [
 BRIEF = Brief(origin="request", audience="small fleets", audience_id="back-office", pain="IFTA by hand", hemut_feature="IFTA",
               format="reddit_post", claim_ids=["hemi-desk-settlements-ifta"])
 SEASONAL = BRIEF.model_copy(update={"origin": "seasonal"})  # Mode B: only these ads get an image
-POOL = {"tasks.jpg", "accounting-ifta.jpg"}  # the pool() files that are in RANDOM_SCREENSHOTS
+POOL = {"help-center.jpg", "accounting-ifta.jpg"}  # the pool() files that are in RANDOM_SCREENSHOTS
 
 
 # Every fake call: 100 uncached input, 6,700 read from cache, 500 output of which 300 thinking.
