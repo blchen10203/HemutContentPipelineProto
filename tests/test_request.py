@@ -48,6 +48,18 @@ def test_sensitive_request_is_blocked(tmp_path):
     assert result.status == "blocked_sensitive" and len(client.calls) == 1
 
 
+@pytest.mark.parametrize("text, notes", [
+    ("Reddit post about staying compliant after the non-domiciled CDL crackdown", None),
+    ("Social post about detention", "tie it to the driver who was injured at the dock last week"),
+    ("Short ad about rate cons", None),  # no sensitive word: the model's low stands
+])
+def test_sensitive_words_block_even_when_the_model_says_low(tmp_path, text, notes):
+    client = FakeClient(brief_reply(sensitivity="low"), ANGLES, GOOD, GOOD, GOOD)
+    result = run_request(Request(text=text, notes=notes), client=client, out_root=tmp_path)
+    blocked = text != "Short ad about rate cons"
+    assert (result.status == "blocked_sensitive") == blocked and (len(client.calls) == 1) == blocked
+
+
 def test_covered_request_runs_the_core(tmp_path):
     client = FakeClient(brief_reply(), ANGLES, GOOD)
     result = run_request(Request(text="Reddit-style post about IFTA automation"), client=client, out_root=tmp_path)

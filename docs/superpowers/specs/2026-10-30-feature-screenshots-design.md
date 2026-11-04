@@ -1,5 +1,7 @@
 # Feature screenshots instead of random photos
 
+> **Replaced (2026-11-04). Do not build from this.** Brand photos and `PHOTO_NAMES` are gone. Mode B ads now get a random Command screenshot from `generate.RANDOM_SCREENSHOTS` (or a feature screenshot, if one is listed), and Mode A ads get no image. See the assets note in `CLAUDE.md`.
+
 Date: 2026-10-30. Status: approved design, not built.
 
 ## Goal

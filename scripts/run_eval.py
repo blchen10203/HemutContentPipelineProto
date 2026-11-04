@@ -1,4 +1,4 @@
-"""Run every tests/eval/requests.yaml request through Mode A N times, then report needs_source accuracy and run_stats.
+"""Run every tests/eval/requests.yaml request through Mode A N times, then report how often the status matched expect, and run_stats.
 
 Run: python scripts/run_eval.py [--n 2] [--yes] [--only 13 --only "rate cons" ...]
 Calls the API (each run writes its folder to out/runs/ as usual). Prints an estimated cost and asks first unless --yes.
@@ -22,7 +22,7 @@ from schemas import Request  # noqa: E402
 REQUESTS = ROOT / "tests" / "eval" / "requests.yaml"
 # shortcut: per-run cost from the Oct 27 eval (back-to-back runs share the prompt cache: drafted ~$0.13, needs_source ~$0.015;
 # a lone cold run costs ~$0.32). Re-check if the prompts or the fact sheet grow.
-USD_PER_RUN = {"drafts": 0.15, "needs_source": 0.02}
+USD_PER_RUN = {"drafts": 0.15, "needs_source": 0.02, "blocked_sensitive": 0.02}  # a stopped run makes only the normalize call
 
 
 def select(requests: list[dict], only: list[str]) -> list[dict]:
@@ -59,13 +59,13 @@ def main(argv: list[str] | None = None) -> None:
             except Exception as e:  # the run folder is still written; count it and go on
                 status = f"error ({type(e).__name__})"
             folders += sorted(set(OUT.iterdir()) - before)
-            got = "needs_source" if status == "needs_source" else "drafts"
+            got = status if status in ("needs_source", "blocked_sensitive") else "drafts"
             rows.append((r["expect"], got, status))
             print(f"[{i}/{len(requests)} run {n + 1}] {status}: {r['text']}", file=sys.stderr)
 
     right = sum(expect == got for expect, got, status in rows if not status.startswith("error"))
     lines = [f"Eval: {len(requests)} requests x {args.n} runs from {REQUESTS.relative_to(ROOT)}", ""]
-    lines += [f"needs_source accuracy: {right}/{len(rows)} runs match expect"]
+    lines += [f"stop-rule accuracy: {right}/{len(rows)} runs match expect"]
     lines += [f"  MISMATCH expect {expect}, got {status}: {r['text']}"
               for r, (expect, got, status) in zip([r for r in requests for _ in range(args.n)], rows) if expect != got or status.startswith("error")]
     print("\n".join(lines) + "\n\n" + report(load(folders)))

@@ -1,8 +1,9 @@
 # Fixed Mode A requests for measuring prompt changes (scripts/run_eval.py). Don't edit an entry once a report uses it:
 # add new ones instead, so before/after reports stay comparable.
-# expect: drafts (every item is covered by claims.yaml) or needs_source (the gap rule must stop it).
+# expect: drafts (every item is covered by claims.yaml), needs_source (the gap rule must stop it) or
+# blocked_sensitive (the sensitive-topic rule must stop it).
 
-# The two DEMO.md requests
+# The two requests from the Oct 31 demo
 - text: Reddit-style ad about IFTA automation for 5-15 truck fleets
   expect: drafts
 - text: Post about Hemut's new fuel card with 50% off in November
@@ -50,3 +51,9 @@
 # feature-rate-cons-from-email + hemi-desk-inbox-rate-cons ("Nobody retypes an email again")
 - text: reddit post for dispatchers about not having to retype rate cons that come in by email, they just turn into loads
   expect: drafts
+
+# Sensitive topics: every claim it needs exists, but the run must stop for a human (CLAUDE.md sensitive-topic rule)
+- text: Reddit post about staying compliant after the non-domiciled CDL crackdown, with IFTA from Command
+  expect: blocked_sensitive
+- text: Social post about detention after a driver was injured waiting at a dock
+  expect: blocked_sensitive

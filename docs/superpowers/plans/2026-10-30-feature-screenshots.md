@@ -1,5 +1,7 @@
 # Feature Screenshots Implementation Plan
 
+> **Replaced (2026-11-04). Do not build from this.** Brand photos and `PHOTO_NAMES` are gone. Mode B ads now get a random Command screenshot from `generate.RANDOM_SCREENSHOTS` (or a feature screenshot, if one is listed), and Mode A ads get no image. See the assets note in `CLAUDE.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ads show a Hemut Command screenshot of the feature they sell (random reviewed photo when there is none), the draft prompt knows what the screenshot shows, and Mode A can pick the feature from a dropdown.
