@@ -34,12 +34,12 @@ MAX_RETRIES = 2
 PROMPTS = ROOT / "prompts"
 OUT = ROOT / "out" / "runs"
 SCREENSHOTS = ROOT / "assets" / "screenshots"  # local only (gitignored): no folder means ads get no image
-# Command staging screenshots (2026-11-03) a Mode B ad may get at random. Each was checked: no real-looking names or
-# emails, no staging test data (QA Freight Co, HEMUT TEST, DOGFOOD, TEST123, $1.00 vendor "a", sample landscaping books),
-# no empty "nothing here yet" screen. A file not listed is never used; the other screenshots in the folder failed a check.
+# Command staging screenshots (2026-11-03, retina PNGs) a Mode B ad may get at random. Each was checked: no real-looking
+# names or emails, no staging test data (QA Freight Co, ALEX-TEST, junk notes, test agents), no empty screen. In 01 and
+# 02 the sidebar's tenant name (a real customer) is painted over. A file not listed is never used; the others failed a check.
 RANDOM_SCREENSHOTS = [
-    "overview-live.jpg", "insights-ask.jpg", "scheduling-historical-loads.jpg", "crm-detention.jpg", "crm-reports.jpg",
-    "accounting-books.jpg", "accounting-ifta.jpg", "notifications.jpg", "help-center.jpg"]
+    "01-overview-live-dashboard.png", "01b-overview-kpi-cards-closeup.png", "02-insights-ask-your-data.png",
+    "08b-billing-blockers-closeup.png", "10b-ask-hemi-panel-closeup.png"]
 SCREENSHOT_NOTE = "The ad shows this Hemut screenshot: {note}. The copy may point at what it shows; facts still come only from the fact sheet."
 NO_SCREENSHOT = "The ad shows a Hemut Command screenshot picked at random, or no image. Do not refer to the image."
 RUN_ID = "%Y%m%d-%H%M%S-%f"
