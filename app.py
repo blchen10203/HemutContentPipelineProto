@@ -7,6 +7,7 @@ import os
 
 import streamlit as st
 from dotenv import load_dotenv
+from PIL import Image
 from pydantic import ValidationError
 
 from generate import SCREENSHOTS, usage_total
@@ -48,7 +49,8 @@ def show_ad(text: str, needs_approval: bool, image=None) -> None:
         if needs_approval:
             st.badge("Approval needed", color="orange")
         if image:
-            st.image(str(image), width="stretch")
+            w, h = Image.open(image).size  # cap shown height ~450px so tall crops don't fill the screen
+            st.image(str(image), width=min(700, round(450 * w / h)))
         st.markdown(md(f"#### {parts[0]}"))
         if len(parts) > 1:
             st.markdown(md("\n\n".join(parts[1:-1])))
