@@ -1,7 +1,15 @@
+import datetime
+import shutil
+
+import httpx
 import pytest
+from conftest import TINY_PNG
 from pydantic import ValidationError
 
-from knowledge.add_feature import NewFeature
+import knowledge.add_feature
+from knowledge.add_feature import NewFeature, add_feature
+from knowledge.loader import ROOT, load_audiences, load_bridges, load_captions, load_claims, load_features
+from planner import plan_week
 from schemas import Claim
 
 VALID_CLAIM = dict(id="voice-agents", type="feature", value="Voice agents", phrasings=["Hemi places check calls"],
@@ -41,3 +49,83 @@ def test_subdomain_url_is_allowed():
 
 def test_claim_takes_verified_by():
     assert Claim.model_validate({**VALID_CLAIM, "verified_by": "Jane Doe (PM)"}).verified_by == "Jane Doe (PM)"
+
+
+DAY = datetime.date(2026, 11, 6)
+
+
+def snapshot_bytes(root):
+    return {str(p.relative_to(root)): p.read_bytes() for d in ("knowledge", "assets") for p in (root / d).rglob("*") if p.is_file()}
+
+
+@pytest.fixture
+def kb(tmp_path, monkeypatch):
+    shutil.copytree(ROOT / "knowledge", tmp_path / "knowledge")
+    (tmp_path / "assets" / "screenshots").mkdir(parents=True)
+
+    def fake(name, url, *, out, today, **_):
+        path = out / f"{name}_{today}.txt"
+        path.write_text("<page>", encoding="utf-8")
+        return path
+    monkeypatch.setattr(knowledge.add_feature, "snapshot", fake)
+    return tmp_path
+
+
+def test_happy_path_goes_live(kb):
+    fid = add_feature(nf(screenshot=TINY_PNG, screenshot_ext="png", caption="Agents place calls for you"), root=kb, today=DAY)
+    k = kb / "knowledge"
+    claims = load_claims(k / "claims.yaml", root=kb)
+    assert claims[f"feature-{fid}-1"].verified_by == "Jane Doe (Product Manager)"
+    assert claims[f"feature-{fid}-1"].source_snapshot == f"knowledge/sources/{fid}_2026-11-06.txt"
+    assert load_features(k / "features.yaml")[fid].screenshots[0].file == f"{fid}.png"
+    assert any(b.tag == f"evergreen-{fid}" for b in load_bridges(k / "bridge_map.yaml"))
+    assert load_captions(k / "screenshot_captions.yaml")[f"{fid}.png"] == "Agents place calls for you"
+    assert f"feature-{fid}-1" in (k / "fact_sheet.md").read_text(encoding="utf-8")
+    picked = {i.brief.feature_id for w in range(52) for i in plan_week(DAY + datetime.timedelta(weeks=w), seasons=[],
+              bridges=load_bridges(k / "bridge_map.yaml"), audiences=load_audiences(k / "audiences.yaml"))}
+    assert fid in picked
+
+
+def test_yaml_special_characters_round_trip(kb):
+    text = 'Hemi: books loads # fast - "quoted" ’smart’ café'
+    fid = add_feature(nf(wordings=[text]), root=kb, today=DAY)
+    assert load_claims(kb / "knowledge" / "claims.yaml", root=kb)[f"feature-{fid}-1"].phrasings == [text]
+
+
+@pytest.mark.parametrize("over", [{"wordings": ["Guaranteed on-time loads"]}, {"wordings": ["Built on Hemut Core"]},
+                                  {"audiences": ["no-such-reader"]}])
+def test_voice_and_audience_checks_write_nothing(kb, over):
+    before = snapshot_bytes(kb)
+    with pytest.raises(ValueError):
+        add_feature(nf(**over), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before
+
+
+def test_duplicate_name_is_rejected(kb):
+    add_feature(nf(), root=kb, today=DAY)
+    with pytest.raises(ValueError, match="name"):
+        add_feature(nf(), root=kb, today=DAY + datetime.timedelta(days=1))
+
+
+def test_failure_after_writing_restores_every_file(kb, monkeypatch):
+    before = snapshot_bytes(kb)
+    monkeypatch.setattr(knowledge.add_feature, "render_fact_sheet", lambda claims: (_ for _ in ()).throw(ValueError("boom")))
+    with pytest.raises(ValueError, match="boom"):
+        add_feature(nf(screenshot=TINY_PNG, screenshot_ext="png", caption="Agents place calls for you"), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before  # knowledge files, sources and screenshots all as they were
+
+
+def test_fetch_failure_writes_nothing(kb, monkeypatch):
+    before = snapshot_bytes(kb)
+
+    def fail(*a, **k): raise httpx.ConnectTimeout("timed out")
+    monkeypatch.setattr(knowledge.add_feature, "snapshot", fail)
+    with pytest.raises(ValueError, match="url"):
+        add_feature(nf(), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before
+
+
+def test_header_comments_survive(kb):
+    first = (kb / "knowledge" / "features.yaml").read_text(encoding="utf-8").splitlines()[0]
+    add_feature(nf(), root=kb, today=DAY)
+    assert (kb / "knowledge" / "features.yaml").read_text(encoding="utf-8").splitlines()[0] == first
