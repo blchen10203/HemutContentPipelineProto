@@ -89,8 +89,8 @@ class AudienceProfile(BaseModel):
 class Brief(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    origin: Literal["request", "seasonal", "evergreen"]
-    audience: str  # e.g. "5-15 truck fleets": the requester's words in Mode A, the persona label in Mode B
+    origin: Literal["seasonal", "evergreen"]
+    audience: str  # the persona label, e.g. "Fleet owner"
     audience_id: str  # AudienceProfile id; its pains, objections and tone go into the angles and draft prompts
     pain: str
     hemut_feature: str

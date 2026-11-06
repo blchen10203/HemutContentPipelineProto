@@ -25,7 +25,7 @@ ANGLES = json.dumps({"angles": [
     {"hook": f"hook {i}", "pain": "IFTA by hand", "feature": "IFTA from loads", "claim_ids": ["hemi-desk-settlements-ifta"]}
     for i in range(N_ANGLES)
 ]})
-BRIEF = Brief(origin="request", audience="small fleets", audience_id="back-office", pain="IFTA by hand", hemut_feature="IFTA",
+BRIEF = Brief(origin="seasonal", audience="small fleets", audience_id="back-office", pain="IFTA by hand", hemut_feature="IFTA",
               format="reddit_post", claim_ids=["hemi-desk-settlements-ifta"])
 SEASONAL = BRIEF.model_copy(update={"origin": "seasonal"})  # Mode B: only these ads get an image
 POOL = {"01b-overview-kpi-cards-closeup.png", "08b-billing-blockers-closeup.png"}  # the pool() files that are in RANDOM_SCREENSHOTS
@@ -100,7 +100,7 @@ def test_good_first_try(tmp_path):
     assert len(client.calls) == 1 + N_ANGLES
     meta = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))
     assert isinstance(meta["duration_s"], float) and meta["duration_s"] >= 0
-    assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt"}
+    assert meta["mode"] == "B" and meta["brief_origin"] == "seasonal" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt"}
     assert (Path(result.run_dir) / "draft-1.md").is_file()
     system = client.calls[0]["system"][0]["text"]
     assert "command-base-price" in system and "{fact_sheet}" not in system and "{{claim:<id>}}" in system
@@ -312,14 +312,6 @@ def test_finished_mode_b_ads_get_a_random_screenshot_failed_ones_do_not(tmp_path
     assert caption and (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[1] == f"*{caption}*"
     assert not any(run_dir.glob("*.*g"))  # linked, not copied
     assert "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
-
-
-def test_mode_a_ads_get_no_image(tmp_path, pool, screenshots):
-    client = FakeClient(ANGLES, GOOD, GOOD, GOOD)
-    result, _ = run(client, tmp_path, BRIEF.model_copy(update={"feature_id": "dispatch-board-hos"}))  # origin "request"
-    assert result.images == [None] * N_ANGLES
-    assert not (Path(result.run_dir) / "draft-1.md").read_text(encoding="utf-8").startswith("![]")
-    assert all(generate.NO_SCREENSHOT in c["messages"][0]["content"] for c in client.calls[1:])
 
 
 def test_pick_image_is_random_but_stable(pool):

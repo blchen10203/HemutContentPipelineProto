@@ -118,7 +118,7 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
         pending = set()
         captions = load_captions()
         for i, angle in enumerate(result.angles):
-            image = pick_image(result.run_id, i, brief.feature_id) if brief.origin != "request" else None  # Mode B only
+            image = pick_image(result.run_id, i, brief.feature_id)
             result.images.append(AdImage(path=str(image[0]), on_screen=image[1], caption=captions.get(image[0].name)) if image else None)
             screen = SCREENSHOT_NOTE.format(note=image[1]) if image and image[1] else NO_SCREENSHOT
             first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2), screen=screen)
@@ -267,13 +267,12 @@ def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
 def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, started: float,
                error: str | None = None) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
-    origin = result.brief.origin
     used = ["system.txt", "angles.txt", "draft.txt"]
     meta = {
         "created": now.isoformat(timespec="seconds"),
         "duration_s": round(time.perf_counter() - started, 3),  # wall clock of the whole run
-        "mode": "A" if origin == "request" else "B",
-        "brief_origin": origin,
+        "mode": "B",  # Mode A is a manual post and never reaches the pipeline
+        "brief_origin": result.brief.origin,
         "status": result.status,
         "error": error,
         "model": MODEL,
