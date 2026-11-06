@@ -123,6 +123,13 @@ def _retired_names(text: str, voice: VoiceRules) -> list[Violation]:
     return out
 
 
+# Backstop for the CLAUDE.md sensitive-topic rule: these words make a request high sensitivity whatever the model says.
+# Word starts, so "injur" catches "injured" and "injuries". A false alarm only stops the run for a human.
+SENSITIVE = re.compile(
+    r"\b(?:crash|collision|accident|wreck|pileup|pile-up|fatal|killed|died|death|injur|layoff|laid off|bankrupt|immigra"
+    r"|deport|english[- ](?:language[- ])?proficiency|elp\b|non-domiciled|election|politic)", re.IGNORECASE)
+
+
 def _unknown_products(free_text: str, voice: VoiceRules) -> list[Violation]:
     allowed = set(voice.allowed_product_names)
     return [

@@ -25,6 +25,16 @@ def bridge(tag, pain="p"):
     return BridgeEntry(tag=tag, pain=pain, hemut_feature="f", claim_ids=["hemi-desk-detention"], feature="detention")
 
 
+# Frozen: the Add feature form adds evergreen bridges, and rotation is week % len(pillars), so exact plans use today's tags.
+FROZEN_TAGS = {"ifta-q1", "ifta-q2", "ifta-q3", "ifta-q4", "winter-weather", "hurricane-season", "evergreen-pricing",
+               "evergreen-rate-cons", "evergreen-switching", "evergreen-detention", "evergreen-diesel-prices",
+               "evergreen-short-pays-collections", "evergreen-tight-capacity", "evergreen-expiring-documents", "evergreen-empty-miles"}
+
+
+def frozen_bridges():
+    return [b for b in load_bridges() if b.tag in FROZEN_TAGS]
+
+
 def tags(plan):
     return [p.brief.origin_ref for p in plan]
 
@@ -58,7 +68,7 @@ def test_unverified_season_still_briefs_but_says_so():
 
 def test_demo_week_plan():
     skipped = []
-    plan = plan_week(D(2026, 10, 31), skipped=skipped)
+    plan = plan_week(D(2026, 10, 31), bridges=frozen_bridges(), skipped=skipped)
     assert tags(plan) == ["ifta-q3", "hurricane-season", "evergreen-tight-capacity", "evergreen-expiring-documents", "evergreen-empty-miles"]
     assert [p.brief.origin for p in plan] == ["seasonal"] * 2 + ["evergreen"] * 3  # active seasons first: the boost
     assert all("dates verified by" in p.reason for p in plan[:2])
@@ -103,7 +113,7 @@ def test_overlapping_seasons_never_repeat_a_feature():
 
 
 def test_demo_week_personas():
-    plan = plan_week(D(2026, 10, 31))
+    plan = plan_week(D(2026, 10, 31), bridges=frozen_bridges())
     assert [p.brief.audience_id for p in plan] == ["back-office", "dispatcher", "fleet-owner", "back-office", "dispatcher"]
     assert plan[0].reason.endswith("Reader: Back-office and billing lead") and plan[0].brief.audience == "Back-office and billing lead"
 
@@ -119,7 +129,7 @@ def test_personas_spread_across_slots():
 
 def test_overflow_is_reported_not_silent():
     skipped = []
-    plan = plan_week(D(2027, 1, 10), slots=4, skipped=skipped)  # IFTA Q4, winter and 9 pillars: 11 tags for 4 slots
+    plan = plan_week(D(2027, 1, 10), slots=4, bridges=frozen_bridges(), skipped=skipped)  # IFTA Q4, winter and 9 pillars: 11 tags for 4 slots
     assert tags(plan) == ["ifta-q4", "winter-weather", "evergreen-expiring-documents", "evergreen-empty-miles"]
     assert "evergreen-tight-capacity: no slot left this week" in skipped
     assert skipped.count("evergreen-short-pays-collections: no slot left this week") == 1  # two angles, one line

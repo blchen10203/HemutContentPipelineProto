@@ -181,10 +181,10 @@ def fill_feature_form(at):
 
 def test_add_feature_form_calls_add_feature(monkeypatch):
     got = []
-    monkeypatch.setattr(knowledge.add_feature, "add_feature", lambda f, **k: got.append(f) or f.id)
+    monkeypatch.setattr(knowledge.add_feature, "add_feature", lambda f, **k: got.append(f) or (f.id, [Path("knowledge/sources/x_2026-11-06.txt")]))
     at = fill_feature_form(AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run())
     assert got[0].wordings == ["Hemi places the driver check calls for you"] and got[0].caption is None
-    assert any("Live:" in s.value for s in at.success)
+    assert any("Live:" in s.value and "`knowledge/sources/x_2026-11-06.txt`" in s.value for s in at.success)
 
 
 def test_add_feature_error_shows_message(monkeypatch):

@@ -181,13 +181,14 @@ with knowledge_tab:
         submitted = st.form_submit_button("Add feature")
     if submitted:
         try:
-            add_feature_mod.add_feature(add_feature_mod.NewFeature(
+            _, changed = add_feature_mod.add_feature(add_feature_mod.NewFeature(
                 name=nf_name, does=nf_does, url=nf_url, wordings=nf_words, verified_by=nf_verified, pain=nf_pain,
                 audiences=[audiences[a] for a in nf_aud],
                 screenshot=nf_shot.getvalue() if nf_shot else None,
                 screenshot_ext=nf_shot.name.rsplit(".", 1)[-1].lower() if nf_shot else None,
                 caption=nf_caption or None))
-            st.success("Live: the next Mode A request and Mode B week can use it. Commit the changed knowledge files when convenient.")
+            st.success("Live: the next Mode A request and Mode B week can use it. Commit these files (the new sources/ files too, claims.yaml needs them):\n\n"
+                       + "\n".join(f"- `{p.as_posix()}`" for p in changed))
         except ValidationError as e:
             st.error(e.errors()[0]["msg"])
         except ValueError as e:

@@ -3,7 +3,6 @@
 Gap rule: anything the request mentions that no claim covers goes in Brief.needs_source, and run_brief() stops there.
 Nothing is web-searched or guessed.
 """
-import re
 import time
 from typing import Literal
 
@@ -13,12 +12,7 @@ from pydantic import create_model
 from generate import OUT, ask, load_prompt, run_brief, system_prompt, write_failed_request
 from knowledge.loader import load_audiences, load_claims, load_features, load_voice
 from schemas import AudienceProfile, Brief, CallUsage, Claim, Feature, Request, RunResult, VoiceRules
-
-# Backstop for the CLAUDE.md sensitive-topic rule: these words make a request high sensitivity whatever the model says.
-# Word starts, so "injur" catches "injured" and "injuries". A false alarm only stops the run for a human.
-SENSITIVE = re.compile(
-    r"\b(?:crash|collision|accident|wreck|pileup|pile-up|fatal|killed|died|death|injur|layoff|laid off|bankrupt|immigra"
-    r"|deport|english[- ](?:language[- ])?proficiency|elp\b|non-domiciled|election|politic)", re.IGNORECASE)
+from validate import SENSITIVE
 
 
 def request_to_brief(

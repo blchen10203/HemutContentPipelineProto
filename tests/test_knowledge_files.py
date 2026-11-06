@@ -82,7 +82,7 @@ def test_allowed_competitor_phrases_are_claim_wordings():
 
 def test_real_features_load_and_their_claims_exist():
     claims, features = load_claims(), load_features()
-    assert len(features) == 13
+    assert len(features) >= 13  # the Add feature form grows this
     assert len({f.label for f in features.values()}) == len(features)  # the app's dropdown maps a label back to its id
     missing = {(f.id, i) for f in features.values() for i in f.claim_ids if i not in claims}
     assert not missing, f"features.yaml uses claim ids not in claims.yaml: {sorted(missing)}"

@@ -72,7 +72,7 @@ def kb(tmp_path, monkeypatch):
 
 
 def test_happy_path_goes_live(kb):
-    fid = add_feature(nf(screenshot=TINY_PNG, screenshot_ext="png", caption="Agents place calls for you"), root=kb, today=DAY)
+    fid, _ = add_feature(nf(screenshot=TINY_PNG, screenshot_ext="png", caption="Agents place calls for you"), root=kb, today=DAY)
     k = kb / "knowledge"
     claims = load_claims(k / "claims.yaml", root=kb)
     assert claims[f"feature-{fid}-1"].verified_by == "Jane Doe (Product Manager)"
@@ -88,7 +88,7 @@ def test_happy_path_goes_live(kb):
 
 def test_yaml_special_characters_round_trip(kb):
     text = 'Hemi: books loads # fast - "quoted" ’smart’ café'
-    fid = add_feature(nf(wordings=[text]), root=kb, today=DAY)
+    fid, _ = add_feature(nf(wordings=[text]), root=kb, today=DAY)
     assert load_claims(kb / "knowledge" / "claims.yaml", root=kb)[f"feature-{fid}-1"].phrasings == [text]
 
 
@@ -129,3 +129,65 @@ def test_header_comments_survive(kb):
     first = (kb / "knowledge" / "features.yaml").read_text(encoding="utf-8").splitlines()[0]
     add_feature(nf(), root=kb, today=DAY)
     assert (kb / "knowledge" / "features.yaml").read_text(encoding="utf-8").splitlines()[0] == first
+
+
+@pytest.mark.parametrize("over", [
+    {"wordings": ["I switched to Hemut and stopped chasing check calls"]},
+    {"wordings": ["Hemut Voice places the check calls for you"]},
+    {"wordings": ["Hemut beats Turvo at check calls"]},
+    {"name": "Accident register for DOT audits"},
+    {"pain": "Dispatchers dread layoffs and chasing drivers"},
+    {"name": "Detention tracking"},
+])
+def test_wording_and_name_rejections_write_nothing(kb, over):
+    before = snapshot_bytes(kb)
+    with pytest.raises(ValueError):
+        add_feature(nf(**over), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before
+
+
+def test_sensitive_and_duplicate_label_messages(kb):
+    with pytest.raises(ValueError, match="name: sensitive topic"):
+        add_feature(nf(name="Accident register for DOT audits"), root=kb, today=DAY)
+    with pytest.raises(ValueError, match="^name:"):
+        add_feature(nf(name="detention TRACKING"), root=kb, today=DAY)
+
+
+@pytest.mark.parametrize("over, field", [({"does": ""}, "does"), ({"pain": "  "}, "pain"), ({"name": ""}, "name"),
+                                         ({"verified_by": "Jane ( )"}, "verified_by")])
+def test_blank_required_fields_rejected(over, field):
+    with pytest.raises(ValidationError, match=field):
+        nf(**over)
+
+
+def test_snapshot_failure_cleans_up_what_it_created(kb, monkeypatch):
+    before = snapshot_bytes(kb)
+
+    def half(name, url, *, out, today, **_):
+        (out / f"{name}_{today}.html").write_text("<page>", encoding="utf-8")
+        raise RuntimeError("disk full")
+    monkeypatch.setattr(knowledge.add_feature, "snapshot", half)
+    with pytest.raises(ValueError, match="^url:"):
+        add_feature(nf(), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before
+
+
+def test_returns_files_to_commit(kb):
+    fid, changed = add_feature(nf(screenshot=TINY_PNG, screenshot_ext="png", caption="Agents place calls"), root=kb, today=DAY)
+    got = {p.as_posix() for p in changed}
+    assert {"knowledge/claims.yaml", "knowledge/features.yaml", "knowledge/bridge_map.yaml", "knowledge/fact_sheet.md",
+            "knowledge/screenshot_captions.yaml", f"knowledge/sources/{fid}_2026-11-06.txt"} == got
+
+
+def test_unreadable_screenshot_rejected(kb):
+    before = snapshot_bytes(kb)
+    with pytest.raises(ValueError, match="screenshot: not a readable image"):
+        add_feature(nf(screenshot=b"not an image", screenshot_ext="png", caption="x"), root=kb, today=DAY)
+    assert snapshot_bytes(kb) == before
+
+
+def test_rollback_cause_is_not_itself(kb, monkeypatch):
+    monkeypatch.setattr(knowledge.add_feature, "render_fact_sheet", lambda claims: (_ for _ in ()).throw(ValueError("boom")))
+    with pytest.raises(ValueError) as ei:
+        add_feature(nf(), root=kb, today=DAY)
+    assert ei.value.__cause__ is not ei.value
