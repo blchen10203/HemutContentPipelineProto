@@ -23,6 +23,7 @@ A weekly planner mixes seasonal + evergreen Briefs into a content plan.
 - Seasonal facts (dates, deadlines) are claims too: they need a source URL.
 - Seasons and evergreen pillars only reach a Brief through `knowledge/bridge_map.yaml` (tag -> pain -> feature -> claims). No bridge, no Brief.
 - Sensitive topics are never drafted automatically: crashes, deaths, injuries, layoffs, bankruptcies, immigration / English-proficiency / non-domiciled CDL enforcement, politics. Flag them `sensitivity: high`; the run stops there for a human.
+- New features are added through the app's Add feature form (knowledge/add_feature.py). Its hemut.com snapshot plus verified_by "Name (Role)" is the sign-off; wordings are free text, so the verifier owns their accuracy.
 - Secrets in `.env`, never committed.
 
 ## research/
@@ -39,6 +40,7 @@ not remove the need for a snapshot in knowledge/sources/ and does not change req
 ```
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  features.yaml  screenshot_captions.yaml (caption under each Mode B screenshot)  bridge_map.yaml  sources/ (dated snapshots)
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml / features.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
+                 add_feature.py (the app's Add feature form: snapshots a hemut.com URL, appends claims/feature/bridge/caption, rolls back on failure)
                  pending_claims.yaml (later: Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)

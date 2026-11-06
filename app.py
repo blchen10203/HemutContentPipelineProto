@@ -11,7 +11,8 @@ from PIL import Image
 from pydantic import ValidationError
 
 from generate import SCREENSHOTS, usage_total
-from knowledge.loader import load_claims, load_features, load_seasons
+import knowledge.add_feature as add_feature_mod
+from knowledge.loader import load_audiences, load_claims, load_features, load_seasons
 from modes.request import run_request
 from modes.scheduled import run_week
 from planner import plan_week
@@ -165,3 +166,29 @@ with knowledge_tab:
     st.dataframe([{"id": c.id, "type": c.type, "approval": "needs approval" if c.requires_approval else "",
                    "wording": " | ".join(c.phrasings) or "(record only)", "checked": c.checked, "source": c.source_url}
                   for c in load_claims().values()])
+    st.subheader("Add feature")
+    audiences = {a.label: a.id for a in load_audiences().values()}
+    with st.form("add_feature"):
+        nf_name = st.text_input("Feature name", key="nf_name")
+        nf_does = st.text_input("What it does (one line)", key="nf_does")
+        nf_url = st.text_input("hemut.com page URL", key="nf_url")
+        nf_words = [st.text_input(f"Ad wording {i}", key=f"nf_w{i}") for i in (1, 2, 3)]
+        nf_verified = st.text_input("Verified by (Name (Role))", key="nf_verified")
+        nf_pain = st.text_input("What pain does it fix? (one sentence, no numbers)", key="nf_pain")
+        nf_aud = st.multiselect("Which readers?", list(audiences), key="nf_aud")
+        nf_shot = st.file_uploader("Screenshot (optional)", type=["png", "jpg", "jpeg", "webp"], key="nf_shot")
+        nf_caption = st.text_input("Caption (if screenshot)", key="nf_caption")
+        submitted = st.form_submit_button("Add feature")
+    if submitted:
+        try:
+            add_feature_mod.add_feature(add_feature_mod.NewFeature(
+                name=nf_name, does=nf_does, url=nf_url, wordings=nf_words, verified_by=nf_verified, pain=nf_pain,
+                audiences=[audiences[a] for a in nf_aud],
+                screenshot=nf_shot.getvalue() if nf_shot else None,
+                screenshot_ext=nf_shot.name.rsplit(".", 1)[-1].lower() if nf_shot else None,
+                caption=nf_caption or None))
+            st.success("Live: the next Mode A request and Mode B week can use it. Commit the changed knowledge files when convenient.")
+        except ValidationError as e:
+            st.error(e.errors()[0]["msg"])
+        except ValueError as e:
+            st.error(str(e))

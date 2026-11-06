@@ -2,6 +2,7 @@
 import datetime
 from pathlib import Path
 
+import knowledge.add_feature
 import modes.request
 import modes.scheduled
 from streamlit.testing.v1 import AppTest
@@ -165,3 +166,29 @@ def test_feature_dropdown_reaches_the_request(monkeypatch):
     at.selectbox[0].select("Any (from the text)").run()
     click(at, "Run")
     assert seen[-1].feature_id is None
+
+
+def fill_feature_form(at):
+    at.text_input(key="nf_name").input("Voice agents for check calls")
+    at.text_input(key="nf_does").input("Places driver check calls automatically")
+    at.text_input(key="nf_url").input("https://hemut.com/hemi")
+    at.text_input(key="nf_w1").input("Hemi places the driver check calls for you")
+    at.text_input(key="nf_verified").input("Jane Doe (Product Lead)")
+    at.text_input(key="nf_pain").input("Dispatchers lose hours chasing drivers for check calls.")
+    at.multiselect(key="nf_aud").select(at.multiselect(key="nf_aud").options[0])
+    return click(at, "Add feature")
+
+
+def test_add_feature_form_calls_add_feature(monkeypatch):
+    got = []
+    monkeypatch.setattr(knowledge.add_feature, "add_feature", lambda f, **k: got.append(f) or f.id)
+    at = fill_feature_form(AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run())
+    assert got[0].wordings == ["Hemi places the driver check calls for you"] and got[0].caption is None
+    assert any("Live:" in s.value for s in at.success)
+
+
+def test_add_feature_error_shows_message(monkeypatch):
+    def fail(f, **k): raise ValueError("url: could not fetch the page")
+    monkeypatch.setattr(knowledge.add_feature, "add_feature", fail)
+    at = fill_feature_form(AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run())
+    assert any("could not fetch" in e.value for e in at.error) and not at.exception
