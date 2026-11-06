@@ -125,7 +125,7 @@ Claims under "Approval required" need human sign-off before a post may use them.
 - "Founded by Loki Cheema, who ran his own trucking company in Fresno, California" Context: Founded with a team he met at UCLA. `company-founder`
 - "Backed by Y Combinator" `company-investors`
 - "Launched to the broader market in April 2026" `company-launch`
-- "Hemut co-owns Trxckwrld" Context: Disclose on Trxckwrld posts; every post must be visibly from Hemut. `company-trxckwrld-co-owner`
+- Record only, never use in copy. Context: Never mention in copy. Posts disclose by being visibly from Hemut. `company-trxckwrld-co-owner`
 - "Hemut" Context: llms-full: 'Legal and brand name: Hemut'. See company-footer-name. `company-legal-name`
 - "Hemut Co" Context: Site footer copyright line. The brand name in copy is company-legal-name ('Hemut'). `company-footer-name`
 - "Start free at command.hemut.com/signup" or "hemut.com/pricing" `company-links`

@@ -945,8 +945,8 @@
 - id: company-trxckwrld-co-owner
   type: company
   value: "Hemut is a co-owner of Trxckwrld, a trucking community platform"
-  phrasings: ["Hemut co-owns Trxckwrld"]
-  context: "Disclose on Trxckwrld posts; every post must be visibly from Hemut."
+  phrasings: []  # record only: posts never mention the ownership (decided 2026-11-06)
+  context: "Never mention in copy. Posts disclose by being visibly from Hemut."
   source_url: https://hemut.com/llms-full.txt
   source_snapshot: knowledge/sources/llms-full_2026-10-23.txt
   checked: 2026-10-23
