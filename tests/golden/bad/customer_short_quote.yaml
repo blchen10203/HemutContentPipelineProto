@@ -1,0 +1,9 @@
+# Under four words, but "us" makes it a made-up customer quote.
+expected_codes: [CUSTOMER_VOICE]
+post:
+  title: "Hemut Command for the back office"
+  body: 'Carriers keep telling us: "Saved us hours."'
+  cta_text: Start free
+  cta_url: "https://command.hemut.com/signup?utm_source=trxckwrld&utm_medium=post&utm_campaign=test"
+  claim_ids_used: []
+  requires_approval: false

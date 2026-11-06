@@ -12,9 +12,12 @@ dependencies = [
     "httpx",
     "python-dotenv",
     "anthropic",
-    "pytest",
+    "pillow",
     "streamlit",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest"]
 
 [tool.setuptools]
 py-modules = ["schemas", "validate", "generate"]

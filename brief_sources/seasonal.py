@@ -7,14 +7,17 @@ import calendar
 import datetime
 
 from schemas import AudienceProfile, Brief, BridgeEntry, SeasonWindow
+from validate import SENSITIVE
 
 FORMAT = {"seasonal": "reddit_post", "evergreen": "short_ad"}
 
 
 def bridge_brief(bridge: BridgeEntry, origin: str, persona: AudienceProfile) -> Brief:
-    """The one way a season or pillar becomes a Brief."""
+    """The one way a season or pillar becomes a Brief. A sensitive bridge makes a high-sensitivity Brief, which stops for a human."""
+    sensitive = SENSITIVE.search(f"{bridge.tag} {bridge.pain} {bridge.hemut_feature}")
     return Brief(origin=origin, audience=persona.label, audience_id=persona.id, pain=bridge.pain, hemut_feature=bridge.hemut_feature,
-                 format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag, feature_id=bridge.feature)
+                 format=FORMAT[origin], claim_ids=bridge.claim_ids, origin_ref=bridge.tag, feature_id=bridge.feature,
+                 sensitivity="high" if sensitive else "low")
 
 
 def window(season: SeasonWindow, today: datetime.date) -> tuple[datetime.date, datetime.date] | None:

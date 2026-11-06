@@ -96,7 +96,6 @@ class Brief(BaseModel):
     hemut_feature: str
     format: Literal["reddit_post", "social_post", "short_ad", "stat_card"]
     claim_ids: list[str]
-    needs_source: list[str] = []
     sensitivity: Literal["low", "high"] = "low"
     origin_ref: str | None = None  # season id or evergreen tag
     feature_id: str | None = None  # features.yaml id; picks the ad's screenshot
@@ -170,7 +169,7 @@ class CallUsage(BaseModel):
     """Token use of one API call, as response.usage reported it."""
     model_config = ConfigDict(extra="forbid")
 
-    step: Literal["normalize", "angles", "draft"]
+    step: Literal["angles", "draft"]
     model: str
     input_tokens: int  # uncached input only
     output_tokens: int  # includes thinking
@@ -193,12 +192,11 @@ class RunResult(BaseModel):
 
     run_id: str
     run_dir: str
-    status: Literal["ok", "needs_source", "failed_validation", "blocked_sensitive", "error"]  # error: API/auth failure or aborted run
+    status: Literal["ok", "failed_validation", "blocked_sensitive", "error"]  # error: API/auth failure or aborted run
     brief: Brief | None = None
     angles: list[Angle] = []
     drafts: list[list[DraftAttempt]] = []  # one attempt list per angle
     images: list[AdImage | None] = []  # one per angle, picked once when drafting so the copy and the image match
-    needs_source: list[str] = []
     usage: list[CallUsage] = []  # every API call of the run, in order, refused ones included
 
 

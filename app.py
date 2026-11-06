@@ -73,10 +73,7 @@ def usage_caption(results: list[RunResult]) -> None:
 
 
 def show_result(result: RunResult) -> None:
-    if result.needs_source:
-        st.warning(md("**Needs a source before anything is drafted.** Nothing in the knowledge base covers:\n\n"
-                      + "\n".join(f"- {item}" for item in result.needs_source)))
-    elif result.status == "blocked_sensitive":
+    if result.status == "blocked_sensitive":
         st.error("**Blocked: sensitive topic.** A human decides whether to write about this.")
     passed = [(i, a[-1]) for i, a in enumerate(result.drafts) if a and not a[-1].violations and a[-1].rendered_text]
     for i, last in passed:  # drafts that never passed the checks are not shown

@@ -9,7 +9,7 @@ Requires Python 3.11+.
 ```sh
 python -m venv .venv
 .venv\Scripts\activate        # Windows; on macOS/Linux: source .venv/bin/activate
-pip install -e .
+pip install -e ".[dev]"
 cp .env.example .env          # then set ANTHROPIC_API_KEY
 pytest
 ```

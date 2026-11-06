@@ -69,13 +69,10 @@ def run_brief(
     voice = load_voice() if voice is None else voice
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
-    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source,
-)
+    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief)
     on_event("brief", brief.model_dump())
 
-    if brief.needs_source:
-        result.status = "needs_source"
-    elif brief.sensitivity == "high":
+    if brief.sensitivity == "high":
         result.status = "blocked_sensitive"
     else:
         try:

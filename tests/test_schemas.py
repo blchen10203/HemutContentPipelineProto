@@ -25,7 +25,7 @@ VALID: list[tuple[type[BaseModel], dict]] = [
     (TrxckwrldPost, POST),
     (Violation, {"code": "BANNED_WORD", "message": "'guarantee' is banned", "span": "guaranteed"}),
     (DraftAttempt, {"attempt": 1, "raw_post": POST, "rendered_text": "...", "violations": []}),
-    (RunResult, {"run_id": "r1", "run_dir": "out/runs/r1", "status": "needs_source", "needs_source": ["a deal"]}),
+    (RunResult, {"run_id": "r1", "run_dir": "out/runs/r1", "status": "blocked_sensitive"}),
     (SeasonWindow, {
         "id": "ifta-q4", "name": "IFTA Q4 filing", "start": "01-01",
         "end": "01-31", "lead_days": 14, "source_url": "https://example.com/ifta", "checked": "2026-10-23",

@@ -139,3 +139,9 @@ def test_overflow_is_reported_not_silent():
 def test_bridge_brief_carries_the_feature_id():
     persona = load_audiences()["dispatcher"]
     assert bridge_brief(bridge("evergreen-detention"), "evergreen", persona).feature_id == "detention"
+
+
+def test_sensitive_bridge_makes_a_blocked_brief():
+    persona = load_audiences()["dispatcher"]
+    assert bridge_brief(bridge("evergreen-x", pain="carriers worried about layoffs"), "evergreen", persona).sensitivity == "high"
+    assert bridge_brief(bridge("evergreen-x"), "evergreen", persona).sensitivity == "low"

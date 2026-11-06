@@ -135,15 +135,11 @@ def test_approval_flag_is_derived_not_trusted(tmp_path):
     assert result.status == "ok" and result.drafts[0][0].raw_post.requires_approval is False
 
 
-def test_needs_source_and_sensitive_make_no_calls(tmp_path):
-    for brief, status in [
-        (BRIEF.model_copy(update={"needs_source": ["a 40% fuel discount"]}), "needs_source"),
-        (BRIEF.model_copy(update={"sensitivity": "high"}), "blocked_sensitive"),
-    ]:
-        client = FakeClient(ANGLES)
-        result, events = run(client, tmp_path, brief)
-        assert result.status == status and client.calls == [] and events == ["brief", "done"]
-        assert (Path(result.run_dir) / "meta.json").is_file()
+def test_sensitive_makes_no_calls(tmp_path):
+    client = FakeClient(ANGLES)
+    result, events = run(client, tmp_path, BRIEF.model_copy(update={"sensitivity": "high"}))
+    assert result.status == "blocked_sensitive" and client.calls == [] and events == ["brief", "done"]
+    assert (Path(result.run_dir) / "meta.json").is_file()
 
 
 def run_dirs(tmp_path):

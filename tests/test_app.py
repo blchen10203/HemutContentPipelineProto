@@ -81,11 +81,11 @@ def test_new_week_date_drops_old_drafts(monkeypatch):
 
 
 def test_dollar_signs_are_not_latex(monkeypatch):
-    gap = RunResult(run_id="x", run_dir="out/runs/x", status="needs_source", brief=BRIEF, needs_source=["$50 off fuel", "$20 off Command"])
-    monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([gap]))
+    priced = RESULT.model_copy(update={"brief": BRIEF.model_copy(update={"pain": "$50 off fuel, $20 off Command"})})
+    monkeypatch.setattr(modes.scheduled, "run_week", lambda day, plan, on_event: iter([priced]))
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
     click(at, "Draft all")
-    assert any(r"\$50 off fuel" in w.value for w in at.warning)
+    assert any(r"\$50 off fuel" in s.value for s in at.subheader)
 
 
 def test_only_passing_ads_are_shown(monkeypatch):

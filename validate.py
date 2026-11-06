@@ -19,8 +19,10 @@ _NUMBER_WORDS = (
     "sixteenth|seventeenth|eighteenth|nineteenth|twentieth|thirtieth|fortieth|fiftieth|sixtieth|seventieth|eightieth|"
     "ninetieth|hundredth|thousandth|millionth"
 )  # bare "one", "first" and "second" are allowed: "one system", "first week", "a second look"; a fifth wheel is a coupling
+# Month names are dates, and dates are claims too. Capitalized only; "May" is left out so the verb "may" is not a date.
+_MONTHS = "January|February|March|April|June|July|August|September|October|November|December"
 NUMBER = re.compile(  # s? so "thousands of fleets" counts too
-    rf"\$?\d(?:[\d,.]*\d)?%?|[$%]|\b(?:{_NUMBER_WORDS})s?(?:[-\s]+(?:{_NUMBER_WORDS})s?)*\b", re.IGNORECASE
+    rf"\$?\d(?:[\d,.]*\d)?%?|[$%]|\b(?:{_NUMBER_WORDS})s?(?:[-\s]+(?:{_NUMBER_WORDS})s?)*\b|\b(?-i:{_MONTHS})\b", re.IGNORECASE
 )
 # [ \t]+, not \s+: render_post joins title, body and CTA with blank lines, and "Command\n\nStart" is not a product.
 # Lookahead so "Hemut Command Pro" yields both pairs.
@@ -29,6 +31,7 @@ PRODUCT_MENTION = re.compile(r"\b(?=((Hemut|Command)[ \t]+([A-Z][\w-]*)))")
 
 # Double or single quotes. A single quote opens only after a non-letter and closes only before one, so "don't" is no quote.
 QUOTE = re.compile(r'["“]([^"“”\n]+)["”]|(?<!\w)[\'‘]([^\'‘’\n]+)[\'’](?!\w)')
+SPEAKER = re.compile(r"\b(?:I|me|my|we|us|our)\b", re.IGNORECASE)  # a quote with these in it is someone speaking
 FIRST_PERSON = re.compile(
     r"\bI(?:'ve| have)? (?:switched|moved|signed up|started using|tried|use|run|saved|love|recommend)\b"
     r"|\bI'?m an? (?:driver|trucker|dispatcher|owner[- ]operator|fleet owner|carrier)\b"
@@ -96,7 +99,7 @@ def validate(post: TrxckwrldPost, claims: dict[str, Claim], voice: VoiceRules) -
     for phrasing in sorted({p for i in used for p in claims[i].phrasings}, key=len, reverse=True):
         free_text = free_text.replace(phrasing, "\n")
 
-    out += [_v("UNBACKED_NUMBER", "number not backed by a claim placeholder", m[0]) for m in NUMBER.finditer(free_text)]
+    out += [_v("UNBACKED_NUMBER", "number or date not backed by a claim placeholder", m[0]) for m in NUMBER.finditer(free_text)]
     out += _retired_names(text, voice)
     out += _unknown_products(free_text, voice)
     out += _competitor_names(text, voice)  # full text: a competitor claim's own wording names the competitor
@@ -123,7 +126,8 @@ def _retired_names(text: str, voice: VoiceRules) -> list[Violation]:
     return out
 
 
-# Backstop for the CLAUDE.md sensitive-topic rule: these words make a request high sensitivity whatever the model says.
+# The CLAUDE.md sensitive-topic rule: these words make a bridge's Brief high sensitivity (brief_sources/seasonal.py)
+# and keep them out of the Add feature form.
 # Word starts, so "injur" catches "injured" and "injuries". A false alarm only stops the run for a human.
 SENSITIVE = re.compile(
     r"\b(?:crash|collision|accident|wreck|pileup|pile-up|fatal|killed|died|death|injur|layoff|laid off|bankrupt|immigra"
@@ -159,6 +163,7 @@ def _banned_words(text: str, voice: VoiceRules) -> list[Violation]:
 
 
 def _customer_voice(free_text: str) -> list[Violation]:
-    spans = [m[0] for m in QUOTE.finditer(free_text) if len((m[1] or m[2]).split()) >= 4]  # "rate con" is a term, not speech
+    # "rate con" is a term, not speech; "Saved us hours" is speech however short
+    spans = [m[0] for m in QUOTE.finditer(free_text) if len((q := m[1] or m[2]).split()) >= 4 or SPEAKER.search(q)]
     spans += [m[0] for pattern in (FIRST_PERSON, TESTIMONIAL, ATTRIBUTION) for m in pattern.finditer(free_text)]
     return [_v("CUSTOMER_VOICE", "reads as customer or driver voice, not Hemut", s) for s in dict.fromkeys(spans)]

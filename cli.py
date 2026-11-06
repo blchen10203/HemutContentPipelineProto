@@ -23,8 +23,6 @@ def _progress(name: str, payload: dict) -> None:
 
 def _print_result(result: RunResult) -> None:
     print(f"status: {result.status}")
-    for item in result.needs_source:
-        print(f"  needs source: {item}")
     for i, attempts in enumerate(result.drafts):
         last = attempts[-1]
         print(f"\n=== draft {i + 1} ({len(attempts)} attempt(s)) - angle: {result.angles[i].hook}")
