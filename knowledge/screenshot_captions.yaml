@@ -1,0 +1,20 @@
+# One short caption per screenshot in assets/screenshots/, shown under the image of a finished Mode B ad (app and
+# draft-N.md). It says what the feature on screen does. Written 2026-11-06 from the Command staging app
+# (command-staging.hemut.com). Captions are never sent to the draft model and never change the ad's body.
+# Same rule as on_screen in features.yaml: no numbers, quotes, dates or first-person text (loader checks this).
+# Product names only from voice.yaml.
+
+01-overview-live-dashboard.png: Overview puts active loads, truck, trailer and driver use, and a live fleet map on one screen.
+01b-overview-kpi-cards-closeup.png: Overview cards show at a glance which trucks, trailers and drivers are on a load and which are free.
+02-insights-ask-your-data.png: Insights lets you ask about your orders, customers, drivers or equipment in plain words.
+03-rfp-management.png: RFP Management keeps shipper RFPs in one list, with their lanes, due dates and bid awards.
+04-scheduling-driver-calendar.png: The driver calendar shows every driver's loads, home time and open days on one timeline.
+05-tracking-live-map.png: Tracking shows every truck on a live map, with ETAs and the loads that have not started yet.
+05b-tracking-driver-cards-closeup.png: Each tracking card shows a driver's load, live ETA and miles left on the trip.
+06-dispatcher-board-loads.png: The dispatcher board lists every load from booked to delivered, with late loads flagged in red.
+07-fleet-command-center.png: Fleet Management shows each tractor's driver, location, status and hours of service in one table.
+08-accounting-money-in-billing.png: Money In lists delivered loads that are not billed yet, with what is holding up each invoice.
+08b-billing-blockers-closeup.png: Billing blockers like a missing POD or rate con are flagged, with the next step for each invoice.
+09-voice-agents.png: Voice Agents answer or place phone calls for you, like driver check calls and an after-hours line.
+10-ask-hemi-ai-assistant.png: Control opens Hemi beside any screen, so you can ask in plain words while you work.
+10b-ask-hemi-panel-closeup.png: Hemi asks a few quick questions, then builds the phone agent for you.

@@ -22,7 +22,7 @@ import yaml
 from pydantic import BaseModel
 
 from knowledge.build_fact_sheet import render as render_fact_sheet
-from knowledge.loader import ROOT, load_audiences, load_claims, load_features, load_voice
+from knowledge.loader import ROOT, load_audiences, load_captions, load_claims, load_features, load_voice
 from schemas import AdImage, Angle, AudienceProfile, Brief, CallUsage, Claim, DraftAttempt, RunResult, TrxckwrldPost, Violation, VoiceRules, render_post
 from validate import needs_approval, parse_post, validate
 
@@ -127,9 +127,10 @@ def _generate(brief, result, claims, voice, client, on_event) -> None:
     pool = ThreadPoolExecutor(max_workers=DRAFT_WORKERS)
     try:
         pending = set()
+        captions = load_captions()
         for i, angle in enumerate(result.angles):
             image = pick_image(result.run_id, i, brief.feature_id) if brief.origin != "request" else None  # Mode B only
-            result.images.append(AdImage(path=str(image[0]), on_screen=image[1]) if image else None)
+            result.images.append(AdImage(path=str(image[0]), on_screen=image[1], caption=captions.get(image[0].name)) if image else None)
             screen = SCREENSHOT_NOTE.format(note=image[1]) if image and image[1] else NO_SCREENSHOT
             first = load_prompt("draft.txt", persona=persona, brief=brief_json, angle=angle.model_dump_json(indent=2), screen=screen)
             on_attempt = lambda a, i=i: events.put(("draft", {"angle": i, **a}))
@@ -312,7 +313,7 @@ def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: 
                     link = os.path.relpath(path, run_dir).replace(os.sep, "/")
                 except ValueError:  # out_root on another Windows drive than assets/
                     link = path.as_uri()
-                body = f"![]({link})\n\n{body}"
+                body = f"![]({link})\n" + (f"*{image.caption}*\n" if image.caption else "") + f"\n{body}"
             flags = "".join(f"\n- {v.code}: {v.message}" for v in last.violations)
             (run_dir / f"draft-{i + 1}.md").write_text(body + (f"\n\n## Failed validation{flags}" if flags else ""), encoding="utf-8")
     finally:

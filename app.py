@@ -42,8 +42,8 @@ def on_event_for(status, label: str):
     return on_event
 
 
-def show_ad(text: str, needs_approval: bool, image=None) -> None:
-    """One finished ad: its photo, title, body, CTA link. render_post joins those parts with blank lines."""
+def show_ad(text: str, needs_approval: bool, image=None, caption: str | None = None) -> None:
+    """One finished ad: its photo with caption, title, body, CTA link. render_post joins those parts with blank lines."""
     parts = text.split("\n\n")
     with st.container(border=True):
         if needs_approval:
@@ -52,7 +52,7 @@ def show_ad(text: str, needs_approval: bool, image=None) -> None:
             w, h = Image.open(image).size  # cap shown height ~450px so tall crops don't fill the screen
             # st.image(width=N) resamples the file to N px, blurry on HiDPI; a sized container keeps up to 1460 px (2x)
             with st.container(width=min(700, round(450 * w / h))):
-                st.image(str(image), width="stretch")
+                st.image(str(image), width="stretch", caption=caption)
         st.markdown(md(f"#### {parts[0]}"))
         if len(parts) > 1:
             st.markdown(md("\n\n".join(parts[1:-1])))
@@ -81,7 +81,7 @@ def show_result(result: RunResult) -> None:
     passed = [(i, a[-1]) for i, a in enumerate(result.drafts) if a and not a[-1].violations and a[-1].rendered_text]
     for i, last in passed:  # drafts that never passed the checks are not shown
         image = result.images[i] if i < len(result.images) else None  # the image picked when this ad was drafted
-        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval), image and image.path)
+        show_ad(last.rendered_text, bool(last.raw_post and last.raw_post.requires_approval), image and image.path, image and image.caption)
     if result.drafts and not passed:
         st.info("No draft passed the review checks this time. Run it again.")
 

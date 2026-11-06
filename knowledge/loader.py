@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from schemas import AudienceProfile, BridgeEntry, Claim, Feature, SeasonWindow, VoiceRules
+from schemas import AudienceProfile, BridgeEntry, Claim, Feature, SeasonWindow, VoiceRules, _guidance_only
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -76,6 +76,16 @@ def load_features(path: Path = ROOT / "knowledge" / "features.yaml") -> dict[str
             raise ValueError(f"{path}: duplicate feature id {f.id!r}")
         features[f.id] = f
     return features
+
+
+def load_captions(path: Path = ROOT / "knowledge" / "screenshot_captions.yaml") -> dict[str, str]:
+    """Screenshot file name -> the caption shown under it in a finished Mode B ad."""
+    raw = _read_yaml(path) or {}
+    if not isinstance(raw, dict) or not all(isinstance(k, str) and isinstance(v, str) and v.strip() for k, v in raw.items()):
+        raise ValueError(f"{path}: expected a mapping of file name to non-empty caption")
+    for name, caption in raw.items():
+        _guidance_only(f"{path}: caption of {name!r}", [caption])
+    return raw
 
 
 def load_seasons(path: Path = ROOT / "knowledge" / "seasonality.yaml") -> list[SeasonWindow]:

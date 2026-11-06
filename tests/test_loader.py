@@ -1,7 +1,7 @@
 import pytest
 import yaml
 
-from knowledge.loader import load_audiences, load_bridges, load_claims, load_features, load_voice
+from knowledge.loader import load_audiences, load_bridges, load_captions, load_claims, load_features, load_voice
 
 
 def claim(**overrides):
@@ -139,3 +139,17 @@ def test_duplicate_feature_id_fails(tmp_path):
     path.write_text(yaml.safe_dump([entry, entry]), encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate feature id 'ifta'"):
         load_features(path)
+
+
+def test_every_usable_screenshot_has_a_caption():
+    from generate import RANDOM_SCREENSHOTS
+    listed = set(RANDOM_SCREENSHOTS) | {s.file for f in load_features().values() for s in f.screenshots}
+    assert listed <= set(load_captions())
+
+
+@pytest.mark.parametrize("text", ["Tracks loads in 2 clicks", "We built this", 'Says "fast"'])
+def test_caption_with_numbers_quotes_or_first_person_fails(tmp_path, text):
+    path = tmp_path / "captions.yaml"
+    path.write_text(yaml.safe_dump({"a.png": text}), encoding="utf-8")
+    with pytest.raises(ValueError, match="caption"):
+        load_captions(path)

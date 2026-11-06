@@ -308,6 +308,8 @@ def test_finished_mode_b_ads_get_a_random_screenshot_failed_ones_do_not(tmp_path
     first_line = (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[0]
     assert first_line.startswith("![](") and "\\" not in first_line  # a relative link with forward slashes
     assert (run_dir / first_line[4:-1]).resolve() == image.resolve()  # the link opens the picked screenshot
+    caption = result.images[0].caption  # the caption sits on the line under the image link
+    assert caption and (run_dir / "draft-1.md").read_text(encoding="utf-8").split("\n")[1] == f"*{caption}*"
     assert not any(run_dir.glob("*.*g"))  # linked, not copied
     assert "![]" not in (run_dir / "draft-2.md").read_text(encoding="utf-8")
 

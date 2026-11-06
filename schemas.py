@@ -196,6 +196,7 @@ class AdImage(BaseModel):
 
     path: str
     on_screen: str | None = None  # set for a feature screenshot, None for a brand photo
+    caption: str | None = None  # shown under the image (knowledge/screenshot_captions.yaml); never sent to the model
 
 
 class RunResult(BaseModel):

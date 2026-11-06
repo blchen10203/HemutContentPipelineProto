@@ -93,13 +93,14 @@ def test_only_passing_ads_are_shown(monkeypatch):
 def test_finished_ad_shows_its_image(monkeypatch, pool):
     bad = [DraftAttempt(attempt=0, rendered_text=None, violations=[Violation(code="BANNED_WORD", message="x")])]
     mixed = RESULT.model_copy(update={"angles": RESULT.angles * 2, "drafts": [bad, RESULT.drafts[0]],
-                                      "images": [None, AdImage(path=str(pool / "01b-overview-kpi-cards-closeup.png"))]})  # picked when drafting
+                                      "images": [None, AdImage(path=str(pool / "01b-overview-kpi-cards-closeup.png"), caption="Cards at a glance.")]})  # picked when drafting
     monkeypatch.setattr(modes.request, "run_request", lambda request, on_event: mixed)
     at = AppTest.from_file(str(Path(__file__).parent.parent / "app.py"), default_timeout=30).run()
     assert not at.get("image")
     at.text_area[0].input("Social post about detention").run()
     click(at, "Run")
     assert len(at.get("image")) == 1  # the finished ad only, not the failed one
+    assert at.get("image")[0].proto.imgs[0].caption == "Cards at a glance."
     assert len(click(at, "Plan").get("image")) == 1  # a rerun shows the same ad with its image
 
 
