@@ -1,5 +1,6 @@
 import datetime
 
+import httpx
 import pytest
 
 import fetch_sources
@@ -32,3 +33,24 @@ def test_named_sources_only(tmp_path, monkeypatch):
     with pytest.raises(SystemExit, match="iftach-carriers"):
         fetch_sources.main(["iftach-carriers"])
     assert snapshot.read_text() == "cited"
+
+
+class FakeClient:
+    def __init__(self, text, content_type): self.r = httpx.Response(200, text=text, headers={"content-type": content_type}, request=httpx.Request("GET", "https://hemut.com/x"))
+    def get(self, url): return self.r
+
+
+def test_snapshot_writes_text_and_html(tmp_path):
+    day = datetime.date(2026, 11, 6)
+    path = fetch_sources.snapshot("voice", "https://hemut.com/x", out=tmp_path, today=day,
+                                  client=FakeClient("<p>Hi</p>", "text/html"))
+    assert path == tmp_path / "voice_2026-11-06.txt" and path.read_text(encoding="utf-8") == "Hi\n"
+    assert (tmp_path / "voice_2026-11-06.html").read_text() == "<p>Hi</p>"
+
+
+def test_snapshot_refuses_existing_dated_file(tmp_path):
+    (tmp_path / "voice_2026-11-06.txt").write_text("cited")
+    with pytest.raises(FileExistsError):
+        fetch_sources.snapshot("voice", "https://hemut.com/x", out=tmp_path, today=datetime.date(2026, 11, 6),
+                               client=FakeClient("new", "text/plain"))
+    assert (tmp_path / "voice_2026-11-06.txt").read_text() == "cited"

@@ -59,24 +59,39 @@ def html_to_text(html: str) -> str:
     return "\n".join(line for line in lines if line) + "\n"
 
 
+def snapshot(name: str, url: str, *, out: Path = OUT, today: datetime.date | None = None,
+             client: httpx.Client | None = None) -> Path:
+    """Save one page as <name>_<date>.txt (plus .html for HTML) in out; returns the .txt path."""
+    day = (today or datetime.date.today()).isoformat()
+    out.mkdir(parents=True, exist_ok=True)
+    # Claims cite these files, so a dated snapshot is never silently replaced.
+    if existing := sorted(p.name for p in out.glob(f"{name}_{day}.*")):
+        raise FileExistsError(f"Snapshot for {day} already exists, delete it to refetch: {existing}")
+    if client is None:
+        with httpx.Client(follow_redirects=True, timeout=30, headers={"User-Agent": "Mozilla/5.0"}) as c:
+            return snapshot(name, url, out=out, today=today, client=c)
+    r = client.get(url)
+    r.raise_for_status()
+    txt = out / f"{name}_{day}.txt"
+    if "html" in r.headers.get("content-type", ""):
+        (out / f"{name}_{day}.html").write_bytes(r.content)
+        txt.write_text(html_to_text(r.text), encoding="utf-8", newline="\n")
+    else:
+        txt.write_bytes(r.content)
+    return txt
+
+
 def main(names: list[str] | None = None):
     if unknown := set(names or []) - URLS.keys():
         raise SystemExit(f"Unknown source names {sorted(unknown)}; known: {sorted(URLS)}")
     urls = {n: URLS[n] for n in names} if names else URLS
     OUT.mkdir(parents=True, exist_ok=True)
     today = datetime.date.today().isoformat()
-    # Claims cite these files, so a dated snapshot is never silently replaced.
     if existing := sorted(p.name for n in urls for p in OUT.glob(f"{n}_{today}.*")):
         raise SystemExit(f"Snapshots for {today} already exist, delete them to refetch: {existing}")
     with httpx.Client(follow_redirects=True, timeout=30, headers={"User-Agent": "Mozilla/5.0"}) as client:
         for name, url in urls.items():
-            r = client.get(url)
-            r.raise_for_status()
-            if "html" in r.headers.get("content-type", ""):
-                (OUT / f"{name}_{today}.html").write_bytes(r.content)
-                (OUT / f"{name}_{today}.txt").write_text(html_to_text(r.text), encoding="utf-8", newline="\n")
-            else:
-                (OUT / f"{name}_{today}.txt").write_bytes(r.content)
+            snapshot(name, url, out=OUT, client=client)
             print(f"{name}: {url} -> {name}_{today}.txt")
 
 
