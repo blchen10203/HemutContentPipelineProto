@@ -50,7 +50,9 @@ def show_ad(text: str, needs_approval: bool, image=None) -> None:
             st.badge("Approval needed", color="orange")
         if image:
             w, h = Image.open(image).size  # cap shown height ~450px so tall crops don't fill the screen
-            st.image(str(image), width=min(700, round(450 * w / h)))
+            # st.image(width=N) resamples the file to N px, blurry on HiDPI; a sized container keeps up to 1460 px (2x)
+            with st.container(width=min(700, round(450 * w / h))):
+                st.image(str(image), width="stretch")
         st.markdown(md(f"#### {parts[0]}"))
         if len(parts) > 1:
             st.markdown(md("\n\n".join(parts[1:-1])))
