@@ -3,11 +3,11 @@
 Generates review-ready ad/post text promoting Hemut's TMS (Hemut Command), Trxckwrld first. Output is drafts + export files. **Nothing is ever posted.**
 
 ## Two modes, one core
-Both modes only decide *what to write about*. They each produce a `Brief`; everything after that is the same core pipeline:
+Mode B decides *what to write about* and produces a `Brief`; everything after that is the core pipeline:
 
 `Brief -> angles -> draft -> validate -> retry (max 2) -> human review -> out/`
 
-**Mode A: On-demand request.** A Hemut person asks for an ad about a specific thing (e.g. "Reddit-style ad about IFTA automation for 5-15 truck fleets"), optionally with notes and source links. The request is turned into a Brief and run through the core.
+**Mode A: Manual post.** In the app, a Hemut person types the post themselves (title, body, optional button text and link) and it is shown exactly as typed: no API calls, no validator, nothing saved to `out/`. It stands in for posting by hand on Trxckwrld once the pipeline is integrated there. Mode A does not use the core pipeline; the generation rules below apply to Mode B.
 
 **Mode B: Automated.** **Seasonal** Briefs come from recurring problems and deadlines in trucking (produce season, winter weather, IFTA quarters, enforcement weeks, etc.). Active seasons boost how often Hemut's matching solution is advertised.
 A weekly planner mixes seasonal + evergreen Briefs into a content plan.
@@ -15,10 +15,9 @@ A weekly planner mixes seasonal + evergreen Briefs into a content plan.
 ## Hard rules
 - Never post, publish, or call any write API for Trxckwrld, Meta, X, TikTok, or any platform. Export to `out/` only.
 - Never push to the Trxckwrld repo. The Trxckwrld repo is NOT available yet: don't guess its schema or block on it. Use our own `TrxckwrldPost`; `export/trxckwrld.py` will map it once we have access.
-- The knowledge base is ALWAYS loaded for every generation, in both modes. Facts come only from `knowledge/`.
-- Mode A gap rule: if a request mentions something not covered by `claims.yaml` (a new feature, a deal, a number), STOP and return `needs_source` listing the unknown items. Never web-search or guess to fill the gap. If the requester attaches a source (URL or text), create *pending* claims with `requires_approval: true`; drafts using them are flagged for approval.
+- The knowledge base is ALWAYS loaded for every generation. Facts come only from `knowledge/`.
 - Every number in generated copy must map to a `claims.yaml` entry or be flagged for human review. Never silently allowed.
-- No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld) and names "Hemut" in its title, body or CTA text (validator: MISSING_HEMUT), in both modes.
+- No testimonials, no invented quotes, no first-person customer/driver voice. Every post is visibly from Hemut (FTC fake-review rule; Hemut co-owns Trxckwrld) and names "Hemut" in its title, body or CTA text (validator: MISSING_HEMUT). Manual Mode A posts are not checked, so the person writing them owns this.
 - Product names only from `voice.yaml` (Command, Control, Hemi, Forge, Custom, Hemut Diesel). "Core" and "Reach" are retired names.
 - Seasonal facts (dates, deadlines) are claims too: they need a source URL.
 - Seasons and evergreen pillars only reach a Brief through `knowledge/bridge_map.yaml` (tag -> pain -> feature -> claims). No bridge, no Brief.
@@ -41,7 +40,6 @@ not remove the need for a snapshot in knowledge/sources/ and does not change req
 knowledge/       fact_sheet.md  claims.yaml  voice.yaml  audiences.yaml (reader personas)  seasonality.yaml  features.yaml  screenshot_captions.yaml (caption under each Mode B screenshot)  bridge_map.yaml  sources/ (dated snapshots)
                  loader.py (loads + checks claims.yaml / voice.yaml / audiences.yaml / features.yaml)   build_fact_sheet.py (fact_sheet.md is generated from claims.yaml)
                  add_feature.py (the app's Add feature form: snapshots a hemut.com URL, appends claims/feature/bridge/caption, rolls back on failure)
-                 pending_claims.yaml (later: Mode A claims from attached sources, requires_approval: true)
 fetch_sources.py snapshots hemut.com pages into knowledge/sources/ (never overwrites a dated snapshot)
 app.py           Streamlit thin shell over generate.py, modes/, planner.py, knowledge/ (local only)
 brief_sources/   seasonal.py
@@ -63,10 +61,9 @@ assets/          local only, gitignored; brand files downloaded from hemut.com. 
 - Seasonal and planner code is tested with fixed dates, never live network calls.
 
 ## Status
-Both modes run end to end through the Streamlit UI: knowledge/, schemas, validator + golden tests, generate.py core, Mode A, Mode B (seasonal + evergreen), app.py. There is no demo deadline any more.
+Both modes run end to end through the Streamlit UI: knowledge/, schemas, validator + golden tests, generate.py core, Mode A (manual post), Mode B (seasonal + evergreen), app.py. There is no demo deadline any more.
 
 ## Next
-- Pending claims from attached sources (knowledge/pending_claims.yaml)
 - LLM judge, diversity check, source-similarity check
 - Image templates
 - Trxckwrld export adapter

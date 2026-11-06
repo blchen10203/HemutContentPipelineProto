@@ -1,7 +1,6 @@
 """Pydantic v2 models that are the contract between modules, plus claim-placeholder rendering.
 
 Knowledge base: Claim (one entry of claims.yaml), VoiceRules (voice.yaml), AudienceProfile (audiences.yaml).
-Mode A input:   Request.
 Core:           Brief, Angle, StatCard, TrxckwrldPost, Violation, DraftAttempt, CallUsage, RunResult.
 Mode B:         SeasonWindow, BridgeEntry, PlanItem.
 Features:       Screenshot, Feature (features.yaml).
@@ -83,17 +82,6 @@ class AudienceProfile(BaseModel):
     def _writer_guidance_only(self):
         _guidance_only(f"persona {self.id!r}", [self.label, self.role, *self.pains, *self.objections, *self.tone_notes])
         return self
-
-
-# ---------------------------------------------------------------- Mode A input
-
-# The trust boundary for typed user input; app.py does no validation of its own.
-class Request(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)  # so min_length rejects blank text
-
-    text: str = Field(min_length=1)
-    notes: str | None = None
-    feature_id: str | None = None  # the feature the requester picked; None lets the model choose
 
 
 # ---------------------------------------------------------------- Core

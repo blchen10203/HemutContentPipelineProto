@@ -13,10 +13,9 @@ from pydantic import ValidationError
 from generate import SCREENSHOTS, usage_total
 import knowledge.add_feature as add_feature_mod
 from knowledge.loader import load_audiences, load_claims, load_features, load_seasons
-from modes.request import run_request
 from modes.scheduled import run_week
 from planner import plan_week
-from schemas import Request, RunResult
+from schemas import RunResult
 
 load_dotenv()
 st.set_page_config(page_title="Hemut content pipeline", layout="wide")
@@ -102,25 +101,27 @@ def run_with_status(label: str, job):
     return out
 
 
-request_tab, week_tab, knowledge_tab = st.tabs(["Request (Mode A)", "Weekly plan (Mode B)", "Knowledge"])
+request_tab, week_tab, knowledge_tab = st.tabs(["Manual post (Mode A)", "Weekly plan (Mode B)", "Knowledge"])
 
 with request_tab:
-    features = load_features()
-    choice = st.selectbox("Feature (optional)", ["Any (from the text)", *(f.label for f in features.values())])
-    text = st.text_area("What should the post be about?", placeholder="Reddit-style post about IFTA automation for 5-15 truck fleets")
-    notes = st.text_input("Notes (optional)")
-    if st.button("Run", type="primary"):
-        try:
-            request = Request(text=text, notes=notes or None,
-                              feature_id={f.label: f.id for f in features.values()}.get(choice))
-        except ValidationError as e:
-            st.error(e.errors()[0]["msg"])
-        else:
-            st.session_state.request_result = run_with_status("Drafting", lambda on_event: run_request(request, on_event=on_event))
-    # session_state: any click reruns the whole script, and results would vanish from the other tab
-    if st.session_state.get("request_result"):
-        show_result(st.session_state.request_result)
-        usage_caption([st.session_state.request_result])
+    # Stand-in for posting by hand on Trxckwrld: shows exactly what was typed. No API calls, no validator, nothing saved.
+    st.caption("Write the post yourself. It is shown below exactly as typed; nothing is posted.")
+    title = st.text_input("Title", key="mp_title")
+    body = st.text_area("Body", key="mp_body")
+    cta_text = st.text_input("Button text (optional)", key="mp_cta")
+    cta_url = st.text_input("Link (optional)", key="mp_url")
+    if st.button("Create post", type="primary"):
+        st.session_state.manual_post = (title, body, cta_text, cta_url)
+    # session_state: any click reruns the whole script, and the post would vanish when the other tab is used
+    if st.session_state.get("manual_post"):
+        title, body, cta_text, cta_url = st.session_state.manual_post
+        with st.container(border=True):
+            st.markdown(md(f"#### {title}"))
+            st.markdown(md(body))
+            if cta_url:
+                st.markdown(md(f"**[{cta_text or cta_url} →]({cta_url})**"))
+            elif cta_text:
+                st.markdown(md(f"**{cta_text}**"))
 
 with week_tab:
     day = st.date_input("Week of", value=datetime.date.today())
@@ -159,6 +160,7 @@ with knowledge_tab:
     st.dataframe([{"id": s.id, "window": f"{s.start} to {s.end}", "lead days": s.lead_days,
                    "verified": s.verified_by or "UNVERIFIED", "source": s.source_url} for s in load_seasons()])
     st.subheader("Features")
+    features = load_features()
     st.dataframe([{"id": f.id, "label": f.label, "claims": ", ".join(f.claim_ids),
                    "screenshots": f"{sum((SCREENSHOTS / x.file).exists() for x in f.screenshots)} of {len(f.screenshots)}"}
                   for f in features.values()])
@@ -187,7 +189,7 @@ with knowledge_tab:
                 screenshot=nf_shot.getvalue() if nf_shot else None,
                 screenshot_ext=nf_shot.name.rsplit(".", 1)[-1].lower() if nf_shot else None,
                 caption=nf_caption or None))
-            st.success("Live: the next Mode A request and Mode B week can use it. Commit these files (the new sources/ files too, claims.yaml needs them):\n\n"
+            st.success("Live: the next Mode B week can use it. Commit these files (the new sources/ files too, claims.yaml needs them):\n\n"
                        + "\n".join(f"- `{p.as_posix()}`" for p in changed))
         except ValidationError as e:
             st.error(e.errors()[0]["msg"])

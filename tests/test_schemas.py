@@ -4,7 +4,7 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 from schemas import (
-    Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, Request, RunResult,
+    Angle, BridgeEntry, Brief, CallUsage, Claim, DraftAttempt, PlaceholderError, PlanItem, RunResult,
     Feature, Screenshot, SeasonWindow, StatCard, TrxckwrldPost, Violation,
     render_post, used_claim_ids,
 )
@@ -19,7 +19,6 @@ POST = {
     "cta_text": "Start free", "cta_url": URL, "claim_ids_used": ["command-base-price"],
 }
 VALID: list[tuple[type[BaseModel], dict]] = [
-    (Request, {"text": "Reddit-style ad about IFTA automation for 5-15 truck fleets"}),
     (Brief, BRIEF),
     (Angle, {"hook": "Your IFTA weekend", "pain": "manual mileage", "feature": "IFTA reports", "claim_ids": []}),
     (StatCard, {"claim_id": "command-base-price", "label": "Command starts at"}),
@@ -61,12 +60,6 @@ def test_extra_key_rejected(model, data):
 def test_bad_literal_rejected(model, data, field, bad):
     with pytest.raises(ValidationError, match=field):
         model.model_validate({**data, field: bad})
-
-
-@pytest.mark.parametrize("text", ["", "   \n"])
-def test_blank_request_text_rejected(text):
-    with pytest.raises(ValidationError):
-        Request(text=text)
 
 
 @pytest.mark.parametrize("url", [

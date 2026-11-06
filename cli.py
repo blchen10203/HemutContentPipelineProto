@@ -1,6 +1,5 @@
 """Entry points. Writes drafts to out/runs/; never posts.
 
-python cli.py request "<text>" [--notes "..."]
 python cli.py week [--date YYYY-MM-DD] [--dry-run]
 """
 import argparse
@@ -9,10 +8,9 @@ import sys
 
 from dotenv import load_dotenv
 
-from modes.request import run_request
 from modes.scheduled import run_week
 from planner import plan_week
-from schemas import Request, RunResult
+from schemas import RunResult
 
 
 def _progress(name: str, payload: dict) -> None:
@@ -42,9 +40,6 @@ def _print_result(result: RunResult) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="cli.py")
     sub = parser.add_subparsers(dest="command", required=True)
-    req = sub.add_parser("request", help="Mode A: draft posts for one request")
-    req.add_argument("text")
-    req.add_argument("--notes")
     week = sub.add_parser("week", help="Mode B: plan the week and draft each item")
     week.add_argument("--date", type=datetime.date.fromisoformat, default=datetime.date.today())
     week.add_argument("--dry-run", action="store_true", help="print the plan only; no API calls")
@@ -62,10 +57,6 @@ def main(argv: list[str] | None = None) -> None:
 
 
 def _run(args) -> None:
-    if args.command == "request":
-        _print_result(run_request(Request(text=args.text, notes=args.notes), on_event=_progress))
-        return
-
     skipped: list[str] = []
     plan = plan_week(args.date, skipped=skipped)
     print(f"Plan for the week of {args.date}:")

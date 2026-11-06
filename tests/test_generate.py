@@ -100,7 +100,7 @@ def test_good_first_try(tmp_path):
     assert len(client.calls) == 1 + N_ANGLES
     meta = json.loads((Path(result.run_dir) / "meta.json").read_text(encoding="utf-8"))
     assert isinstance(meta["duration_s"], float) and meta["duration_s"] >= 0
-    assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt", "normalize.txt"}
+    assert meta["mode"] == "A" and meta["brief_origin"] == "request" and set(meta["prompt_versions"]) == {"system.txt", "angles.txt", "draft.txt"}
     assert (Path(result.run_dir) / "draft-1.md").is_file()
     system = client.calls[0]["system"][0]["text"]
     assert "command-base-price" in system and "{fact_sheet}" not in system and "{{claim:<id>}}" in system

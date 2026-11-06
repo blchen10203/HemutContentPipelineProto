@@ -63,16 +63,14 @@ def run_brief(
     client: anthropic.Anthropic | None = None,
     on_event: Callable[[str, dict], None] = lambda name, payload: None,
     out_root: Path = OUT,
-    usage: list[CallUsage] | None = None,  # calls made before the Brief existed (Mode A's normalize step)
-    started: float | None = None,  # time.perf_counter() at the start of the run, if it began earlier (Mode A's normalize)
 ) -> RunResult:
-    started = time.perf_counter() if started is None else started
+    started = time.perf_counter()
     claims = load_claims() if claims is None else claims  # the knowledge base is always loaded
     voice = load_voice() if voice is None else voice
     now = datetime.datetime.now()
     run_dir = out_root / now.strftime(RUN_ID)
     result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="ok", brief=brief, needs_source=brief.needs_source,
-                       usage=usage or [])
+)
     on_event("brief", brief.model_dump())
 
     if brief.needs_source:
@@ -89,15 +87,6 @@ def run_brief(
     _write_run(run_dir, result, claims, now, started)
     on_event("done", {"status": result.status, "run_dir": str(run_dir)})
     return result
-
-
-def write_failed_request(error: BaseException, claims: dict[str, Claim], out_root: Path = OUT, usage: list[CallUsage] = (),
-                         started: float | None = None) -> None:
-    """A Mode A run that failed before it had a Brief (the request -> Brief call) still leaves meta.json."""
-    now = datetime.datetime.now()
-    run_dir = out_root / now.strftime(RUN_ID)
-    result = RunResult(run_id=run_dir.name, run_dir=str(run_dir), status="error", usage=list(usage))
-    _write_error(run_dir, result, claims, now, time.perf_counter() if started is None else started, error)
 
 
 def _write_error(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, started: float,
@@ -278,11 +267,11 @@ def system_prompt(claims: dict[str, Claim], voice: VoiceRules) -> str:
 def _write_run(run_dir: Path, result: RunResult, claims: dict[str, Claim], now: datetime.datetime, started: float,
                error: str | None = None) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
-    origin = result.brief.origin if result.brief else "request"  # no brief: Mode A failed while building it
-    used = ["system.txt", "angles.txt", "draft.txt"] + (["normalize.txt"] if origin == "request" else [])
+    origin = result.brief.origin
+    used = ["system.txt", "angles.txt", "draft.txt"]
     meta = {
         "created": now.isoformat(timespec="seconds"),
-        "duration_s": round(time.perf_counter() - started, 3),  # wall clock of the whole run, incl. Mode A's normalize call
+        "duration_s": round(time.perf_counter() - started, 3),  # wall clock of the whole run
         "mode": "A" if origin == "request" else "B",
         "brief_origin": origin,
         "status": result.status,
