@@ -31,6 +31,7 @@ class Claim(BaseModel):
     source_snapshot: str  # repo-relative, e.g. knowledge/sources/pricing_2026-10-23.txt
     checked: datetime.date
     requires_approval: bool
+    verified_by: str | None = None
 
     @model_validator(mode="after")
     def _numbers_need_phrasings(self):
